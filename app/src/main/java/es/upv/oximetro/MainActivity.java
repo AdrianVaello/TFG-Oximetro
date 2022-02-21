@@ -69,10 +69,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int REQUEST_CODE_PERMISSION_LOCATION = 2;
     private static final int REQUEST_ENABLE_BT = 3;
 
-    private LinearLayout layout_setting;
-    private TextView txt_setting;
+    //private LinearLayout layout_setting;
+    //private TextView txt_setting;
     private Button btn_scan;
-    private EditText et_name, et_mac, et_uuid;
+    //private EditText et_name, et_mac, et_uuid;
     private Switch sw_auto;
     private ImageView img_loading;
 
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
 
-            case R.id.txt_setting:
+            /*case R.id.txt_setting:
                 if (layout_setting.getVisibility() == View.VISIBLE) {
                     layout_setting.setVisibility(View.GONE);
                     txt_setting.setText(getString(R.string.expand_search_settings));
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     layout_setting.setVisibility(View.VISIBLE);
                     txt_setting.setText(getString(R.string.retrieve_search_settings));
                 }
-                break;
+                break;*/
         }
     }
 
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_scan.setText(getString(R.string.start_scan));
         btn_scan.setOnClickListener(this);
 
-        et_name = (EditText) findViewById(R.id.et_name);
+       /* et_name = (EditText) findViewById(R.id.et_name);
         et_mac = (EditText) findViewById(R.id.et_mac);
         et_uuid = (EditText) findViewById(R.id.et_uuid);
         sw_auto = (Switch) findViewById(R.id.sw_auto);
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         txt_setting = (TextView) findViewById(R.id.txt_setting);
         txt_setting.setOnClickListener(this);
         layout_setting.setVisibility(View.GONE);
-        txt_setting.setText(getString(R.string.expand_search_settings));
+        txt_setting.setText(getString(R.string.expand_search_settings));*/
 
         img_loading = (ImageView) findViewById(R.id.img_loading);
         operatingAnim = AnimationUtils.loadAnimation(this, R.anim.rotate);
@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDeviceAdapter.notifyDataSetChanged();
     }
 
-    private void setScanRule() {
+    /*private void setScanRule() {
         String[] uuids;
         String str_uuid = et_uuid.getText().toString();
         if (TextUtils.isEmpty(str_uuid)) {
@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setScanTimeOut(10000)
                 .build();
         BleManager.getInstance().initScanRule(scanRuleConfig);
-    }
+    }*/
 
     private void startScan() {
         BleManager.getInstance().scan(new BleScanCallback() {
@@ -413,7 +413,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setCancelable(false)
                             .show();
                 } else {
-                    setScanRule();
+                    //setScanRule();
                     startScan();
                 }
                 break;
@@ -432,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_OPEN_GPS) {
             if (checkGPSIsOpen()) {
-                setScanRule();
+                //setScanRule();
                 startScan();
             }
         }
