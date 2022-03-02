@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import es.upv.oximetro.R;
@@ -96,9 +97,10 @@ public class DeviceAdapter extends BaseAdapter {
             holder.txt_rssi = (TextView) convertView.findViewById(R.id.txt_rssi);
             holder.layout_idle = (LinearLayout) convertView.findViewById(R.id.layout_idle);
             holder.layout_connected = (LinearLayout) convertView.findViewById(R.id.layout_connected);
-            holder.btn_disconnect = (Button) convertView.findViewById(R.id.btn_disconnect);
+            //holder.btn_disconnect = (Button) convertView.findViewById(R.id.btn_disconnect);
             holder.btn_connect = (Button) convertView.findViewById(R.id.btn_connect);
             holder.btn_detail = (Button) convertView.findViewById(R.id.btn_detail);
+            holder.dispositivosBle= (RelativeLayout) convertView.findViewById(R.id.dispositivoBle);
         }
 
         final BleDevice bleDevice = getItem(position);
@@ -134,14 +136,14 @@ public class DeviceAdapter extends BaseAdapter {
             }
         });
 
-        holder.btn_disconnect.setOnClickListener(new View.OnClickListener() {
+        /*holder.btn_disconnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
                     mListener.onDisConnect(bleDevice);
                 }
             }
-        });
+        });*/
 
         holder.btn_detail.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,9 +164,10 @@ public class DeviceAdapter extends BaseAdapter {
         TextView txt_rssi;
         LinearLayout layout_idle;
         LinearLayout layout_connected;
-        Button btn_disconnect;
+        //Button btn_disconnect;
         Button btn_connect;
         Button btn_detail;
+        RelativeLayout dispositivosBle;
     }
 
     public interface OnDeviceClickListener {
