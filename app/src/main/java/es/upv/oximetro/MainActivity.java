@@ -309,6 +309,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(MainActivity.this, getString(R.string.active_disconnected), Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(MainActivity.this, getString(R.string.disconnected), Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(MainActivity.this, //*OperationActivity.class);
+                            downloadExcel.class);
+                    startActivity(intent);
                     ObserverManager.getInstance().notifyObserver(bleDevice);
                 }
 

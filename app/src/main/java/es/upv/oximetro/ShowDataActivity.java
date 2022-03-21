@@ -3,6 +3,8 @@ package es.upv.oximetro;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
+import android.content.Intent;
+import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -16,14 +18,20 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.opencsv.CSVWriter;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import es.upv.fastble.BleManager;
@@ -32,9 +40,19 @@ import es.upv.fastble.data.BleDevice;
 import es.upv.fastble.exception.BleException;
 import es.upv.fastble.utils.HexUtil;
 import es.upv.oximetro.operation.CharacteristicOperationFragment;
+import es.upv.oximetro.operation.OperationActivity;
 
 import static java.lang.String.valueOf;
 import static java.util.Arrays.copyOfRange;
+
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 //DONE: Añadir botón para grabar datos
 //TODO: Añadir ToolBar
@@ -51,13 +69,30 @@ public class ShowDataActivity extends AppCompatActivity {
    private TextView tv_spo2, tv_pr, tv_rr, tv_pi;
    private LineChart chart;
 
+   //DONE: Escribir datos en fichero CSV
+   private long time;
+   private String fileName;
+   private FileOutputStream f1, f2;
+
+
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_show_data);
       initView();
       prepareDeviceServiceCharact();
+      Button record;
+      record= findViewById(R.id.buttonGuardarDatos);
+      record.setOnClickListener(new View.OnClickListener() {
+         public void onClick(View v) {
+            Log.d("MainActivity","....... Creando fichero");
+
+
+         }
+      });
    }
+
+
 
    //Variables globales para representar la gráfica
    //Se mostrarán los últimos 5 segundos (SHOW_TIME)
@@ -187,51 +222,6 @@ public class ShowDataActivity extends AppCompatActivity {
                    writeFrames(data);
                  }
               });
-   }
-
-/*   private void addText(TextView textView, String content) {
-      textView.append(content);
-      textView.append("\n");
-      int offset = textView.getLineCount() * textView.getLineHeight();
-      if (offset > textView.getHeight()) {
-         textView.scrollTo(0, offset - textView.getHeight());
-      }
-   }*/
-
-   //DONE: Escribir datos en fichero CSV
-   private long time;
-   private String fileName;
-   private FileOutputStream f1, f2;
-
-   public void onClickRecord(View view) {
-      Button button = (Button) view;
-      if (button.getText().equals("Record")) {
-         button.setText("Stop Record");
-         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-         String currentDate = dateFormat.format(new Date());
-         fileName = Environment.getExternalStorageDirectory() + "/" + currentDate;
-         try {
-         f1 = new FileOutputStream(fileName + " raw.csv");
-         f1.write("TIME, D1, D2, D3\n".getBytes());
-         f2 = new FileOutputStream(fileName + " data.csv");
-         f2.write("TIME, SpO2, PR/min, RR/min, PI, ??? \n".getBytes());
-         } catch (FileNotFoundException e) {
-            Log.e(TAG, "ERROR: Abriendo fichero " + e.toString());
-         } catch (IOException e) {
-            Log.e(TAG, "ERROR: Escribiendo fichero " + e.toString());
-         }
-      } else {
-         button.setText("Record");
-         Toast.makeText(this, "File "+fileName+".csv created in internal storage",
-                 Toast.LENGTH_LONG).show();
-         fileName = null;
-         try {
-            if (f1 != null) f1.close();
-            if (f2 != null) f2.close();
-         } catch (IOException e) {
-            Log.e(TAG, "ERROR: Cerrando fichero " + e.toString());
-         }
-      }
    }
 
    void writeFrames(byte[] data) {
