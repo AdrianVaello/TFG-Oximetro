@@ -13,19 +13,18 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,11 +43,9 @@ import es.upv.fastble.callback.BleRssiCallback;
 import es.upv.fastble.callback.BleScanCallback;
 import es.upv.fastble.data.BleDevice;
 import es.upv.fastble.exception.BleException;
-import es.upv.fastble.scan.BleScanRuleConfig;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 // Lista de tareas por realizar a nivel de aplicación
 
@@ -93,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setOperateTimeout(5000);
         //Comenzamos escaneando dispositivos
         checkPermissionsAndConnect();
+
     }
 
     @Override
@@ -107,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         BleManager.getInstance().disconnectAllDevice();
         BleManager.getInstance().destroy();
     }
+
+
 
     @Override
     public void onClick(View v) {
@@ -200,47 +200,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDeviceAdapter.notifyDataSetChanged();
     }
 
-    /*private void setScanRule() {
-        String[] uuids;
-        String str_uuid = et_uuid.getText().toString();
-        if (TextUtils.isEmpty(str_uuid)) {
-            uuids = null;
-        } else {
-            uuids = str_uuid.split(",");
-        }
-        UUID[] serviceUuids = null;
-        if (uuids != null && uuids.length > 0) {
-            serviceUuids = new UUID[uuids.length];
-            for (int i = 0; i < uuids.length; i++) {
-                String name = uuids[i];
-                String[] components = name.split("-");
-                if (components.length != 5) {
-                    serviceUuids[i] = null;
-                } else {
-                    serviceUuids[i] = UUID.fromString(uuids[i]);
-                }
-            }
-        }
-
-        String[] names;
-        String str_name = et_name.getText().toString();
-        if (TextUtils.isEmpty(str_name)) {
-            names = null;
-        } else {
-            names = str_name.split(",");
-        }
-        String mac = et_mac.getText().toString();
-        boolean isAutoConnect = sw_auto.isChecked();
-        BleScanRuleConfig scanRuleConfig = new BleScanRuleConfig.Builder()
-                .setServiceUuids(serviceUuids)
-                .setDeviceName(true, names)
-                .setDeviceMac(mac)
-                .setAutoConnect(isAutoConnect)
-                .setScanTimeOut(10000)
-                .build();
-        BleManager.getInstance().initScanRule(scanRuleConfig);
-    }*/
-
     private void startScan() {
         BleManager.getInstance().scan(new BleScanCallback() {
             @Override
@@ -309,8 +268,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(MainActivity.this, getString(R.string.active_disconnected), Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(MainActivity.this, getString(R.string.disconnected), Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "Antes de quidrar" + Utilities.datosPulsioximetro);
                     Intent intent = new Intent(MainActivity.this, //*OperationActivity.class);
-                            downloadExcel.class);
+                            DownloadExcel.class);
                     startActivity(intent);
                     ObserverManager.getInstance().notifyObserver(bleDevice);
                 }
@@ -438,6 +398,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //setScanRule();
                 startScan();
             }
+        }
+    }
+
+    //MENU TOOLBAR
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_toolbar, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.btmenu_lista_usuarios:
+                Intent intent = new Intent(MainActivity.this, //*OperationActivity.class);
+                        ListaUsuarios.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
         }
     }
 

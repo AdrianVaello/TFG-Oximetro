@@ -2,13 +2,10 @@ package es.upv.oximetro;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -26,29 +23,40 @@ import org.apache.poi.ss.usermodel.Workbook;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
-public class downloadExcel extends AppCompatActivity {
+public class DownloadExcel extends AppCompatActivity {
 
+    private static final String TAG = "1";
     ImageView bt_descargar_excel;
     ImageView bt_volver_atras;
+    TextView nombrePaciente;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.download_excel);
+        Log.d(TAG, "----" +Utilities.datosPulsioximetro);
 
         bt_descargar_excel= findViewById(R.id.bt_descargar_excel);
         bt_descargar_excel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                guardarDatosExcel();
+                nombrePaciente= findViewById(R.id.nombrePaciente);
+                if(nombrePaciente.getText().toString().equals(" ") || nombrePaciente.getText().toString().isEmpty()){
+                    Toast.makeText(DownloadExcel.this, "Rellena el nombre del paciente primero.", Toast.LENGTH_SHORT).show();
+                }else{
+                    guardarDatosExcel(nombrePaciente.getText().toString());
+                }
+
             }
         });
         bt_volver_atras= findViewById(R.id.bt_volver_atras);
         bt_volver_atras.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(downloadExcel.this, //*OperationActivity.class);
+                Intent intent = new Intent(DownloadExcel.this, //*OperationActivity.class);
                         MainActivity.class);
                 startActivity(intent);
             }
@@ -57,7 +65,7 @@ public class downloadExcel extends AppCompatActivity {
     }
 
 
-    public void guardarDatosExcel(){
+    public void guardarDatosExcel(String nombrePaciente){
         Workbook workbook = new HSSFWorkbook();
         Cell cell= null;
         CellStyle cellStyle= workbook.createCellStyle();
@@ -97,8 +105,12 @@ public class downloadExcel extends AppCompatActivity {
         cell = row.createCell(1);
         cell.setCellValue("pr");
 
-        //CAMBIAR EL NOMBRE
-        File file= new File(getExternalFilesDir(null), "Usuario2.xls");
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String strDate = sdf.format(c.getTime());
+
+        File file= new File(getExternalFilesDir(null), nombrePaciente+"_"+strDate+".xls");
         FileOutputStream outputStream= null;
 
         try {

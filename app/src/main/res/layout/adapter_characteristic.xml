@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     android:orientation="vertical">
 
     <LinearLayout
@@ -16,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/characteristic"
-            android:textColor="@color/colorTexto"
+            android:textColor="@color/colorTextoBlanco"
             android:textColorLink="@color/colorTexto"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -27,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="uuid"
-            android:textColor="@color/colorTexto"
+            android:textColor="@color/colorTextoBlanco"
             android:textColorLink="@color/colorTexto"
             android:textSize="12sp" />
 
@@ -37,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="@string/characteristic"
-            android:textColor="@color/colorTexto"
+            android:textColor="@color/colorTextoBlanco"
             android:textColorLink="@color/colorTexto"
             android:textSize="12sp" />
 

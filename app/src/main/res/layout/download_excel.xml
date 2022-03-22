@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/tx_informacion_descarga"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
@@ -28,6 +28,7 @@
         android:ems="10"
         android:hint="@string/nombre_del_paciente"
         android:inputType="textPersonName"
+        android:scrollbarThumbHorizontal="@color/colorTextoBlanco"
         android:textColor="@color/colorTextoBlanco"
         android:textColorHighlight="@color/colorTextoBlanco"
         android:textColorHint="@color/colorTextoBlanco"
@@ -42,11 +43,15 @@
         android:layout_width="105dp"
         android:layout_height="105dp"
         android:layout_marginEnd="101dp"
+        android:adjustViewBounds="false"
+        android:scaleType="centerCrop"
+        android:scaleX="1.4"
+        android:scaleY="1.4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/bt_volver_atras"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nombrePaciente"
-        app:srcCompat="@drawable/download_excel" />
+        app:srcCompat="@drawable/download_excel_color" />
 
     <ImageView
         android:id="@+id/bt_volver_atras"
@@ -56,6 +61,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/bt_descargar_excel"
         app:layout_constraintTop_toBottomOf="@+id/nombrePaciente"
-        app:srcCompat="@drawable/abc_vector_test" />
+        app:srcCompat="@drawable/flecha_atras_color" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

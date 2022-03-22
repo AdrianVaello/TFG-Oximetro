@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -11,10 +13,11 @@
 
         <ImageView
             android:id="@+id/img_blue"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_centerVertical="true"
-            android:src="@mipmap/ic_blue_remote" />
+            android:src="@mipmap/ic_blue_remote"
+            app:srcCompat="@drawable/bluetooth" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -29,9 +32,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:textColor="@color/colorTexto"
-                android:textColorHighlight="@color/colorTexto"
-                android:textColorLink="@color/colorTexto"
+                android:textColor="@color/colorTextoBlanco"
+                android:textColorHighlight="@color/colorTextoBlanco"
+                android:textColorHint="@color/colorTextoBlanco"
+                android:textColorLink="@color/colorTextoBlanco"
                 android:textSize="14sp" />
 
             <TextView
@@ -39,9 +43,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:textColor="@color/colorTexto"
-                android:textColorHighlight="@color/colorTexto"
-                android:textColorLink="@color/colorTexto"
+                android:textColor="@color/colorTextoBlanco"
+                android:textColorHighlight="@color/colorTextoBlanco"
+                android:textColorHint="@color/colorTextoBlanco"
+                android:textColorLink="@color/colorTextoBlanco"
                 android:textSize="12sp" />
 
         </LinearLayout>
@@ -64,10 +69,11 @@
                 android:textSize="14sp" />
 
             <ImageView
-                android:layout_width="18dp"
-                android:layout_height="18dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginLeft="5dp"
-                android:src="@mipmap/ic_rssi" />
+                android:src="@mipmap/ic_rssi"
+                app:srcCompat="@drawable/wify_symbol" />
 
             <Button
                 android:id="@+id/btn_connect"

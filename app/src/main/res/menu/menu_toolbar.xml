@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/btmenu_lista_usuarios"
+        android:icon="@drawable/lista_pacientes_color"
+        android:title="@string/mostrar_pacientes"
+        app:showAsAction="ifRoom" />
+</menu>

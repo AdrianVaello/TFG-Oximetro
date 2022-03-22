@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     android:orientation="vertical">
 
     <TextView
@@ -9,8 +10,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:paddingEnd="10dp"
         android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:textColor="@color/colorTextoBlanco"
+        android:textColorHighlight="@color/colorTextoBlanco"
         android:textSize="14sp"
         android:textStyle="bold" />
 
@@ -19,8 +22,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:paddingEnd="10dp"
         android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:textColor="@color/colorTextoBlanco"
         android:textSize="14sp"
         android:textStyle="bold" />
 
@@ -31,8 +35,8 @@
         android:layout_marginTop="15dp"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="0.5dp"
-        android:paddingEnd="10dp"
         android:paddingStart="10dp"
+        android:paddingEnd="10dp"
         android:scrollbars="none" />
 
 </LinearLayout>

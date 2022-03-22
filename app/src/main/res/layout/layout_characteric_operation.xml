@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     android:orientation="vertical">
 
     <LinearLayout
@@ -16,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:textColor="@color/colorTexto"
+        android:textColor="@color/colorTextoBlanco"
         android:textColorLink="@color/colorTexto"
         android:textSize="12sp"
         android:textStyle="bold" />
@@ -28,6 +29,7 @@
         android:fadeScrollbars="false"
         android:padding="10dp"
         android:scrollbars="vertical"
+        android:textColor="@color/colorTextoBlanco"
         android:textSize="13sp" />
 
 </LinearLayout>

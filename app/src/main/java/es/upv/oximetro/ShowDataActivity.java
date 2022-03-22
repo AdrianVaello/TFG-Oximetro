@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -75,21 +76,15 @@ public class ShowDataActivity extends AppCompatActivity {
    private FileOutputStream f1, f2;
 
 
+
+
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_show_data);
       initView();
       prepareDeviceServiceCharact();
-      Button record;
-      record= findViewById(R.id.buttonGuardarDatos);
-      record.setOnClickListener(new View.OnClickListener() {
-         public void onClick(View v) {
-            Log.d("MainActivity","....... Creando fichero");
 
-
-         }
-      });
    }
 
 
@@ -114,13 +109,16 @@ public class ShowDataActivity extends AppCompatActivity {
       rightDataSet.setDrawCircles(false);
       rightDataSet.setDrawValues(false);
       rightDataSet.setLineWidth(2);
+      rightDataSet.setColor(R.color.colorTexto);
       LineDataSet leftDataSet = new LineDataSet(entriesLeft, "");
       leftDataSet.setDrawCircles(false);
       leftDataSet.setDrawValues(false);
       leftDataSet.setLineWidth(3);
+      leftDataSet.setColor(R.color.colorTexto);
       LineData lineData = new LineData(leftDataSet, rightDataSet);
       chart.setData(lineData);
       chart.invalidate(); // refresh
+      chart.setBorderColor(R.color.colorTextoBlanco);
    }
 
    private void newRawData(int value, long time) {
@@ -247,6 +245,22 @@ public class ShowDataActivity extends AppCompatActivity {
             int pi = (data[7] & 0xff) + (data[8] & 0xff) * 256;
             int unk = (data[9] & 0xff) + (data[10] & 0xff) * 256;
             s += ", " + spO2 + ", " + pr + ", " + rr + ", " + pi + ", " + unk + "\n";
+
+            if(spO2==0 && pr==0&& rr==0 && pi==0){
+               Log.d(TAG, " Son todos 0");
+            }else{
+               HashMap<String,Integer> hashDatos= new HashMap<String,Integer>();
+
+               //hashDatos.clear();
+               hashDatos.put("Sp02",spO2);
+               hashDatos.put("Pr", pr);
+               hashDatos.put("Rr",rr);
+               hashDatos.put("Pi",pi);
+
+               Utilities.datosPulsioximetro.add(hashDatos);
+               Log.d(TAG, "////////////Lista" +Utilities.datosPulsioximetro);
+            }
+
             tv_spo2.setText(valueOf(spO2));
             tv_pr.setText(valueOf(pr));
             tv_rr.setText(valueOf(rr));

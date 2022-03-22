@@ -39,8 +39,7 @@
     <string name="enter">Conectar</string>
     <string name="PararGrabacion">Parar de grabar</string>
     <string name="nombre_del_paciente">Nombre del paciente</string>
-    <string name="estas_seguro_que_quieres_volver_atr_s">Estas seguro que quieres volver atrás?</string>
-    <string name="nota_no_podr_s_descar_los_datos_en_otra_ocasi_n">Nota: No podrás descar los datos en otra ocasión.</string>
-    <string name="no_podr_s_volver_a_descargar_los_datos_si_vuelves_hacia_atras">No podrás volver a descargar los datos si vuelves hacia atras.</string>
+    <string name="no_podr_s_volver_a_descargar_los_datos_si_vuelves_hacia_atras">No podrás volver a descargar los datos si vuelves hacia atrás.</string>
+    <string name="mostrar_pacientes">Mostrar pacientes</string>
 
 </resources>
