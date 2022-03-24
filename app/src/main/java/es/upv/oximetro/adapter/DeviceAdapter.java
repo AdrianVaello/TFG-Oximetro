@@ -91,16 +91,16 @@ public class DeviceAdapter extends BaseAdapter {
             convertView = View.inflate(context, R.layout.adapter_device, null);
             holder = new ViewHolder();
             convertView.setTag(holder);
-            holder.img_blue = (ImageView) convertView.findViewById(R.id.img_blue);
-            holder.txt_name = (TextView) convertView.findViewById(R.id.txt_name);
-            holder.txt_mac = (TextView) convertView.findViewById(R.id.txt_mac);
+            holder.img_blue = (ImageView) convertView.findViewById(R.id.img_paciente);
+            holder.txt_name = (TextView) convertView.findViewById(R.id.txt_nombre_paciente);
+            holder.txt_mac = (TextView) convertView.findViewById(R.id.txt_fecha_paciente);
             holder.txt_rssi = (TextView) convertView.findViewById(R.id.txt_rssi);
             holder.layout_idle = (LinearLayout) convertView.findViewById(R.id.layout_idle);
             holder.layout_connected = (LinearLayout) convertView.findViewById(R.id.layout_connected);
             //holder.btn_disconnect = (Button) convertView.findViewById(R.id.btn_disconnect);
             holder.btn_connect = (Button) convertView.findViewById(R.id.btn_connect);
             holder.btn_detail = (Button) convertView.findViewById(R.id.btn_detail);
-            holder.dispositivosBle= (RelativeLayout) convertView.findViewById(R.id.dispositivoBle);
+            holder.dispositivosBle= (RelativeLayout) convertView.findViewById(R.id.Paciente);
         }
 
         final BleDevice bleDevice = getItem(position);

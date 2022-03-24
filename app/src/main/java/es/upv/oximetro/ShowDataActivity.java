@@ -246,19 +246,16 @@ public class ShowDataActivity extends AppCompatActivity {
             int unk = (data[9] & 0xff) + (data[10] & 0xff) * 256;
             s += ", " + spO2 + ", " + pr + ", " + rr + ", " + pi + ", " + unk + "\n";
 
-            if(spO2==0 && pr==0&& rr==0 && pi==0){
-               Log.d(TAG, " Son todos 0");
-            }else{
-               HashMap<String,Integer> hashDatos= new HashMap<String,Integer>();
+            if(spO2!=0 || pr!=0 || rr!=0 || pi!=0) {
+               HashMap<String, Integer> hashDatos = new HashMap<String, Integer>();
 
-               //hashDatos.clear();
-               hashDatos.put("Sp02",spO2);
+               hashDatos.put("Sp02", spO2);
                hashDatos.put("Pr", pr);
-               hashDatos.put("Rr",rr);
-               hashDatos.put("Pi",pi);
+               hashDatos.put("Rr", rr);
+               hashDatos.put("Pi", pi);
 
                Utilities.datosPulsioximetro.add(hashDatos);
-               Log.d(TAG, "////////////Lista" +Utilities.datosPulsioximetro);
+               Log.d(TAG, "////////////Lista" + Utilities.datosPulsioximetro);
             }
 
             tv_spo2.setText(valueOf(spO2));

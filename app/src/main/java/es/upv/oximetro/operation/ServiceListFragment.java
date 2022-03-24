@@ -53,8 +53,8 @@ public class ServiceListFragment extends Fragment {
     }
 
     private void initView(View v) {
-        txt_name = (TextView) v.findViewById(R.id.txt_name);
-        txt_mac = (TextView) v.findViewById(R.id.txt_mac);
+        txt_name = (TextView) v.findViewById(R.id.txt_nombre_paciente);
+        txt_mac = (TextView) v.findViewById(R.id.txt_fecha_paciente);
 
         mResultAdapter = new ResultAdapter(getActivity());
         ListView listView_device = (ListView) v.findViewById(R.id.list_service);

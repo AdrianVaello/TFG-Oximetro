@@ -69,7 +69,7 @@ public class DownloadExcel extends AppCompatActivity {
         Workbook workbook = new HSSFWorkbook();
         Cell cell= null;
         CellStyle cellStyle= workbook.createCellStyle();
-        cellStyle.setFillForegroundColor(HSSFColor.WHITE.index);
+        cellStyle.setFillForegroundColor(HSSFColor.BLUE_GREY.index);
         cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 
         Sheet sheet= null;
@@ -97,14 +97,23 @@ public class DownloadExcel extends AppCompatActivity {
         cell.setCellValue("PI");
         cell.setCellStyle(cellStyle);
 
-        //VALORES DE LAS CASILLAS
-        row= sheet.createRow(1);
-        cell= row.createCell(0);
-        cell.setCellValue("spo2");
+        for (int i= 1; i<Utilities.datosPulsioximetro.size(); i++){
+            //VALORES DE LAS CASILLAS
+            //Cell=0 -> SP02 Cell=1 -> PR Cell=2 -> RR Cell=3 -> PI
+            row= sheet.createRow(i);
+            cell= row.createCell(0);
+            cell.setCellValue(Utilities.datosPulsioximetro.get(i).get("Sp02"));
 
-        cell = row.createCell(1);
-        cell.setCellValue("pr");
 
+            cell = row.createCell(1);
+            cell.setCellValue(Utilities.datosPulsioximetro.get(i).get("Pr"));
+
+            cell = row.createCell(2);
+            cell.setCellValue(Utilities.datosPulsioximetro.get(i).get("Rr"));
+
+            cell = row.createCell(3);
+            cell.setCellValue(Utilities.datosPulsioximetro.get(i).get("Pi"));
+        }
 
         Calendar c = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
