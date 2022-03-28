@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
     android:orientation="vertical">
 
@@ -17,7 +17,6 @@
             android:layout_height="32dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_blue_remote"
             app:srcCompat="@drawable/avatar_paciente_color" />
 
         <LinearLayout

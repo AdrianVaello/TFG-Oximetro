@@ -10,8 +10,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
@@ -44,6 +46,7 @@ import es.upv.fastble.callback.BleScanCallback;
 import es.upv.fastble.data.BleDevice;
 import es.upv.fastble.exception.BleException;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,6 +93,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setOperateTimeout(5000);
         //Comenzamos escaneando dispositivos
         checkPermissionsAndConnect();
+
+        //String path = ;
+        //Log.d("Files", "11Path: " + path);
+
+
 
     }
 
@@ -375,6 +383,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             .setCancelable(false)
                             .show();
+
                 } else {
                     //setScanRule();
                     startScan();

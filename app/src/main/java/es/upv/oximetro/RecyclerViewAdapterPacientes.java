@@ -1,6 +1,8 @@
 package es.upv.oximetro;
 
 import android.content.Context;
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,18 +12,25 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
 
 public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerViewAdapterPacientes.ViewHolder> {
 
-    private List<String> mData;
-    private LayoutInflater mInflater;
+
+    private final LayoutInflater mInflater;
     private ItemClickListener mClickListener;
+    private static final String TAG = "1";
+
+    private List<File> mfilesAdapter;
 
     // data is passed into the constructor
-    RecyclerViewAdapterPacientes(Context context, List<String> data) {
+    RecyclerViewAdapterPacientes(Context context, List<File> filesAdapter ) {
         this.mInflater = LayoutInflater.from(context);
-        this.mData = data;
+        this.mfilesAdapter=filesAdapter;
     }
 
     // inflates the row layout from xml when needed
@@ -34,16 +43,23 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        //COGER ARCHIVOS
-        //holder.myTextView.setText(animal);
+
+            Log.d("Files", "11FileName:" + mfilesAdapter.get(position).getName());
+            Log.d("Files", "11FileName:" + mfilesAdapter.size());
+            Log.d("Files", "11pos:" + position);
+            holder.tx_nombre_pacientes.setText( mfilesAdapter.get(position).getName());
+
     }
 
-    // total number of rows
     @Override
     public int getItemCount() {
-        return mData.size();
+        return mfilesAdapter.size();
     }
 
+    // convenience method for getting data at click position
+    String getItem(int id) {
+        return mfilesAdapter.get(id).toString();
+    }
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -53,7 +69,6 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
 
         ViewHolder(View itemView) {
             super(itemView);
-            //myTextView = itemView.findViewById(R.id.tvAnimalName);
             paciente= itemView.findViewById(R.id.Paciente);
             tx_fecha_pacientes= itemView.findViewById(R.id.txt_fecha_paciente);
             tx_nombre_pacientes= itemView.findViewById(R.id.txt_nombre_paciente);
@@ -65,11 +80,6 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
         public void onClick(View view) {
             if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
         }
-    }
-
-    // convenience method for getting data at click position
-    String getItem(int id) {
-        return mData.get(id);
     }
 
     // allows clicks events to be caught
