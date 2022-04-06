@@ -1,7 +1,11 @@
 package es.upv.oximetro;
 
+import static android.os.Environment.getExternalStorageDirectory;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,9 +20,15 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Color;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+//import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbookType;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,6 +48,11 @@ public class DownloadExcel extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.download_excel);
         Log.d(TAG, "----" +Utilities.datosPulsioximetro);
+        // cambio unas propiedades del sistema para utilizar la librería poi más pequeña
+        System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
+        System.setProperty("org.apache.poi.javax.xml.stream.XMLOutputFactory", "com.fasterxml.aalto.stax.OutputFactoryImpl");
+        System.setProperty("org.apache.poi.javax.xml.stream.XMLEventFactory", "com.fasterxml.aalto.stax.EventFactoryImpl");
+
 
         bt_descargar_excel= findViewById(R.id.bt_descargar_excel);
         bt_descargar_excel.setOnClickListener(new View.OnClickListener() {
@@ -66,16 +81,16 @@ public class DownloadExcel extends AppCompatActivity {
 
 
     public void guardarDatosExcel(String nombrePaciente){
-        Workbook workbook = new HSSFWorkbook();
-        Cell cell= null;
-        CellStyle cellStyle= workbook.createCellStyle();
-        cellStyle.setFillForegroundColor(HSSFColor.BLUE_GREY.index);
-        cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        XSSFWorkbook workbook = new XSSFWorkbook();
 
-        Sheet sheet= null;
-        sheet= workbook.createSheet("Usuario 1");
+        XSSFSheet sheet= workbook.createSheet("Usuario 1");
+
+
+        CellStyle cellStyle= workbook.createCellStyle();
+        cellStyle.setFillForegroundColor((short) R.color.colorTextoBlanco);
 
         //TITULOS DEL EXCEL
+        Cell cell= null;
         Row row= null;
         row= sheet.createRow(0);
         cell= row.createCell(0);
@@ -98,6 +113,7 @@ public class DownloadExcel extends AppCompatActivity {
         cell.setCellStyle(cellStyle);
 
         for (int i= 1; i<Utilities.datosPulsioximetro.size(); i++){
+            Log.d(TAG, "++++dentro for" );
             //VALORES DE LAS CASILLAS
             //Cell=0 -> SP02 Cell=1 -> PR Cell=2 -> RR Cell=3 -> PI
             row= sheet.createRow(i);
@@ -116,20 +132,23 @@ public class DownloadExcel extends AppCompatActivity {
         }
 
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         String strDate = sdf.format(c.getTime());
 
-        File file= new File(getExternalFilesDir(null), nombrePaciente+"_"+strDate+".xls");
+        File file= new File(getExternalFilesDir(null), nombrePaciente+"_"+strDate+".xlsx");
         FileOutputStream outputStream= null;
 
+
         try {
-            outputStream =  new FileOutputStream(file);
+            outputStream =  new FileOutputStream(file.getAbsolutePath());
             workbook.write(outputStream);
+            outputStream.flush();
+            outputStream.close();
             Toast.makeText(this, "Los datos se han guardado correctamente", Toast.LENGTH_SHORT).show();
 
         }catch(IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error111", Toast.LENGTH_SHORT).show();
 
         }
     }

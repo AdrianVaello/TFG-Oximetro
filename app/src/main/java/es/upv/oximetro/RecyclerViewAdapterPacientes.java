@@ -34,8 +34,21 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+<<<<<<< Updated upstream
         //COGER ARCHIVOS
         //holder.myTextView.setText(animal);
+=======
+
+            Log.d("Files", "11FileName:" + mfilesAdapter.get(position).getName());
+            Log.d("Files", "11FileName:" + mfilesAdapter.size());
+
+            String[] nombreFichero=mfilesAdapter.get(position).getName().split("_");
+            String[] fechaFichero=nombreFichero[1].split("\\.");
+        Log.d("Files", "5555" + nombreFichero[0]+fechaFichero[0]);
+            holder.tx_nombre_pacientes.setText( nombreFichero[0]);
+            holder.tx_fecha_pacientes.setText( fechaFichero[0]);
+
+>>>>>>> Stashed changes
     }
 
     // total number of rows
