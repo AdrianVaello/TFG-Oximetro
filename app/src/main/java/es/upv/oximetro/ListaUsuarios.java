@@ -49,7 +49,7 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
 
         File file = new File(adapter.getItem(position));
         Intent intent = new Intent(Intent.ACTION_VIEW);

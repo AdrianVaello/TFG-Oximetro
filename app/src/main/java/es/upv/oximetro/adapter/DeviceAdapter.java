@@ -119,9 +119,9 @@ public class DeviceAdapter extends BaseAdapter {
                 holder.layout_idle.setVisibility(View.GONE);
                 holder.layout_connected.setVisibility(View.VISIBLE);
             } else {
-                holder.img_blue.setImageResource(R.mipmap.ic_blue_remote);
-                holder.txt_name.setTextColor(0xFF000000);
-                holder.txt_mac.setTextColor(0xFF000000);
+                holder.img_blue.setImageResource(R.drawable.bluetooth);
+                //holder.txt_name.setTextColor(R.color.colorTextoBlanco);
+                //holder.txt_mac.setTextColor(0xFF000000);
                 holder.layout_idle.setVisibility(View.VISIBLE);
                 holder.layout_connected.setVisibility(View.GONE);
             }

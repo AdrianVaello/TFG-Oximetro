@@ -1,14 +1,12 @@
 package es.upv.oximetro;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
@@ -39,19 +37,14 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        //COGER ARCHIVOS
-        //holder.myTextView.setText(animal);
+        //Log.d("Files", "11FileName:" + mfilesAdapter.get(position).getName());
+        //Log.d("Files", "11FileName:" + mfilesAdapter.size());
 
-
-            Log.d("Files", "11FileName:" + mfilesAdapter.get(position).getName());
-            Log.d("Files", "11FileName:" + mfilesAdapter.size());
-
-            String[] nombreFichero=mfilesAdapter.get(position).getName().split("_");
-            String[] fechaFichero=nombreFichero[1].split("\\.");
-        Log.d("Files", "5555" + nombreFichero[0]+fechaFichero[0]);
-            holder.tx_nombre_pacientes.setText( nombreFichero[0]);
-            holder.tx_fecha_pacientes.setText( fechaFichero[0]);
-
+        String[] nombreFichero=mfilesAdapter.get(position).getName().split("_");
+        String[] fechaFichero=nombreFichero[1].split("\\.");
+        //Log.d("Files", "5555" + nombreFichero[0]+fechaFichero[0]);
+        holder.tx_nombre_pacientes.setText( nombreFichero[0]);
+        holder.tx_fecha_pacientes.setText( fechaFichero[0]);
 
     }
 

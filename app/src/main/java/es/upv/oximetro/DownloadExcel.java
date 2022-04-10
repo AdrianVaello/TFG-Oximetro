@@ -47,7 +47,8 @@ public class DownloadExcel extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.download_excel);
-        Log.d(TAG, "----" +Utilities.datosPulsioximetro);
+        //Log.d(TAG, "----" +Utilities.datosPulsioximetro);
+
         // cambio unas propiedades del sistema para utilizar la librería poi más pequeña
         System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
         System.setProperty("org.apache.poi.javax.xml.stream.XMLOutputFactory", "com.fasterxml.aalto.stax.OutputFactoryImpl");
@@ -64,7 +65,6 @@ public class DownloadExcel extends AppCompatActivity {
                 }else{
                     guardarDatosExcel(nombrePaciente.getText().toString());
                 }
-
             }
         });
         bt_volver_atras= findViewById(R.id.bt_volver_atras);
@@ -79,11 +79,10 @@ public class DownloadExcel extends AppCompatActivity {
 
     }
 
-
     public void guardarDatosExcel(String nombrePaciente){
         XSSFWorkbook workbook = new XSSFWorkbook();
 
-        XSSFSheet sheet= workbook.createSheet("Usuario 1");
+        XSSFSheet sheet= workbook.createSheet(nombrePaciente);
 
 
         CellStyle cellStyle= workbook.createCellStyle();
@@ -113,7 +112,7 @@ public class DownloadExcel extends AppCompatActivity {
         cell.setCellStyle(cellStyle);
 
         for (int i= 1; i<Utilities.datosPulsioximetro.size(); i++){
-            Log.d(TAG, "++++dentro for" );
+            //Log.d(TAG, "++++dentro for" );
             //VALORES DE LAS CASILLAS
             //Cell=0 -> SP02 Cell=1 -> PR Cell=2 -> RR Cell=3 -> PI
             row= sheet.createRow(i);
