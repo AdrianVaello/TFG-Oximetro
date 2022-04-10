@@ -1,6 +1,7 @@
 package es.upv.oximetro;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,18 +11,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.util.List;
 
 public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerViewAdapterPacientes.ViewHolder> {
 
-    private List<String> mData;
-    private LayoutInflater mInflater;
+    private final LayoutInflater mInflater;
     private ItemClickListener mClickListener;
+    private static final String TAG = "1";
+
+    private List<File> mfilesAdapter;
 
     // data is passed into the constructor
-    RecyclerViewAdapterPacientes(Context context, List<String> data) {
+    RecyclerViewAdapterPacientes(Context context, List<File> filesAdapter) {
         this.mInflater = LayoutInflater.from(context);
-        this.mData = data;
+        this.mfilesAdapter=filesAdapter;
     }
 
     // inflates the row layout from xml when needed
@@ -34,10 +38,10 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-<<<<<<< Updated upstream
+
         //COGER ARCHIVOS
         //holder.myTextView.setText(animal);
-=======
+
 
             Log.d("Files", "11FileName:" + mfilesAdapter.get(position).getName());
             Log.d("Files", "11FileName:" + mfilesAdapter.size());
@@ -48,13 +52,13 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
             holder.tx_nombre_pacientes.setText( nombreFichero[0]);
             holder.tx_fecha_pacientes.setText( fechaFichero[0]);
 
->>>>>>> Stashed changes
+
     }
 
     // total number of rows
     @Override
     public int getItemCount() {
-        return mData.size();
+        return mfilesAdapter.size();
     }
 
 
@@ -82,7 +86,7 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
 
     // convenience method for getting data at click position
     String getItem(int id) {
-        return mData.get(id);
+        return mfilesAdapter.get(id).toString();
     }
 
     // allows clicks events to be caught

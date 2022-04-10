@@ -4,4 +4,8 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/reciclerViewPacientes"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,36 +1,33 @@
 package es.upv.oximetro;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-<<<<<<< Updated upstream
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-=======
-import android.os.Environment;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
->>>>>>> Stashed changes
 
-public class ListaUsuarios extends AppCompatActivity {
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdapterPacientes.ItemClickListener{
+
+    RecyclerViewAdapterPacientes adapter;
+    public List<File> files= new ArrayList<>();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lista_usuarios);
-<<<<<<< Updated upstream
-=======
 
         File directory = new File(String.valueOf(getExternalFilesDir(null)));
         files = Arrays.asList(directory.listFiles());
@@ -63,6 +60,5 @@ public class ListaUsuarios extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         startActivity(Intent.createChooser(intent, "Open file...",null));
 
->>>>>>> Stashed changes
     }
 }
