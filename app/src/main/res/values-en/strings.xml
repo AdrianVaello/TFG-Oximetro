@@ -46,5 +46,7 @@
     <string name="rr_bpm">RR (bpm)</string>
     <string name="pr_bpm">PR (bpm)</string>
     <string name="pi">PI %</string>
+    <string name="oximeter_app">Oximeter App</string>
+    <string name="con_menos_se_puede_hacer_m_s">Con menos se puede hacer más.</string>
 
 </resources>

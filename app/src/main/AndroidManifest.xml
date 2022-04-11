@@ -22,10 +22,10 @@
 
         <activity android:name="es.upv.oximetro.MainActivity"
             android:screenOrientation="portrait">
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity android:name="es.upv.oximetro.ShowDataActivity"
             android:screenOrientation="portrait"/>
@@ -36,6 +36,14 @@
 
         <activity android:name="es.upv.oximetro.ListaUsuarios"
             android:screenOrientation="portrait"/>
+
+        <activity android:name="es.upv.oximetro.SplashScreenActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <!-- PARA LEER ARCHIVOS-->
         <provider
