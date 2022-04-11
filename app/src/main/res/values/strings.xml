@@ -41,5 +41,9 @@
     <string name="nombre_del_paciente">Nombre del paciente</string>
     <string name="no_podr_s_volver_a_descargar_los_datos_si_vuelves_hacia_atras">No podrás volver a descargar los datos si vuelves hacia atrás.</string>
     <string name="mostrar_pacientes">Mostrar pacientes</string>
+    <string name="spo2">SpO2 %</string>
+    <string name="rr_bpm">RR (bpm)</string>
+    <string name="pr_bpm">PR (bpm)</string>
+    <string name="pi">PI %</string>
 
 </resources>

@@ -6,111 +6,165 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="SpO2 %"
-        android:textColor="@color/colorTexto"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_spo2" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="PI %"
-        android:textColor="@color/colorTexto"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/tv_pi"
-        app:layout_constraintStart_toEndOf="@+id/tv_rr" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="RR (bpm)"
-        android:textColor="@color/colorTexto"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/tv_rr"
-        app:layout_constraintStart_toStartOf="@+id/tv_rr" />
-
-    <TextView
-        android:id="@+id/tv_spo2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="00"
-        android:textColor="@color/colorTextoBlanco"
-        android:textSize="96sp"
-        app:layout_constraintBottom_toTopOf="@+id/tv_pr"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_pr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="00"
-        android:textColor="@color/colorTextoBlanco"
-        android:textSize="96sp"
-        app:layout_constraintBottom_toTopOf="@+id/tv_rr"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_spo2" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="PR (bpm)"
-        android:textColor="@color/colorTexto"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_pr" />
-
-    <TextView
-        android:id="@+id/tv_rr"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="00"
-        android:textAlignment="center"
-        android:textColor="@color/colorTextoBlanco"
-        android:textSize="60sp"
-        app:layout_constraintEnd_toStartOf="@+id/tv_pi"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_pr" />
-
-    <TextView
-        android:id="@+id/tv_pi"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="00"
-        android:textAlignment="center"
-        android:textColor="@color/colorTextoBlanco"
-        android:textSize="60sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_rr"
-        app:layout_constraintTop_toTopOf="@+id/tv_rr" />
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart_heart"
-        android:layout_width="408dp"
-        android:layout_height="237dp"
-        android:layout_marginBottom="32dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewChart"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:cardBackgroundColor="@color/colorCardChart"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart_heart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewRR"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:cardBackgroundColor="@color/colorCard4"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewPR">
+
+        <TextView
+            android:id="@+id/tv_rr"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:text="00"
+            android:textAlignment="center"
+            android:textColor="@color/colorTextoBlanco"
+            android:textSize="96sp" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/rr_bpm"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewPI"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:cardBackgroundColor="@color/colorCard3"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewSpo2">
+
+        <TextView
+            android:id="@+id/tv_pi"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:text="00"
+            android:textAlignment="center"
+            android:textColor="@color/colorTextoBlanco"
+            android:textSize="96sp" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/pi"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewPR"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:cardBackgroundColor="@color/colorCard2"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_pr"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="00"
+            android:textColor="@color/colorTextoBlanco"
+            android:textSize="96sp" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/pr_bpm"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewSpo2"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:foregroundGravity="center_horizontal"
+        app:cardBackgroundColor="@color/colorCard1"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_spo2"
+            android:layout_width="160dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="00"
+            android:textColor="@color/colorTextoBlanco"
+            android:textSize="96sp" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/spo2"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:background="@color/colorTexto"
+        app:layout_constraintBottom_toTopOf="@+id/cardViewChart"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
 

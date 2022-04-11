@@ -4,5 +4,11 @@
     <color name="colorPrimaryDark">#30353B</color>
     <color name="colorAccent">#FF5722</color>
     <color name="colorTexto">#F4BD76</color>
+
     <color name="colorTextoBlanco">#FFFFFF</color>
+    <color name="colorCard1">#F4BD76</color>
+    <color name="colorCard2">#009688</color>
+    <color name="colorCard3">#2196F3</color>
+    <color name="colorCard4">#B388FF</color>
+    <color name="colorCardChart">#A7FFEB</color>
 </resources>
