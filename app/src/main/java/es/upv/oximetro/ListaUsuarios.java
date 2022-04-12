@@ -31,10 +31,10 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
 
         File directory = new File(String.valueOf(getExternalFilesDir(null)));
         files = Arrays.asList(directory.listFiles());
-        for (int i =0; i<files.size(); i++){
+        /*for (int i =0; i<files.size(); i++){
             Log.d("Files", "3333Size: "+ files.get(i).getName());
-        }
-        Log.d("Files", "11Size: "+ files.size());
+        }*/
+        //Log.d("Files", "11Size: "+ files.size());
 
         // set up the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.reciclerViewPacientes);
@@ -54,11 +54,9 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
         File file = new File(adapter.getItem(position));
         Intent intent = new Intent(Intent.ACTION_VIEW);
         Uri uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID+".provider",file);
-        //intent.putExtra(Intent.EXTRA_TEXT, uri);
         intent.setDataAndType(uri,"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        //intent.setType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        startActivity(Intent.createChooser(intent, "Open file...",null));
+        startActivity(Intent.createChooser(intent, getString(R.string.abrir_datos_con),null));
 
     }
 }

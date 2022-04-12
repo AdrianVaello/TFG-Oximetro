@@ -47,5 +47,8 @@
     <string name="pi">PI %</string>
     <string name="oximeter_app">Oximeter App</string>
     <string name="con_menos_se_puede_hacer_m_s">Con menos se puede hacer más.</string>
+    <string name="pvi">PVi %</string>
+    <string name="no_se_han_encontrado_dispositivos">Inicie el escaneo para encontrar dispositivos.</string>
+    <string name="abrir_datos_con">Abrir datos con...</string>
 
 </resources>

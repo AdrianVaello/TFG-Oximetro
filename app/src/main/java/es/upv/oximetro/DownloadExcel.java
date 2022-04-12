@@ -47,7 +47,6 @@ public class DownloadExcel extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.download_excel);
-        //Log.d(TAG, "----" +Utilities.datosPulsioximetro);
 
         // cambio unas propiedades del sistema para utilizar la librería poi más pequeña
         System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");

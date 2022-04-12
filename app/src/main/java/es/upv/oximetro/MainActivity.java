@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -77,6 +78,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DeviceAdapter mDeviceAdapter;
     private ProgressDialog progressDialog;
 
+    TextView textoVacio;
+    ListView listView_device;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,16 +122,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     BleManager.getInstance().cancelScan();
                 }
                 break;
-
-            /*case R.id.txt_setting:
-                if (layout_setting.getVisibility() == View.VISIBLE) {
-                    layout_setting.setVisibility(View.GONE);
-                    txt_setting.setText(getString(R.string.expand_search_settings));
-                } else {
-                    layout_setting.setVisibility(View.VISIBLE);
-                    txt_setting.setText(getString(R.string.retrieve_search_settings));
-                }
-                break;*/
         }
     }
 
@@ -135,21 +129,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        textoVacio= findViewById(R.id.tvNoDispositivosEncontrados);
 
         btn_scan = (Button) findViewById(R.id.btn_scan);
         btn_scan.setText(getString(R.string.start_scan));
         btn_scan.setOnClickListener(this);
-
-       /* et_name = (EditText) findViewById(R.id.et_name);
-        et_mac = (EditText) findViewById(R.id.et_mac);
-        et_uuid = (EditText) findViewById(R.id.et_uuid);
-        sw_auto = (Switch) findViewById(R.id.sw_auto);
-
-        layout_setting = (LinearLayout) findViewById(R.id.layout_setting);
-        txt_setting = (TextView) findViewById(R.id.txt_setting);
-        txt_setting.setOnClickListener(this);
-        layout_setting.setVisibility(View.GONE);
-        txt_setting.setText(getString(R.string.expand_search_settings));*/
 
         img_loading = (ImageView) findViewById(R.id.img_loading);
         operatingAnim = AnimationUtils.loadAnimation(this, R.anim.rotate);
@@ -178,9 +162,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 goShowDataActivity(bleDevice);
             }
         });
-        ListView listView_device = (ListView) findViewById(R.id.list_device);
+
+        listView_device = (ListView) findViewById(R.id.list_device);
         listView_device.setAdapter(mDeviceAdapter);
-    }
+        //Añadimos texto si esta vacia la lista de dispositivos
+        textoVacio.setText(R.string.no_se_han_encontrado_dispositivos);
+        listView_device.setEmptyView(textoVacio);
+
+
+      }
 
     private void goShowDataActivity(BleDevice bleDevice) {
         if (BleManager.getInstance().isConnected(bleDevice)) {

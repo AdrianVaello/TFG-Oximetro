@@ -236,7 +236,10 @@ public class ShowDataActivity extends AppCompatActivity {
          if ((data[1] == 6) && (data[2] == -128/*0x80*/)) {
             int unsignedbyte = data[5] & 0xff;
             s += ", " + data[3] + ", " + data[4] + ", " + unsignedbyte + "\n";
-            if (fileName!=null) f1.write(s.getBytes());
+            if (fileName!=null){
+               f1.write(s.getBytes());
+            }
+            Log.d("Dato chart", ",,,,"+String.valueOf(data[3]));
             newRawData(data[3], System.currentTimeMillis());
          } else if (data[1] == 11 && (data[2] == -127/*0x81*/)) {
             int spO2 = data[3] & 0xff;
@@ -255,7 +258,7 @@ public class ShowDataActivity extends AppCompatActivity {
                hashDatos.put("Pi", pi);
 
                Utilities.datosPulsioximetro.add(hashDatos);
-               Log.d(TAG, "////////////Lista" + Utilities.datosPulsioximetro);
+               //Log.d(TAG, "////////////Lista" + Utilities.datosPulsioximetro);
             }
 
             tv_spo2.setText(valueOf(spO2));

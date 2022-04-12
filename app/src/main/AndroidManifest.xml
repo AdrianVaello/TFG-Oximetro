@@ -31,8 +31,6 @@
             android:screenOrientation="portrait"/>
         <activity android:name="es.upv.oximetro.DownloadExcel"
             android:screenOrientation="portrait"/>
-        <!--activity android:name="es.upv.oximetro.operation.OperationActivity"
-            android:screenOrientation="portrait"/-->
 
         <activity android:name="es.upv.oximetro.ListaUsuarios"
             android:screenOrientation="portrait"/>
