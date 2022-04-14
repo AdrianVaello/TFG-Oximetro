@@ -169,8 +169,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewPVi"
-        android:layout_width="wrap_content"
-        android:layout_height="120dp"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         app:cardBackgroundColor="@color/colorCard5"
@@ -191,12 +191,12 @@
 
         <TextView
             android:id="@+id/tvPVi"
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
             android:text="00"
-            android:textAlignment="center"
+            android:textAlignment="textEnd"
             android:textColor="@color/colorTextoBlanco"
-            android:textSize="96sp" />
+            android:textSize="48sp" />
     </androidx.cardview.widget.CardView>
 
 

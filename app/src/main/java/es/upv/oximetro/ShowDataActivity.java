@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,8 +77,16 @@ public class ShowDataActivity extends AppCompatActivity {
    private String fileName;
    private FileOutputStream f1, f2;
 
+   public ArrayList<Double> datosGrafica= new ArrayList<Double>();
+   public ArrayList<Double> datosMayorMenor= new ArrayList<Double>();
+   public Double Pvmin;
+   public Double Pvmax;
+   TextView tvPVi;
 
+   Long tiempoInicial;
+   Long tiempoFinal;
 
+   int cicloMuestras=4000;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +94,8 @@ public class ShowDataActivity extends AppCompatActivity {
       setContentView(R.layout.activity_show_data);
       initView();
       prepareDeviceServiceCharact();
+
+      tiempoInicial=System.currentTimeMillis();
 
    }
 
@@ -123,7 +135,7 @@ public class ShowDataActivity extends AppCompatActivity {
 
    private void newRawData(int value, long time) {
       //Llega un nuevo dato a visualizar
-      long relativeTime = time % SHOW_TIME; //Se representa el módulo 5000 del tiempo
+      long relativeTime = time % SHOW_TIME; //Se representa el módulo 4000 del tiempo
       //Cuando nos salimos por la derecha ...
       //(Lo sabemos porque el módulo del tiempo < que el último añadido)
       if (entriesLeft.size() > 0 &&
@@ -158,6 +170,7 @@ public class ShowDataActivity extends AppCompatActivity {
       tv_pr = (TextView) findViewById(R.id.tv_pr);
       tv_rr = (TextView) findViewById(R.id.tv_rr);
       tv_pi = (TextView) findViewById(R.id.tv_pi);
+      tvPVi=findViewById(R.id.tvPVi);
       //GRÁFICA
       chart = (LineChart) findViewById(R.id.chart_heart);
       XAxis xAxis = chart.getXAxis();
@@ -218,6 +231,7 @@ public class ShowDataActivity extends AppCompatActivity {
                  public void onCharacteristicChanged(byte[] data) {
                     //Log.d(TAG, System.currentTimeMillis() + "; " + HexUtil.formatHexString(characteristic.getValue(), true));
                    writeFrames(data);
+
                  }
               });
    }
@@ -239,7 +253,9 @@ public class ShowDataActivity extends AppCompatActivity {
             if (fileName!=null){
                f1.write(s.getBytes());
             }
-            Log.d("Dato chart", ",,,,"+String.valueOf(data[3]));
+
+
+
             newRawData(data[3], System.currentTimeMillis());
          } else if (data[1] == 11 && (data[2] == -127/*0x81*/)) {
             int spO2 = data[3] & 0xff;
@@ -248,6 +264,16 @@ public class ShowDataActivity extends AppCompatActivity {
             int pi = (data[7] & 0xff) + (data[8] & 0xff) * 256;
             int unk = (data[9] & 0xff) + (data[10] & 0xff) * 256;
             s += ", " + spO2 + ", " + pr + ", " + rr + ", " + pi + ", " + unk + "\n";
+
+            tiempoFinal=System.currentTimeMillis();
+
+            datosGrafica.add((0.0 + pi) / 1000);
+            Log.d("Dato chart", ",,,,Ini "+pi);
+            if(tiempoInicial+cicloMuestras<=tiempoFinal){
+               calcularPVi(datosGrafica);
+               tiempoInicial=System.currentTimeMillis();
+               //datosGrafica.clear();
+            }
 
             if(spO2!=0 || pr!=0 || rr!=0 || pi!=0) {
                HashMap<String, Integer> hashDatos = new HashMap<String, Integer>();
@@ -293,6 +319,36 @@ public class ShowDataActivity extends AppCompatActivity {
       super.onDestroy();
       BleManager.getInstance().disconnectAllDevice();
       BleManager.getInstance().destroy();
+   }
+
+   public void calcularPVi(ArrayList<Double> datos){
+      Log.d("Dato chart", "9999An"+datos);
+      /*for (int i=1; i<datos.size()-1;i++){
+         if(datos.get(i-1)<datos.get(i) && datos.get(i+1)<datos.get(i)){
+            datosMayorMenor.add(datos.get(i));
+            Log.d("Dato chart", "9999May"+datosMayorMenor);
+         }
+      }*/
+
+      Pvmax=datos.get(0);
+      Pvmin=datos.get(0);
+      for (int i=0; i<datos.size();i++){
+
+         if(Pvmax < datos.get(i)){
+            Pvmax=datos.get(i);
+         }else if(Pvmin>datos.get(i)){
+            Pvmin=datos.get(i);
+         }
+         Log.d("Dato chart", "////"+Pvmax+ "min"+Pvmin);
+      }
+      double Pvi=  ((float) (Pvmax - Pvmin) / Pvmax) * 100;
+      Log.d("Dato chart", "**** PVi"+Pvi);
+      anadirTextoPVi(String.format("%.2f", Pvi));
+
+   }
+
+   public void anadirTextoPVi(String texto){
+      tvPVi.setText(texto);
    }
 
 }
