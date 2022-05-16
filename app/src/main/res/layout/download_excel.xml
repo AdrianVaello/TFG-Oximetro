@@ -12,20 +12,23 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
         android:text="@string/no_podr_s_volver_a_descargar_los_datos_si_vuelves_hacia_atras"
         android:textColor="@color/colorAccent"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/bt_volver_atras"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nombrePaciente" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/nombrePaciente"
         android:layout_width="308dp"
         android:layout_height="77dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/colorCard1"
         android:ems="10"
+        android:foregroundTintMode="screen"
         android:hint="@string/nombre_del_paciente"
         android:inputType="textPersonName"
         android:scrollbarThumbHorizontal="@color/colorTextoBlanco"
@@ -34,33 +37,58 @@
         android:textColorHint="@color/colorTextoBlanco"
         android:textColorLink="@color/colorTextoBlanco"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <ImageView
         android:id="@+id/bt_descargar_excel"
-        android:layout_width="105dp"
-        android:layout_height="105dp"
-        android:layout_marginEnd="101dp"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
         android:adjustViewBounds="false"
         android:scaleType="centerCrop"
         android:scaleX="1.4"
         android:scaleY="1.4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/bt_volver_atras"
+        app:layout_constraintBottom_toTopOf="@+id/tx_informacion_descarga"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nombrePaciente"
+        app:layout_constraintTop_toBottomOf="@+id/view3"
         app:srcCompat="@drawable/download_excel_color" />
 
     <ImageView
         android:id="@+id/bt_volver_atras"
-        android:layout_width="105dp"
-        android:layout_height="105dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/bt_descargar_excel"
-        app:layout_constraintTop_toBottomOf="@+id/nombrePaciente"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/flecha_atras_color" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="104dp"
+        android:text="@string/introduzca_en_nombre_del_paciente"
+        android:textColor="@color/colorTextoBlanco"
+        android:textSize="23sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bt_volver_atras" />
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/colorTexto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nombrePaciente" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -34,6 +34,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import es.upv.oximetro.adapter.DeviceAdapter;
 import es.upv.oximetro.comm.ObserverManager;
 import es.upv.oximetro.operation.OperationActivity;
@@ -81,6 +83,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView textoVacio;
     ListView listView_device;
 
+    // Make sure to use the FloatingActionButton
+    // for all the FABs
+    FloatingActionButton mAddFab, mPacientesFab, mAyudaFab;
+
+    // These are taken to make visible and invisible along
+    // with FABs
+    TextView pacientesText, ayudaText;
+
+    // to check whether sub FAB buttons are visible or not.
+    Boolean isAllFabsVisible;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +107,95 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setOperateTimeout(5000);
         //Comenzamos escaneando dispositivos
         checkPermissionsAndConnect();
+
+        // Register all the FABs with their IDs
+        // This FAB button is the Parent
+        mAddFab = findViewById(R.id.add_fab);
+        // FAB button
+        mPacientesFab = findViewById(R.id.pacientes_fab);
+        mAyudaFab = findViewById(R.id.ayuda_fab);
+
+        // Also register the action name text, of all the FABs.
+        pacientesText = findViewById(R.id.pacientes_action_text);
+        ayudaText = findViewById(R.id.ayuda_action_text);
+
+        // Now set all the FABs and all the action name
+        // texts as GONE
+        mPacientesFab.setVisibility(View.GONE);
+        mAyudaFab.setVisibility(View.GONE);
+        pacientesText.setVisibility(View.GONE);
+        ayudaText.setVisibility(View.GONE);
+
+        // make the boolean variable as false, as all the
+        // action name texts and all the sub FABs are invisible
+        isAllFabsVisible = false;
+
+        // We will make all the FABs and action name texts
+        // visible only when Parent FAB button is clicked So
+        // we have to handle the Parent FAB button first, by
+        // using setOnClickListener you can see below
+        mAddFab.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!isAllFabsVisible) {
+
+                            // when isAllFabsVisible becomes
+                            // true make all the action name
+                            // texts and FABs VISIBLE.
+                            mPacientesFab.show();
+                            mAyudaFab.show();
+                            pacientesText.setVisibility(View.VISIBLE);
+                            ayudaText.setVisibility(View.VISIBLE);
+
+                            // make the boolean variable true as
+                            // we have set the sub FABs
+                            // visibility to GONE
+                            isAllFabsVisible = true;
+                        } else {
+
+                            // when isAllFabsVisible becomes
+                            // true make all the action name
+                            // texts and FABs GONE.
+                            mPacientesFab.hide();
+                            mAyudaFab.hide();
+                            pacientesText.setVisibility(View.GONE);
+                            ayudaText.setVisibility(View.GONE);
+
+                            // make the boolean variable false
+                            // as we have set the sub FABs
+                            // visibility to GONE
+                            isAllFabsVisible = false;
+                        }
+                    }
+                });
+
+        // below is the sample action to handle add person
+        // FAB. Here it shows simple Toast msg. The Toast
+        // will be shown only when they are visible and only
+        // when user clicks on them
+        mAyudaFab.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(MainActivity.this, "Ayuda", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        // below is the sample action to handle add alarm
+        // FAB. Here it shows simple Toast msg The Toast
+        // will be shown only when they are visible and only
+        // when user clicks on them
+        mPacientesFab.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(MainActivity.this, //*OperationActivity.class);
+                                ListaUsuarios.class);
+                        startActivity(intent);
+                        Toast.makeText(MainActivity.this, "Pacientes", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
     }
 
