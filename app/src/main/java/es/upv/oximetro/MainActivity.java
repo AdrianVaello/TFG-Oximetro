@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // These are taken to make visible and invisible along
     // with FABs
-    TextView pacientesText, ayudaText;
+    TextView pacientesText, ayudaText, noHayDispositivosList;
 
     // to check whether sub FAB buttons are visible or not.
     Boolean isAllFabsVisible;
@@ -270,6 +270,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Añadimos texto si esta vacia la lista de dispositivos
         textoVacio.setText(R.string.no_se_han_encontrado_dispositivos);
         listView_device.setEmptyView(textoVacio);
+        noHayDispositivosList=findViewById(R.id.noHayDispositivosList);
+
 
 
       }
@@ -301,6 +303,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 img_loading.startAnimation(operatingAnim);
                 img_loading.setVisibility(View.VISIBLE);
                 btn_scan.setText(getString(R.string.stop_scan));
+
             }
 
             @Override
@@ -311,9 +314,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onScanning(BleDevice bleDevice) {
                 if (bleDevice!=null && "HJ-Narigmed".equals(bleDevice.getName())) {  /////////////////////
+
                     mDeviceAdapter.addDevice(bleDevice);
                     mDeviceAdapter.notifyDataSetChanged();
-                }                                                 ////////////////////////
+                }
+                if(listView_device.getAdapter() != null){
+                    //De esta manera sabes si tu RecyclerView está vacío
+                    if(listView_device.getCount() != 0) {
+                        //Aquí muestras el mensaje
+                        noHayDispositivosList.setVisibility(View.GONE);
+                    }else{
+                        noHayDispositivosList.setVisibility(View.VISIBLE);
+                    }
+
+                }
             }
 
             @Override

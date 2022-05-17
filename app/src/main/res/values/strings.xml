@@ -51,5 +51,7 @@
     <string name="no_se_han_encontrado_dispositivos">Inicie el escaneo para encontrar dispositivos.</string>
     <string name="abrir_datos_con">Abrir datos con...</string>
     <string name="introduzca_en_nombre_del_paciente">Introduzca el nombre del paciente</string>
+    <string name="dispositivos_encontrados">Dispositivos encontrados</string>
+    <string name="no_se_han_encontrado_dispositivos_main">No se han encontrado dispositivos</string>
 
 </resources>
