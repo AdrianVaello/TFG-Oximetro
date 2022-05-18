@@ -14,7 +14,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="32dp"
         android:text="@string/no_podr_s_volver_a_descargar_los_datos_si_vuelves_hacia_atras"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorAccentDestacar"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

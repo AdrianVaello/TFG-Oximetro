@@ -10,7 +10,9 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerViewAdapterPacientes.ViewHolder> {
 
@@ -18,12 +20,14 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
     private ItemClickListener mClickListener;
     private static final String TAG = "1";
 
-    private List<File> mfilesAdapter;
+    private final ArrayList<File> mfilesAdapter;
+    private final ArrayList<File> mfilesAdapterCopy= new ArrayList<File>();
 
     // data is passed into the constructor
-    RecyclerViewAdapterPacientes(Context context, List<File> filesAdapter) {
+    RecyclerViewAdapterPacientes(Context context, ArrayList<File> filesAdapter) {
         this.mInflater = LayoutInflater.from(context);
         this.mfilesAdapter=filesAdapter;
+        this.mfilesAdapterCopy.addAll(mfilesAdapter);
     }
 
     // inflates the row layout from xml when needed
@@ -36,9 +40,6 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
-        //Log.d("Files", "11FileName:" + mfilesAdapter.get(position).getName());
-        //Log.d("Files", "11FileName:" + mfilesAdapter.size());
 
         String[] nombreFichero=mfilesAdapter.get(position).getName().split("_");
         String[] fechaFichero=nombreFichero[1].split("\\.");
@@ -90,5 +91,56 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
     // parent activity will implement this method to respond to click events
     public interface ItemClickListener {
         void onItemClick(View view, int position);
+    }
+
+    /* Filtra los datos del adaptador */
+    public void filtrar(String texto, String fecha) {
+
+        // Elimina todos los datos del ArrayList que se cargan en los
+        // elementos del adaptador
+        mfilesAdapter.clear();
+
+        // Si no hay texto: agrega de nuevo los datos del ArrayList copiado
+        // al ArrayList que se carga en los elementos del adaptador
+        if (texto.length() == 0 && fecha.length()==0) {
+            mfilesAdapter.addAll(mfilesAdapterCopy);
+        } else if(texto.length() != 0 && fecha.length()==0) {
+
+            // Recorre todos los elementos que contiene el ArrayList copiado
+            // y dependiendo de si estos contienen el texto ingresado por el
+            // usuario los agrega de nuevo al ArrayList que se carga en los
+            // elementos del adaptador.
+
+            for (int i=0; i<mfilesAdapterCopy.size();i++){
+                String[] nombreFichero=mfilesAdapterCopy.get(i).getName().split("_");
+                String[] fechaFichero=nombreFichero[1].split("\\.");
+                if(nombreFichero[0].toLowerCase(Locale.ROOT).contains(texto) ){
+                    mfilesAdapter.add(mfilesAdapterCopy.get(i));
+                }
+
+            }
+
+        }else if(texto.length() == 0 && fecha.length()!=0){
+            for (int i=0; i<mfilesAdapterCopy.size();i++){
+                String[] nombreFichero=mfilesAdapterCopy.get(i).getName().split("_");
+                String[] fechaFichero=nombreFichero[1].split("\\.");
+                if(fechaFichero[0].contains(fecha)){
+                    mfilesAdapter.add(mfilesAdapterCopy.get(i));
+                }
+
+            }
+        }else {
+            for (int i=0; i<mfilesAdapterCopy.size();i++){
+                String[] nombreFichero=mfilesAdapterCopy.get(i).getName().split("_");
+                String[] fechaFichero=nombreFichero[1].split("\\.");
+                if(fechaFichero[0].contains(fecha) && nombreFichero[0].toLowerCase(Locale.ROOT).contains(texto)){
+                    mfilesAdapter.add(mfilesAdapterCopy.get(i));
+                }
+
+            }
+        }
+
+        // Actualiza el adaptador para aplicar los cambios
+        notifyDataSetChanged();
     }
 }

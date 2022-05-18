@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_scan:
+            case R.id.editTextFechaFiltro:
                 if (btn_scan.getText().equals(getString(R.string.start_scan))) {
                     checkPermissionsAndConnect();
                 } else if (btn_scan.getText().equals(getString(R.string.stop_scan))) {
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
         textoVacio= findViewById(R.id.tvNoDispositivosEncontrados);
 
-        btn_scan = (Button) findViewById(R.id.btn_scan);
+        btn_scan = (Button) findViewById(R.id.editTextFechaFiltro);
         btn_scan.setText(getString(R.string.start_scan));
         btn_scan.setOnClickListener(this);
 

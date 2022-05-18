@@ -1,5 +1,6 @@
 package es.upv.oximetro;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,10 +8,20 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,23 +29,82 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdapterPacientes.ItemClickListener{
 
     RecyclerViewAdapterPacientes adapter;
-    public List<File> files= new ArrayList<>();
+    public ArrayList<File> files= new ArrayList<>();
+
+    ConstraintLayout relativeLayoutFiltro,relativeLayoutFiltroContenido ;
+    Boolean filtroAbierto;
+    ImageView flechaLeft, flechaRight, calendarFiltro;
+    RotateAnimation animation;
+    EditText editTextFiltroNombre, editTextFechaFiltro;
+    TextView tv_filtro_texto;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lista_usuarios);
+        final DatePickerDialog[] picker = new DatePickerDialog[1];
+
+        flechaLeft=findViewById(R.id.imageViewFlechaDesplegableLeft);
+        flechaRight=findViewById(R.id.imageViewFlechaDesplegableRigth);
+        calendarFiltro=findViewById(R.id.imageViewFechaFiltro);
+        editTextFiltroNombre=findViewById(R.id.editTextNombrePersona);
+        editTextFechaFiltro=findViewById(R.id.editTextFechaFiltro);
+        tv_filtro_texto=findViewById(R.id.tv_texto_filtro);
+        tv_filtro_texto.setText("Filtrando por Nombre: "+editTextFiltroNombre.getText().toString() + " y fecha: "+editTextFechaFiltro.getText().toString());
+
+        relativeLayoutFiltro=findViewById(R.id.relativeLayoutFiltro);
+        relativeLayoutFiltroContenido=findViewById(R.id.relativeLayoutFIltroContenido);
+        relativeLayoutFiltroContenido.setVisibility(View.GONE);
+        filtroAbierto=false;
+        relativeLayoutFiltro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!filtroAbierto){
+                    relativeLayoutFiltroContenido.setVisibility(View.VISIBLE);
+                    filtroAbierto=true;
+                    rotarImagenAbajo(flechaLeft);
+                    rotarImagenAbajo(flechaRight);
+                    animation.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            flechaLeft.setRotation(180.0f);
+                            flechaRight.setRotation(180.0f);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+
+
+                }else{
+                    relativeLayoutFiltroContenido.setVisibility(View.GONE);
+                    filtroAbierto=false;
+                    flechaLeft.setRotation(0.0f);
+                    flechaRight.setRotation(0.0f);
+
+                }
+
+            }
+        });
 
         File directory = new File(String.valueOf(getExternalFilesDir(null)));
-        files = Arrays.asList(directory.listFiles());
-        /*for (int i =0; i<files.size(); i++){
-            Log.d("Files", "3333Size: "+ files.get(i).getName());
-        }*/
-        //Log.d("Files", "11Size: "+ files.size());
+        File[] filesAux = directory.listFiles();
+
+        files.addAll(Arrays.asList(filesAux));
+
 
         // set up the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.reciclerViewPacientes);
@@ -43,6 +113,79 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
         adapter = new RecyclerViewAdapterPacientes(this, files);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
+        editTextFiltroNombre.addTextChangedListener(new TextWatcher() {
+           @Override
+           public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+               adapter.filtrar(editTextFiltroNombre.getText().toString().toLowerCase(Locale.ROOT),editTextFechaFiltro.getText().toString());
+
+               tv_filtro_texto.setText("Filtrando por Nombre: "+editTextFiltroNombre.getText().toString() + " y fecha: "+editTextFechaFiltro.getText().toString());
+
+           }
+
+           @Override
+           public void onTextChanged(CharSequence s, int start, int before, int count) {
+               adapter.filtrar(editTextFiltroNombre.getText().toString().toLowerCase(Locale.ROOT),editTextFechaFiltro.getText().toString());
+
+               tv_filtro_texto.setText("Filtrando por Nombre: "+editTextFiltroNombre.getText().toString() + " y fecha: "+editTextFechaFiltro.getText().toString());
+
+           }
+
+           @Override
+           public void afterTextChanged(Editable s) {
+               adapter.filtrar(editTextFiltroNombre.getText().toString().toLowerCase(Locale.ROOT),editTextFechaFiltro.getText().toString());
+
+               tv_filtro_texto.setText("Filtrando por Nombre: "+editTextFiltroNombre.getText().toString() + " y fecha: "+editTextFechaFiltro.getText().toString());
+
+           }
+       });
+
+        calendarFiltro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+                // date picker dialog
+                picker[0] = new DatePickerDialog(ListaUsuarios.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                if(monthOfYear<10){
+                                    editTextFechaFiltro.setText(dayOfMonth + "-0" + (monthOfYear + 1) + "-" + year);
+                                }else{
+                                    editTextFechaFiltro.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                                }
+
+                            }
+                        }, year, month, day);
+                picker[0].show();
+            }
+        });
+        editTextFechaFiltro.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                adapter.filtrar(editTextFiltroNombre.getText().toString().toLowerCase(Locale.ROOT),editTextFechaFiltro.getText().toString());
+                tv_filtro_texto.setText("Filtrando por Nombre: "+editTextFiltroNombre.getText().toString() + " y fecha: "+editTextFechaFiltro.getText().toString());
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                adapter.filtrar(editTextFiltroNombre.getText().toString().toLowerCase(Locale.ROOT),editTextFechaFiltro.getText().toString());
+
+                tv_filtro_texto.setText("Filtrando por Nombre: "+editTextFiltroNombre.getText().toString() + " y fecha: "+editTextFechaFiltro.getText().toString());
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                adapter.filtrar(editTextFiltroNombre.getText().toString().toLowerCase(Locale.ROOT),editTextFechaFiltro.getText().toString());
+
+                tv_filtro_texto.setText("Filtrando por Nombre: "+editTextFiltroNombre.getText().toString() + " y fecha: "+editTextFechaFiltro.getText().toString());
+
+            }
+        });
 
 
     }
@@ -59,4 +202,16 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
         startActivity(Intent.createChooser(intent, getString(R.string.abrir_datos_con),null));
 
     }
+
+    private void rotarImagenAbajo(View view){
+        animation = new RotateAnimation(0, 180,
+                RotateAnimation.RELATIVE_TO_SELF, 0.5f,
+                RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+
+        animation.setDuration(1000);
+        animation.setRepeatCount(0);
+        view.startAnimation(animation);
+
+    }
+
 }

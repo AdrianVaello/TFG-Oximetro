@@ -53,5 +53,9 @@
     <string name="introduzca_en_nombre_del_paciente">Introduzca el nombre del paciente</string>
     <string name="dispositivos_encontrados">Dispositivos encontrados</string>
     <string name="no_se_han_encontrado_dispositivos_main">No se han encontrado dispositivos</string>
+    <string name="filtrar_pacientes">Filtrar pacientes</string>
+    <string name="por_filtrar">Por:</string>
+    <string name="nombre_filtrar">Nombre:</string>
+    <string name="fecha_filtrar">Fecha:</string>
 
 </resources>

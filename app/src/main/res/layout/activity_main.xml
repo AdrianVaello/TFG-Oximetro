@@ -29,12 +29,12 @@
         android:layout_marginBottom="16dp"
         android:gravity="center_horizontal"
         android:textColor="@color/colorTextoBlanco"
-        app:layout_constraintBottom_toTopOf="@+id/btn_scan"
+        app:layout_constraintBottom_toTopOf="@+id/editTextFechaFiltro"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/btn_scan"
+        android:id="@+id/editTextFechaFiltro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
@@ -54,7 +54,7 @@
         android:src="@drawable/ic_loading"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_scan"
+        app:layout_constraintEnd_toStartOf="@+id/editTextFechaFiltro"
         app:layout_constraintStart_toStartOf="parent" />
 
 
@@ -93,7 +93,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="24dp"
-        android:src="@drawable/cancelar"
+        android:src="@drawable/fab_mas"
         app:backgroundTint="@color/colorCard1"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -110,7 +110,7 @@
         app:layout_constraintBottom_toTopOf="@+id/add_fab"
         app:layout_constraintEnd_toEndOf="@+id/add_fab"
         app:layout_constraintStart_toStartOf="@+id/add_fab"
-        app:srcCompat="@drawable/tick_confirmar"
+        app:srcCompat="@drawable/lista"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <!--Action name text for the add alarm button-->
@@ -140,7 +140,7 @@
         app:layout_constraintBottom_toTopOf="@+id/pacientes_fab"
         app:layout_constraintEnd_toEndOf="@+id/pacientes_fab"
         app:layout_constraintStart_toStartOf="@+id/pacientes_fab"
-        app:srcCompat="@drawable/tick_confirmar"
+        app:srcCompat="@drawable/ayuda"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <!--Action name text for the add person button-->
