@@ -42,7 +42,7 @@
     <string name="no_podr_s_volver_a_descargar_los_datos_si_vuelves_hacia_atras">No podrás volver a descargar los datos si vuelves hacia atrás.</string>
     <string name="mostrar_pacientes">Mostrar pacientes</string>
     <string name="spo2">SpO2 %</string>
-    <string name="rr_bpm">RR (bpm)</string>
+    <string name="rr_bpm">RR / Min</string>
     <string name="pr_bpm">PR (bpm)</string>
     <string name="pi">PI %</string>
     <string name="oximeter_app">Oximeter App</string>
@@ -57,5 +57,8 @@
     <string name="por_filtrar">Por:</string>
     <string name="nombre_filtrar">Nombre:</string>
     <string name="fecha_filtrar">Fecha:</string>
+    <string name="fecha_hint_filtro">Fecha</string>
+    <string name="nombre_paciente_hint_filtro">Nombre paciente</string>
+    <string name="historial_pacientes_title">Historial pacientes</string>
 
 </resources>

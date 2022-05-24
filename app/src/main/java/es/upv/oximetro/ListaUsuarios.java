@@ -27,9 +27,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -100,11 +102,16 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
             }
         });
 
+
+        //MOSTRAR DATOS RECYCLERVIEW
         File directory = new File(String.valueOf(getExternalFilesDir(null)));
         File[] filesAux = directory.listFiles();
 
-        files.addAll(Arrays.asList(filesAux));
+        if(filesAux!=null){
+            Arrays.sort(filesAux);
+            files.addAll(Arrays.asList(filesAux));
 
+        }
 
         // set up the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.reciclerViewPacientes);
@@ -113,6 +120,8 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
         adapter = new RecyclerViewAdapterPacientes(this, files);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
+
+
         editTextFiltroNombre.addTextChangedListener(new TextWatcher() {
            @Override
            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -213,5 +222,6 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
         view.startAnimation(animation);
 
     }
+
 
 }

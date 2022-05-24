@@ -43,6 +43,9 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="es.upv.oximetro.ActivityAyuda"
+            android:screenOrientation="portrait"/>
+
         <!-- PARA LEER ARCHIVOS-->
         <provider
             android:name="androidx.core.content.FileProvider"

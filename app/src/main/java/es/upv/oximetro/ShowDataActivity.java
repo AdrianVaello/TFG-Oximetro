@@ -31,6 +31,7 @@ import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -83,14 +84,12 @@ public class ShowDataActivity extends AppCompatActivity {
    public ArrayList<Double> datosGrafica= new ArrayList<Double>();
    public ArrayList<Double> datosMayorMenor= new ArrayList<Double>();
 
-   public Double PvmaxMax;
-   public Double PvmaxMin;
    TextView tvPVi;
 
    Long tiempoInicial;
    Long tiempoFinal;
 
-   int cicloMuestras=8000;
+   int cicloMuestras=4000;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -114,8 +113,8 @@ public class ShowDataActivity extends AppCompatActivity {
 
    public static final int SHOW_TIME = 5000;   // Tiempo a mostrar en la gráfica (mseg)
    public static final int SAMPLE_PERIOD = 22; // Cada cuantos mseg llega una muestra
-   public static final int SAMPLES_IN_GRAPH = SHOW_TIME / SAMPLE_PERIOD;
-   // # de muestras en la gráfiva (227)
+   public static final int SAMPLES_IN_GRAPH = SHOW_TIME / SAMPLE_PERIOD; // # de muestras en la gráfiva (227)
+
    List<Entry> entriesLeft = new ArrayList<>();
    List<Entry> entriesRight = new ArrayList<>();
    long startTime = System.currentTimeMillis();
@@ -137,7 +136,7 @@ public class ShowDataActivity extends AppCompatActivity {
       chart.setBorderColor(R.color.colorTextoBlanco);
    }
 
-   private void newRawData(int value, long time) {
+   private void newRawData(float value, long time) {
       //Llega un nuevo dato a visualizar
       long relativeTime = time % SHOW_TIME; //Se representa el módulo 4000 del tiempo
       //Cuando nos salimos por la derecha ...
@@ -233,9 +232,9 @@ public class ShowDataActivity extends AppCompatActivity {
 
                  @Override
                  public void onCharacteristicChanged(byte[] data) {
-                    //Log.d(TAG, "valores"+data[1]);
-                    //Log.d(TAG, "valores"+System.currentTimeMillis() + "; " + HexUtil.formatHexString(characteristic.getValue(), true));
-                   writeFrames(data);
+                    Log.d(TAG, "Valores: "+ Arrays.toString(data));
+                    //Log.d(TAG, "Valores :"+System.currentTimeMillis() + "; " + HexUtil.formatHexString(characteristic.getValue(), true));
+                    writeFrames(data);
 
                  }
               });
@@ -258,11 +257,11 @@ public class ShowDataActivity extends AppCompatActivity {
             if (fileName!=null){
                f1.write(s.getBytes());
             }
-
-            //Log.d("Dato chart", ",,,,ddata "+data[0]);
+            float numeroDecimal = (~data[3]) + 1;
+            Log.d("Byte data", ",,,,ddata "+ Arrays.toString(data) + " size "+data.length);
             tiempoFinal=System.currentTimeMillis();
             if(data[3] !=0){
-                  datosGrafica.add((double) data[3]);
+                  datosGrafica.add((double) numeroDecimal);
 
                if(tiempoInicial+cicloMuestras<=tiempoFinal){
                   calcularPVi(datosGrafica);
@@ -270,15 +269,61 @@ public class ShowDataActivity extends AppCompatActivity {
                   //datosGrafica.clear();
                }
             }
+
+            //****************************************************************
+            // Hay que probar de pasar el byte[3] que está en complemento a 2
+            // a decimal para enviarlo a la gráfica
+            //
+
+            //****************************************************************
+
             //Datos para mostrar la grafica
-            newRawData(data[3], System.currentTimeMillis());
+            //newRawData(data[3], System.currentTimeMillis());
+
+            //*******************************************************
+            // con numeroDecimal (sin complemento a 2)
+            //*******************************************************
+            newRawData(numeroDecimal, System.currentTimeMillis());
+            //*******************************************************
+
          } else if (data[1] == 11 && (data[2] == -127/*0x81*/)) {
             //Log.d("Dato chart", ",,,,data2 "+data[8]);
             int spO2 = data[3] & 0xff;
+
+            //***********************************************************************************
+            //********************* OJO POSIBLE ERROR EN PR *************************************
+            //***********************************************************************************
+            // según el github de Jesús Tomás.....
+            // PR/min – Pulsaciones por minuto. Se codifica en dos bytes.
+            // Para obtener el valor hay que multiplicar el 2º byte por 256 y sumarle el primero.
+            // Valores típicos entre 60 y 100.
+            //***********************************************************************************
+            // Corrección:
+            //int pr = (data[4] & 0xff) + (data[5] & 0xff) * 256;
+            //***********************************************************************************
             int pr = data[4] & 0xff;
+
             int rr = data[6];
+
+            //***************************************************************************************
+            //********************* OJO POSIBLE ERROR EN PI *****************************************
+            //***************************************************************************************
+            // según el github de Jesús Tomás.....
+            // PI (%) - El índice de perfusión: es la proporción entre el flujo de sangre no pulsátil
+            // y el pulsátil a través del lecho capilar periférico. Se codifica en dos bytes.
+            // Para obtener el valor hay que multiplicar el 2º byte por 256 y sumarle el primero
+            // y luego dividir ente 1000. Valores observados 7.00% a 14.00%
+            //***************************************************************************************
+            // Corrección:
+            //int pi = ((data[7] & 0xff) + (data[8] & 0xff) * 256) / 1000;
+            //***************************************************************************************
             int pi = (data[7] & 0xff) + (data[8] & 0xff) * 256;
+
+            //******************************************************
+            // VALOR IRRELEVANTE DE unk, SE PUEDE AHORRAR EL CÁLCULO
+            //******************************************************
             int unk = (data[9] & 0xff) + (data[10] & 0xff) * 256;
+
             s += ", " + spO2 + ", " + pr + ", " + rr + ", " + pi + ", " + unk + "\n";
             //Log.d("Dato chart", ",,,,Data1 "+data[1]+",,,,Data2 "+data[2]+",,,,Data3 "+data[3]+",,,,Data4 "+data[4]+",,,,Data5 "+data[5]);
             //Log.d("Dato chart", "77pi "+pi);
@@ -332,57 +377,36 @@ public class ShowDataActivity extends AppCompatActivity {
    public void calcularPVi(ArrayList<Double> datos){
       Log.d("Dato chart", "////An"+datos);
 
-      ArrayList<Double> arrayPVmax= new ArrayList<Double>();
-      ArrayList<Double> arrayPVmin= new ArrayList<Double>();
+      //ArrayList<Double> arrayPVmax= new ArrayList<Double>();
+      //ArrayList<Double> arrayPVmin= new ArrayList<Double>();
       ArrayList<Double> arrayAmplitudes= new ArrayList<Double>();
-      Double amplitud;
+      //Double amplitud;
 
-      Double max=Double.NEGATIVE_INFINITY;
-      Double min=Double.POSITIVE_INFINITY;
+      Double maxAmp=Double.NEGATIVE_INFINITY;
+      Double minAmp=Double.POSITIVE_INFINITY;
 
-      Double maximoRelativo=Double.NEGATIVE_INFINITY;
-      Double minimoRelativo=Double.POSITIVE_INFINITY;
+      //Double maximoRelativo;
+      //Double minimoRelativo;
+      //Double amplitudMax;
+      //Double amplitudMin;
 
-      Double amplitudMax;
-      Double amplitudMin;
+      Queue<Double> cola = new LinkedList<Double>();
+      //Queue<Double> colaAux= new LinkedList<Double>();
 
-      Queue<Double> cola= new LinkedList<Double>();
-      Queue<Double> colaAux= new LinkedList<Double>();
+      // *******IMPORTANTE: comprobar tamaño óptimo de la ventana deslizante
+      int tamanyoVentana=12;
 
-      int tamanyoVentana=8;
-      /*for (int i=1; i<datos.size()-2;i++){
-         if(i != 1){
-
-               if( datos.get(i)> datos.get(i-1) && datos.get(i)>=datos.get(i+1) ){
-                  arrayPVmax.add(datos.get(i));
-               }
-               if( datos.get(i)<datos.get(i-1) && datos.get(i)<=datos.get(i+1)) {
-                  arrayPVmin.add(datos.get(i));
-               }
-
-
-         }
-         Log.d("Dato chart", "////"+arrayPVmax+ "min"+arrayPVmin);
-         if(arrayPVmax.size()!=0 && arrayPVmin.size()!=0){
-            amplitud= arrayPVmax.get(0)-arrayPVmin.get(0);
-            Log.d("Dato chart", "////Amplitud"+amplitud);
-            if(amplitud>=2){
-               arrayAmplitudes.add(amplitud);
-            }
-
-            arrayPVmax.clear();
-            arrayPVmin.clear();
-         }
-
-      }*/
-      ArrayList<Double> ventanaCalculo= new ArrayList<>();
-      ArrayList<Double> ventanaCalculoAux= new ArrayList<>();
+      //ArrayList<Double> ventanaCalculo= new ArrayList<>();
+      //ArrayList<Double> ventanaCalculoAux= new ArrayList<>();
       Boolean subiendo=false;
-      int contadorPrimeraVez=0;
+      // int contadorPrimeraVez=0;
+      Boolean contadorPrimeraVez=true;
+      Boolean contadorInicializarTendencia=true;
 
+      //Double valorSuma=0.0;
+      Double valorSumaAux=0.0;
 
-
-      for (int i=0; i<datos.size();i++){
+      /*for (int i=0; i<datos.size();i++){
 
          cola.add(datos.get(i));
          int posicion=0;
@@ -500,16 +524,115 @@ public class ShowDataActivity extends AppCompatActivity {
                   }
                }
             }
-
-
-
-
             cola.remove();
          }
 
          Log.d("Dato chart", "//// Valores PVI Subiendo="+subiendo+ " maximo="+max+" minimo="+min);
+      }*/
 
+
+      // obtengo los datos leídos
+      for (int i=0; i<datos.size();i++){
+         Log.d("Dato chart", "////Inicio for");
+
+         // voy añadiendo el dato a la cola (FIFO)
+         cola.add(datos.get(i));
+
+         // empiezo a rellenar la ventana y calcular valores cuando tengo (tamaño datos leidos)==(tamaño ventana)
+         if(i>=tamanyoVentana-1){
+            ArrayList<Double> ventana = new ArrayList(cola);
+            // ordeno la ventana
+            Collections.sort(ventana);
+            // obtengo max y min de la ventana
+            Double maximoRelativo=ventana.get(ventana.size()-1);
+            Double minimoRelativo=ventana.get(0);
+            // actualizo minAmp y maxAmp
+            if(minimoRelativo<minAmp){
+               minAmp=minimoRelativo;
+            }
+            if(maximoRelativo>maxAmp){
+               maxAmp=maximoRelativo;
+            }
+            // calculo la suma de los datos de la ventana
+            Double valorSuma=sumaVentana(ventana);
+
+            // si es la primera ventana que tengo inicializo valorSumaAux
+            if(contadorPrimeraVez){
+               valorSumaAux=valorSuma;
+               contadorPrimeraVez=false;
+            }else{
+               //Log.d("Dato chart", "//// Ventana: " + ventana +" Suma: "+valorSuma +" Suma aux:" + valorSumaAux );
+
+               // como ya tengo dos sumas de ventanas compruebo la dirección de la curva la primera vez
+               if(contadorInicializarTendencia){
+                  if (valorSuma>valorSumaAux) {
+                     subiendo=true;
+                  } else {
+                     subiendo=false;
+                  }
+                  contadorInicializarTendencia=false;
+               }
+
+               // calculo la amplitud cuando cambia la tendencia
+               if (valorSuma>valorSumaAux && !subiendo) {
+
+                  //*******************************************************************************************************************
+                  // comprobar si hay que introducir el valor absoluto de la resta -> Math.abs(), para que no haya amplitudes negativas
+                  Log.d("Dato chart", "//// maxAmp-minAmp: " + (maxAmp-minAmp) + " abs(maxAmp-minAmp): " + Math.abs(maxAmp-minAmp));
+                  //*******************************************************************************************************************
+
+                  arrayAmplitudes.add(maxAmp-minAmp);
+                  maxAmp=Double.NEGATIVE_INFINITY;
+                  minAmp=Double.POSITIVE_INFINITY;
+                  subiendo=true;
+               }
+               if (valorSuma<valorSumaAux) {
+                  subiendo=false;
+               }
+
+               // actualizo valorSumaAux con la suma actual
+               valorSumaAux=valorSuma;
+
+               /*if(valorSuma>valorSumaAux &&!subiendo){
+                  valorSumaAux=valorSuma;
+
+                  arrayAmplitudes.add(maxAmp-minAmp);
+                  maxAmp=Double.NEGATIVE_INFINITY;
+                  minAmp=Double.POSITIVE_INFINITY;
+                  subiendo=true;
+
+               }else if(valorSuma>valorSumaAux &&subiendo){
+                  valorSumaAux=valorSuma;
+                 // subiendo=true;
+               }else {
+                  valorSumaAux=valorSuma;
+                  subiendo=false;
+               }*/
+
+            }
+
+            Log.d("Dato chart", "//// " + " Max: "+maximoRelativo + " Min: "+minimoRelativo +
+                    " MaxAMp "+maxAmp+ " MinAmp "+minAmp+ " Amplitud "+arrayAmplitudes +" Subiendo: " +subiendo);
+
+            // elimino primer elemento de la cola
+            cola.remove();
+         }
       }
+
+      // ordeno array de amplitudes obtenidas
+      Collections.sort(arrayAmplitudes);
+      // obtengo la amplitud máxima y mínima
+      Double amplitudMax=arrayAmplitudes.get(arrayAmplitudes.size()-1);
+      Double amplitudMin=arrayAmplitudes.get(0);
+
+      //                PImax - PImin
+      // obtengo PVI = --------------- x 100
+      //                    PImax
+      Double PVI= ((amplitudMax-amplitudMin)/amplitudMax)*100;
+      // añado resultado a la app
+      anadirTextoPVi(String.format("%.2f", PVI));
+
+      Log.d("Dato chart", "//// PVI= " +PVI + "ArrayA: "+ arrayAmplitudes+ " max: " +amplitudMax+ " min: "+ amplitudMin);
 
       /*if(arrayAmplitudes.size()!=0){
          PvmaxMin=arrayAmplitudes.get(0);
@@ -529,11 +652,21 @@ public class ShowDataActivity extends AppCompatActivity {
       double Pvi=  ((float) (PvmaxMax - PvmaxMin) / PvmaxMax) * 100;
       Log.d("Dato chart", "//// PVi"+Pvi);
       anadirTextoPVi(String.format("%.2f", Pvi));*/
+
+      // limpio los datos de la gràfica
       datosGrafica.clear();
    }
 
    public void anadirTextoPVi(String texto){
       tvPVi.setText(texto);
+   }
+
+   private Double sumaVentana(ArrayList<Double> ventana){
+      Double suma=0.0;
+      for (int i=0;i<ventana.size();i++){
+         suma+=ventana.get(i);
+      }
+      return suma;
    }
 
 }

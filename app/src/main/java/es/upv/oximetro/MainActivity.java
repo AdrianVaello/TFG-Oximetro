@@ -178,22 +178,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(MainActivity.this, "Ayuda", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "Ayuda", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MainActivity.this,ActivityAyuda.class);
+                        startActivity(intent);
                     }
                 });
-
-        // below is the sample action to handle add alarm
-        // FAB. Here it shows simple Toast msg The Toast
-        // will be shown only when they are visible and only
-        // when user clicks on them
+        
         mPacientesFab.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(MainActivity.this, //*OperationActivity.class);
-                                ListaUsuarios.class);
+                        Intent intent = new Intent(MainActivity.this, ListaUsuarios.class);
                         startActivity(intent);
-                        Toast.makeText(MainActivity.this, "Pacientes", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "Pacientes", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -361,6 +358,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mDeviceAdapter.addDevice(bleDevice);
                 mDeviceAdapter.notifyDataSetChanged();
                 goShowDataActivity(bleDevice);
+
             }
 
             @Override
@@ -374,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(MainActivity.this, getString(R.string.active_disconnected), Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(MainActivity.this, getString(R.string.disconnected), Toast.LENGTH_LONG).show();
-                    Log.d(TAG, "Antes de quidrar" + Utilities.datosPulsioximetro);
+                    //Log.d(TAG, "Antes de quidrar" + Utilities.datosPulsioximetro);
                     Intent intent = new Intent(MainActivity.this, //*OperationActivity.class);
                             DownloadExcel.class);
                     startActivity(intent);

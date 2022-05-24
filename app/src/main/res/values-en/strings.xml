@@ -58,5 +58,8 @@
     <string name="por_filtrar">Por:</string>
     <string name="nombre_filtrar">Nombre:</string>
     <string name="fecha_filtrar">Fecha:</string>
+    <string name="fecha_hint_filtro">Fecha</string>
+    <string name="nombre_paciente_hint_filtro">Nombre paciente</string>
+    <string name="historial_pacientes_title">Historial pacientes</string>
 
 </resources>
