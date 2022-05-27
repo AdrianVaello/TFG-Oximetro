@@ -61,5 +61,9 @@
     <string name="fecha_hint_filtro">Fecha</string>
     <string name="nombre_paciente_hint_filtro">Nombre paciente</string>
     <string name="historial_pacientes_title">Historial pacientes</string>
+    <string name="lista_pacientes">Lista pacientes</string>
+    <string name="consejos">Consejos</string>
+    <string name="consejos_titulo">CONSEJOS</string>
+    <string name="bienvenido_a_oximeter_app">Bienvenido a Oximeter App</string>
 
 </resources>

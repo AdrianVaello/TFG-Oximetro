@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         startActivity(intent);
                     }
                 });
-        
+
         mPacientesFab.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
         textoVacio= findViewById(R.id.tvNoDispositivosEncontrados);
 
-        btn_scan = (Button) findViewById(R.id.editTextFechaFiltro);
+        btn_scan = (Button) findViewById(R.id.btn_scan);
         btn_scan.setText(getString(R.string.start_scan));
         btn_scan.setOnClickListener(this);
 

@@ -52,7 +52,7 @@ public class DownloadExcel extends AppCompatActivity {
         System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
         System.setProperty("org.apache.poi.javax.xml.stream.XMLOutputFactory", "com.fasterxml.aalto.stax.OutputFactoryImpl");
         System.setProperty("org.apache.poi.javax.xml.stream.XMLEventFactory", "com.fasterxml.aalto.stax.EventFactoryImpl");
-        Log.d(TAG, "++++dentro for" +getExternalFilesDir(null));
+        //Log.d(TAG, "++++dentro for" +getExternalFilesDir(null));
 
         bt_descargar_excel= findViewById(R.id.bt_descargar_excel);
         bt_descargar_excel.setOnClickListener(new View.OnClickListener() {
@@ -107,13 +107,16 @@ public class DownloadExcel extends AppCompatActivity {
 
         sheet.createRow(3);
         cell= row.createCell(3);
-        cell.setCellValue("PI");
+        cell.setCellValue("PI (%)");
+        cell.setCellStyle(cellStyle);
+
+        sheet.createRow(4);
+        cell= row.createCell(4);
+        cell.setCellValue("PVi (%)");
         cell.setCellStyle(cellStyle);
 
         for (int i= 1; i<Utilities.datosPulsioximetro.size(); i++){
-            //Log.d(TAG, "++++dentro for" );
             //VALORES DE LAS CASILLAS
-            //Cell=0 -> SP02 Cell=1 -> PR Cell=2 -> RR Cell=3 -> PI
             row= sheet.createRow(i);
             cell= row.createCell(0);
             cell.setCellValue(Utilities.datosPulsioximetro.get(i).get("Sp02"));
@@ -127,6 +130,9 @@ public class DownloadExcel extends AppCompatActivity {
 
             cell = row.createCell(3);
             cell.setCellValue(Utilities.datosPulsioximetro.get(i).get("Pi"));
+
+            cell = row.createCell(4);
+            cell.setCellValue(Utilities.datosPulsioximetro.get(i).get("PVi"));
         }
 
         Calendar c = Calendar.getInstance();
@@ -149,5 +155,11 @@ public class DownloadExcel extends AppCompatActivity {
             Toast.makeText(this, "Error111", Toast.LENGTH_SHORT).show();
 
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(DownloadExcel.this, MainActivity.class);
+        startActivity(intent);
     }
 }

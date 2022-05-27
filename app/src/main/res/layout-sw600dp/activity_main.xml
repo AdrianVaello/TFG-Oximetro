@@ -18,14 +18,14 @@
         android:layout_marginTop="16dp"
         android:text="@string/dispositivos_encontrados"
         android:textColor="@color/colorTexto"
-        android:textSize="24sp"
+        android:textSize="48sp"
         app:layout_constraintStart_toEndOf="@+id/view9"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/view9"
-        android:layout_width="5dp"
-        android:layout_height="5dp"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:background="@color/colorTexto"
@@ -40,6 +40,7 @@
         android:layout_marginBottom="16dp"
         android:gravity="center_horizontal"
         android:textColor="@color/colorTextoBlanco"
+        android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/btn_scan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -48,20 +49,21 @@
         android:id="@+id/btn_scan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="32dp"
         android:background="@drawable/bordes_redondos_botones"
-        android:padding="4dp"
+        android:padding="14dp"
         android:text="@string/start_scan"
         android:textColor="@color/colorPrimary"
+        android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/img_loading"
-        android:layout_width="56dp"
-        android:layout_height="42dp"
-        android:layout_marginBottom="24dp"
+        android:layout_width="70dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="32dp"
         android:src="@drawable/ic_loading"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -75,7 +77,7 @@
         android:layout_height="wrap_content"
         android:text="@string/no_se_han_encontrado_dispositivos_main"
         android:textColor="@color/colorTexto"
-        android:textSize="16sp"
+        android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/tvNoDispositivosEncontrados"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -100,27 +102,31 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="32dp"
         android:src="@drawable/fab_mas"
         app:backgroundTint="@color/colorCard1"
-        app:fabSize="normal"
+        app:fabCustomSize="80dp"
+        app:fabSize="auto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:maxImageSize="40dp"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/pacientes_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="32dp"
         android:backgroundTint="@color/colorTexto"
-        app:fabSize="normal"
+        app:fabCustomSize="80dp"
+        app:fabSize="auto"
         app:layout_constraintBottom_toTopOf="@+id/add_fab"
         app:layout_constraintEnd_toEndOf="@+id/add_fab"
         app:layout_constraintStart_toStartOf="@+id/add_fab"
+        app:maxImageSize="40dp"
         app:srcCompat="@drawable/lista"
         tools:ignore="SpeakableTextPresentCheck" />
 
@@ -134,6 +140,7 @@
         android:layout_marginEnd="8dp"
         android:text="@string/lista_pacientes"
         android:textColor="@color/colorCard1"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/pacientes_fab"
         app:layout_constraintEnd_toStartOf="@+id/pacientes_fab"
         app:layout_constraintTop_toTopOf="@+id/pacientes_fab" />
@@ -143,14 +150,16 @@
         button to the add Alarm FAB button-->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/ayuda_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="32dp"
         android:backgroundTint="@color/colorCard1"
+        app:fabCustomSize="80dp"
         app:fabSize="normal"
         app:layout_constraintBottom_toTopOf="@+id/pacientes_fab"
         app:layout_constraintEnd_toEndOf="@+id/pacientes_fab"
         app:layout_constraintStart_toStartOf="@+id/pacientes_fab"
+        app:maxImageSize="40dp"
         app:srcCompat="@drawable/ayuda"
         tools:ignore="SpeakableTextPresentCheck" />
 
@@ -164,6 +173,7 @@
         android:layout_marginEnd="8dp"
         android:text="@string/consejos"
         android:textColor="@color/colorTexto"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/ayuda_fab"
         app:layout_constraintEnd_toStartOf="@+id/ayuda_fab"
         app:layout_constraintTop_toTopOf="@+id/ayuda_fab" />

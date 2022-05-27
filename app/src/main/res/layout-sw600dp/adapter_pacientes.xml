@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cardViewPacientes"
+        android:layout_width="wrap_content"
+        android:layout_height="160dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/bordes_redondos_pacientes">
+
+
+        <ImageView
+            android:id="@+id/img_paciente"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/avatar_paciente_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/avatar_paciente_color"
+            tools:srcCompat="@drawable/avatar_paciente_color" />
+
+        <TextView
+            android:id="@+id/txt_nombre_paciente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/colorTextoBlanco"
+            android:textColorHighlight="@color/colorTextoBlanco"
+            android:textColorHint="@color/colorTextoBlanco"
+            android:textColorLink="@color/colorTextoBlanco"
+            android:textSize="34sp"
+            app:layout_constraintBottom_toBottomOf="@+id/img_paciente"
+            app:layout_constraintStart_toEndOf="@+id/img_paciente"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txt_fecha_paciente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/colorTexto"
+            android:textColorHighlight="@color/colorTextoBlanco"
+            android:textColorHint="@color/colorTextoBlanco"
+            android:textColorLink="@color/colorTextoBlanco"
+            android:textSize="30sp"
+            app:layout_constraintStart_toEndOf="@+id/img_paciente"
+            app:layout_constraintTop_toBottomOf="@+id/txt_nombre_paciente" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@android:drawable/divider_horizontal_dim_dark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</LinearLayout>
