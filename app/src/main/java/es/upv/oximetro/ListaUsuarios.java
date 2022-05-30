@@ -46,10 +46,23 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
     RotateAnimation animation;
     EditText editTextFiltroNombre, editTextFechaFiltro;
     TextView tv_filtro_texto;
+
+    ImageView bt_volver_atras;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lista_usuarios);
+
+        bt_volver_atras= findViewById(R.id.bt_volver_atras2);
+        bt_volver_atras.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ListaUsuarios.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
         final DatePickerDialog[] picker = new DatePickerDialog[1];
 
         flechaLeft=findViewById(R.id.imageViewFlechaDesplegableLeft);

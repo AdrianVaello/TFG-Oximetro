@@ -14,9 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -30,7 +28,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -38,7 +35,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import es.upv.oximetro.adapter.DeviceAdapter;
 import es.upv.oximetro.comm.ObserverManager;
-import es.upv.oximetro.operation.OperationActivity;
 import es.upv.fastble.BleManager;
 import es.upv.fastble.callback.BleGattCallback;
 import es.upv.fastble.callback.BleMtuChangedCallback;
@@ -50,17 +46,6 @@ import es.upv.fastble.exception.BleException;
 import java.util.ArrayList;
 import java.util.List;
 
-// Lista de tareas por realizar a nivel de aplicación
-
-//DONE: Pedir permiso almacenamiento
-//DONE: Aplicación siepre en vertical
-//DONE: Solo se muestran los dispositivos con nombre "HJ-Narigmed"
-//DONE: Se salta la solicitud de servicio y característica dejando valores fijos
-//DONE: Comenzar buscando al entrar en MainActivity
-//DONE: Entrar en ShowDataAcivity tras conectan de forma automática
-//TODO: Quitar botón de CONECTAR, ENTRAR, BUSCAR
-//TODO: Eliminar opciones de búsqueda
-//TODO: Eliminar subpaquete operation
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -69,8 +54,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int REQUEST_CODE_PERMISSION_LOCATION = 2;
     private static final int REQUEST_ENABLE_BT = 3;
 
-    //private LinearLayout layout_setting;
-    //private TextView txt_setting;
     private Button btn_scan;
     //private EditText et_name, et_mac, et_uuid;
     private Switch sw_auto;
@@ -83,15 +66,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView textoVacio;
     ListView listView_device;
 
-    // Make sure to use the FloatingActionButton
-    // for all the FABs
+    public static final String KEY_DATA = "key_data";
+
     FloatingActionButton mAddFab, mPacientesFab, mAyudaFab;
 
-    // These are taken to make visible and invisible along
-    // with FABs
     TextView pacientesText, ayudaText, noHayDispositivosList;
 
-    // to check whether sub FAB buttons are visible or not.
     Boolean isAllFabsVisible;
 
     @Override
@@ -108,72 +88,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Comenzamos escaneando dispositivos
         checkPermissionsAndConnect();
 
-        // Register all the FABs with their IDs
-        // This FAB button is the Parent
         mAddFab = findViewById(R.id.add_fab);
-        // FAB button
+
         mPacientesFab = findViewById(R.id.pacientes_fab);
         mAyudaFab = findViewById(R.id.ayuda_fab);
 
-        // Also register the action name text, of all the FABs.
         pacientesText = findViewById(R.id.pacientes_action_text);
         ayudaText = findViewById(R.id.ayuda_action_text);
 
-        // Now set all the FABs and all the action name
-        // texts as GONE
         mPacientesFab.setVisibility(View.GONE);
         mAyudaFab.setVisibility(View.GONE);
         pacientesText.setVisibility(View.GONE);
         ayudaText.setVisibility(View.GONE);
 
-        // make the boolean variable as false, as all the
-        // action name texts and all the sub FABs are invisible
         isAllFabsVisible = false;
 
-        // We will make all the FABs and action name texts
-        // visible only when Parent FAB button is clicked So
-        // we have to handle the Parent FAB button first, by
-        // using setOnClickListener you can see below
         mAddFab.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (!isAllFabsVisible) {
 
-                            // when isAllFabsVisible becomes
-                            // true make all the action name
-                            // texts and FABs VISIBLE.
                             mPacientesFab.show();
                             mAyudaFab.show();
                             pacientesText.setVisibility(View.VISIBLE);
                             ayudaText.setVisibility(View.VISIBLE);
 
-                            // make the boolean variable true as
-                            // we have set the sub FABs
-                            // visibility to GONE
                             isAllFabsVisible = true;
                         } else {
 
-                            // when isAllFabsVisible becomes
-                            // true make all the action name
-                            // texts and FABs GONE.
                             mPacientesFab.hide();
                             mAyudaFab.hide();
                             pacientesText.setVisibility(View.GONE);
                             ayudaText.setVisibility(View.GONE);
 
-                            // make the boolean variable false
-                            // as we have set the sub FABs
-                            // visibility to GONE
                             isAllFabsVisible = false;
                         }
                     }
                 });
 
-        // below is the sample action to handle add person
-        // FAB. Here it shows simple Toast msg. The Toast
-        // will be shown only when they are visible and only
-        // when user clicks on them
         mAyudaFab.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -209,8 +162,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         BleManager.getInstance().destroy();
     }
 
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -226,8 +177,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initView() {
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         textoVacio= findViewById(R.id.tvNoDispositivosEncontrados);
 
         btn_scan = (Button) findViewById(R.id.btn_scan);
@@ -277,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (BleManager.getInstance().isConnected(bleDevice)) {
             Intent intent = new Intent(MainActivity.this, //*OperationActivity.class);
                     ShowDataActivity.class);
-            intent.putExtra(OperationActivity.KEY_DATA, bleDevice);
+            intent.putExtra(KEY_DATA, bleDevice);
             startActivity(intent);
         }
     }
@@ -502,26 +451,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //setScanRule();
                 startScan();
             }
-        }
-    }
-
-    //MENU TOOLBAR
-    public boolean onCreateOptionsMenu(Menu menu){
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_toolbar, menu);
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()){
-            case R.id.btmenu_lista_usuarios:
-                Intent intent = new Intent(MainActivity.this, //*OperationActivity.class);
-                        ListaUsuarios.class);
-                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-
         }
     }
 

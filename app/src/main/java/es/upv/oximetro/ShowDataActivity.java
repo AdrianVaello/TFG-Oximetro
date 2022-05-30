@@ -3,66 +3,32 @@ package es.upv.oximetro;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
-import android.content.Intent;
-import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
-import com.opencsv.CSVWriter;
-
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.sql.Time;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
-import java.util.Scanner;
-
 import androidx.appcompat.app.AppCompatActivity;
 import es.upv.fastble.BleManager;
 import es.upv.fastble.callback.BleNotifyCallback;
 import es.upv.fastble.data.BleDevice;
 import es.upv.fastble.exception.BleException;
-import es.upv.fastble.utils.HexUtil;
-import es.upv.oximetro.operation.CharacteristicOperationFragment;
-import es.upv.oximetro.operation.OperationActivity;
-
 import static java.lang.String.valueOf;
 import static java.util.Arrays.copyOfRange;
-
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 
 public class ShowDataActivity extends AppCompatActivity {
 
@@ -219,7 +185,7 @@ public class ShowDataActivity extends AppCompatActivity {
    }
 
    public void showData() {
-      final int charaProp = CharacteristicOperationFragment.PROPERTY_NOTIFY;
+     // final int charaProp = CharacteristicOperationFragment.PROPERTY_NOTIFY;
       //tv_log.setMovementMethod(ScrollingMovementMethod.getInstance());
       BleManager.getInstance().notify(
               bleDevice,
@@ -319,7 +285,6 @@ public class ShowDataActivity extends AppCompatActivity {
             tv_spo2.setText(valueOf(spO2));
             tv_pr.setText(valueOf(pr));
             tv_rr.setText(valueOf(rr));
-            //           double d = pi/1000;
             tv_pi.setText(String.format("%.2f", (0.0 + pi) / 1000));
             if (fileName!=null) f2.write(s.getBytes());
          } else {
