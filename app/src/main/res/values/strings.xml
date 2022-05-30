@@ -65,5 +65,6 @@
     <string name="consejos_titulo">CONSEJOS</string>
     <string name="bienvenido_a_oximeter_app">Bienvenido a Oximeter App</string>
     <string name="cargando_datos_pvi">Cargando datos de PVi...</string>
+    <string name="descargar_datos">Descargar datos</string>
 
 </resources>

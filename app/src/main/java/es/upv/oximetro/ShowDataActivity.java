@@ -131,7 +131,7 @@ public class ShowDataActivity extends AppCompatActivity {
       rightDataSet.setDrawValues(false);
       rightDataSet.setLineWidth(2);
       rightDataSet.setColor(R.color.colorTexto);
-      LineDataSet leftDataSet = new LineDataSet(entriesLeft, "Spo2(mmHg)");
+      LineDataSet leftDataSet = new LineDataSet(entriesLeft, "Spo2 (mmHg)");
       leftDataSet.setDrawCircles(false);
       leftDataSet.setDrawValues(false);
       leftDataSet.setLineWidth(3.5f);
@@ -186,7 +186,7 @@ public class ShowDataActivity extends AppCompatActivity {
       yAxis.setAxisMaximum(100);
       yAxis.setAxisMinimum(0);
       yAxis.setDrawLabels(true);
-      
+
       chart.getAxisRight().setEnabled(false);
       //chart.getLegend().setEnabled(true);
       //chart.getLegend().setExtra(ColorTemplate.VORDIPLOM_COLORS, new String[] { "Set1", "Set2", "Set3", "Set4", "Set5" });
@@ -267,8 +267,6 @@ public class ShowDataActivity extends AppCompatActivity {
             float numeroDecimal = (~data[3]) + 1;
             tiempoFinal=System.currentTimeMillis();
             if(!primeraVezCalculoPVi){
-
-
                if(numeroDecimal !=0){
                   datosGrafica.add((double) numeroDecimal);
 
