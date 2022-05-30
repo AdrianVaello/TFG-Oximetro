@@ -21,22 +21,22 @@
         android:requestLegacyExternalStorage="true">
 
         <activity android:name="es.upv.oximetro.MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
         </activity>
         <activity android:name="es.upv.oximetro.ShowDataActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="fullSensor"/>
         <activity android:name="es.upv.oximetro.DownloadExcel"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="fullSensor"/>
 
         <activity android:name="es.upv.oximetro.ListaUsuarios"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="fullSensor"/>
 
         <activity android:name="es.upv.oximetro.SplashScreenActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -44,7 +44,7 @@
         </activity>
 
         <activity android:name="es.upv.oximetro.ActivityAyuda"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="fullSensor"/>
 
         <!-- PARA LEER ARCHIVOS-->
         <provider

@@ -184,6 +184,16 @@
         app:layout_constraintTop_toBottomOf="@+id/cardViewPI">
 
         <TextView
+            android:id="@+id/tv_PmaxPmin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
             android:id="@+id/textViewTextoPVi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -197,6 +207,7 @@
             android:id="@+id/tvPVi"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
             android:autoSizeTextType="uniform"
             android:text="00"
             android:textAlignment="center"

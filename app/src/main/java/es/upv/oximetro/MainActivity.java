@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.editTextFechaFiltro:
+            case R.id.btn_scan:
                 if (btn_scan.getText().equals(getString(R.string.start_scan))) {
                     checkPermissionsAndConnect();
                 } else if (btn_scan.getText().equals(getString(R.string.stop_scan))) {

@@ -15,10 +15,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.opencsv.CSVWriter;
 
 import java.io.File;
@@ -70,7 +73,7 @@ public class ShowDataActivity extends AppCompatActivity {
    private BluetoothGattService bluetoothGattService;
    private BluetoothGattCharacteristic characteristic;
 
-   private TextView tv_spo2, tv_pr, tv_rr, tv_pi, tv_Cargando_Pvi;
+   private TextView tv_spo2, tv_pr, tv_rr, tv_pi, tv_Cargando_Pvi, tv_PmaxPmin;
    private LineChart chart;
 
    //DONE: Escribir datos en fichero CSV
@@ -92,6 +95,8 @@ public class ShowDataActivity extends AppCompatActivity {
 
    public boolean primeraVezCalculoPVi;
 
+   YAxis yAxis;
+
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -101,7 +106,7 @@ public class ShowDataActivity extends AppCompatActivity {
 
       tiempoInicial=System.currentTimeMillis();
       primeraVezCalculoPVi=true;
-      tv_Cargando_Pvi.setText("Cargando datos de PVi...");
+      tv_Cargando_Pvi.setText(R.string.cargando_datos_pvi);
 
    }
 
@@ -126,10 +131,10 @@ public class ShowDataActivity extends AppCompatActivity {
       rightDataSet.setDrawValues(false);
       rightDataSet.setLineWidth(2);
       rightDataSet.setColor(R.color.colorTexto);
-      LineDataSet leftDataSet = new LineDataSet(entriesLeft, "");
+      LineDataSet leftDataSet = new LineDataSet(entriesLeft, "Spo2(mmHg)");
       leftDataSet.setDrawCircles(false);
       leftDataSet.setDrawValues(false);
-      leftDataSet.setLineWidth(3);
+      leftDataSet.setLineWidth(3.5f);
       leftDataSet.setColor(R.color.colorTexto);
       LineData lineData = new LineData(leftDataSet, rightDataSet);
       chart.setData(lineData);
@@ -139,7 +144,7 @@ public class ShowDataActivity extends AppCompatActivity {
 
    private void newRawData(float value, long time) {
       //Llega un nuevo dato a visualizar
-      long relativeTime = time % SHOW_TIME; //Se representa el módulo 4000 del tiempo
+      long relativeTime = time % SHOW_TIME; //Se representa el módulo 5000 del tiempo
       //Cuando nos salimos por la derecha ...
       //(Lo sabemos porque el módulo del tiempo < que el último añadido)
       if (entriesLeft.size() > 0 &&
@@ -170,18 +175,22 @@ public class ShowDataActivity extends AppCompatActivity {
       tv_pi = (TextView) findViewById(R.id.tv_pi);
       tv_Cargando_Pvi=findViewById(R.id.tvCargandoPVi);
       tvPVi=findViewById(R.id.tvPVi);
+      tv_PmaxPmin= findViewById(R.id.tv_PmaxPmin);
       //GRÁFICA
       chart = (LineChart) findViewById(R.id.chart_heart);
       XAxis xAxis = chart.getXAxis();
       xAxis.setAxisMinimum(0);
       xAxis.setAxisMaximum(5000);
-      xAxis.setDrawLabels(false);
-      chart.getAxisLeft().setDrawLabels(false);
-      chart.getAxisLeft().setAxisMinimum(-50);
-      chart.getAxisLeft().setAxisMaximum(50);
-      chart.getAxisLeft().setEnabled(false);
+      xAxis.setDrawLabels(true);
+      yAxis= chart.getAxisLeft();
+      yAxis.setAxisMaximum(100);
+      yAxis.setAxisMinimum(0);
+      yAxis.setDrawLabels(true);
+      
       chart.getAxisRight().setEnabled(false);
-      chart.getLegend().setEnabled(false);
+      //chart.getLegend().setEnabled(true);
+      //chart.getLegend().setExtra(ColorTemplate.VORDIPLOM_COLORS, new String[] { "Set1", "Set2", "Set3", "Set4", "Set5" });
+
       chart.getDescription().setEnabled(false);
       chart.setDrawBorders(false);
    }
@@ -279,7 +288,8 @@ public class ShowDataActivity extends AppCompatActivity {
                }
             }
 
-            newRawData(numeroDecimal, System.currentTimeMillis());
+            float datoChart= Normalization(numeroDecimal,-49,49,0,100);
+            newRawData(datoChart, System.currentTimeMillis());
 
          } else if (data[1] == 11 && (data[2] == -127/*0x81*/)) {
             //Log.d("Dato chart", ",,,,data2 "+data[8]);
@@ -412,8 +422,10 @@ public class ShowDataActivity extends AppCompatActivity {
                   //*******************************************************************************************************************
 
                   arrayAmplitudes.add(Math.abs(maxAmp-minAmp));
+                  anadirTextoPmaxPmin(String.valueOf(Math.abs(maxAmp-minAmp)));
                   maxAmp=Double.NEGATIVE_INFINITY;
                   minAmp=Double.POSITIVE_INFINITY;
+
                   subiendo=true;
                }
                if (valorSuma<valorSumaAux) {
@@ -422,22 +434,6 @@ public class ShowDataActivity extends AppCompatActivity {
 
                // actualizo valorSumaAux con la suma actual
                valorSumaAux=valorSuma;
-
-               /*if(valorSuma>valorSumaAux &&!subiendo){
-                  valorSumaAux=valorSuma;
-
-                  arrayAmplitudes.add(maxAmp-minAmp);
-                  maxAmp=Double.NEGATIVE_INFINITY;
-                  minAmp=Double.POSITIVE_INFINITY;
-                  subiendo=true;
-
-               }else if(valorSuma>valorSumaAux &&subiendo){
-                  valorSumaAux=valorSuma;
-                 // subiendo=true;
-               }else {
-                  valorSumaAux=valorSuma;
-                  subiendo=false;
-               }*/
 
             }
 
@@ -461,28 +457,10 @@ public class ShowDataActivity extends AppCompatActivity {
       PVI= ((amplitudMax-amplitudMin)/amplitudMax)*100;
 
       // añado resultado a la app
-      anadirTextoPVi(String.format("%.2f", PVI));
+      anadirTextoPVi(String.format("%.1f", PVI));
 
       Log.d("Dato chart", "//// PVI= " +PVI + "ArrayA: "+ arrayAmplitudes+ " max: " +amplitudMax+ " min: "+ amplitudMin);
 
-      /*if(arrayAmplitudes.size()!=0){
-         PvmaxMin=arrayAmplitudes.get(0);
-         PvmaxMax=arrayAmplitudes.get(0);
-
-         for (int j=0;j<arrayAmplitudes.size();j++){
-            if(arrayAmplitudes.get(j)>PvmaxMax){
-               PvmaxMax=arrayAmplitudes.get(j);
-            }
-            if(arrayAmplitudes.get(j)<PvmaxMin){
-               PvmaxMin=arrayAmplitudes.get(j);
-            }
-         }
-      }
-
-      Log.d("Dato chart", "////Max"+PvmaxMax+"Min "+PvmaxMin);
-      double Pvi=  ((float) (PvmaxMax - PvmaxMin) / PvmaxMax) * 100;
-      Log.d("Dato chart", "//// PVi"+Pvi);
-      anadirTextoPVi(String.format("%.2f", Pvi));*/
 
       // limpio los datos de la gràfica
       datosGrafica.clear();
@@ -492,12 +470,21 @@ public class ShowDataActivity extends AppCompatActivity {
       tvPVi.setText(texto);
    }
 
+   public void anadirTextoPmaxPmin(String texto){
+      tv_PmaxPmin.setText("Amplitud de PI= "+texto);
+   }
+
    private Double sumaVentana(ArrayList<Double> ventana){
       Double suma=0.0;
       for (int i=0;i<ventana.size();i++){
          suma+=ventana.get(i);
       }
       return suma;
+   }
+
+   public float Normalization(double v, double Min, double Max,
+                               double newMin, double newMax) {
+      return (float) ((v - Min) / (Max - Min) * (newMax - newMin) + newMin);
    }
 
 }
