@@ -17,6 +17,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,7 +46,7 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
     ImageView flechaLeft, flechaRight, calendarFiltro;
     RotateAnimation animation;
     EditText editTextFiltroNombre, editTextFechaFiltro;
-    TextView tv_filtro_texto;
+    TextView tv_filtro_texto, tv_no_pacientes;
 
     ImageView bt_volver_atras;
 
@@ -63,6 +64,7 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
             }
         });
 
+        tv_no_pacientes=findViewById(R.id.tv_no_hay_pacientes);
         final DatePickerDialog[] picker = new DatePickerDialog[1];
 
         flechaLeft=findViewById(R.id.imageViewFlechaDesplegableLeft);
@@ -133,6 +135,7 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
         adapter = new RecyclerViewAdapterPacientes(this, files);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
+        comprobarNumeroPacientes(recyclerView);
 
 
         editTextFiltroNombre.addTextChangedListener(new TextWatcher() {
@@ -141,7 +144,7 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
                adapter.filtrar(editTextFiltroNombre.getText().toString().toLowerCase(Locale.ROOT),editTextFechaFiltro.getText().toString());
 
                tv_filtro_texto.setText("Filtrando por Nombre: "+editTextFiltroNombre.getText().toString() + " y fecha: "+editTextFechaFiltro.getText().toString());
-
+               comprobarNumeroPacientes(recyclerView);
            }
 
            @Override
@@ -149,7 +152,7 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
                adapter.filtrar(editTextFiltroNombre.getText().toString().toLowerCase(Locale.ROOT),editTextFechaFiltro.getText().toString());
 
                tv_filtro_texto.setText("Filtrando por Nombre: "+editTextFiltroNombre.getText().toString() + " y fecha: "+editTextFechaFiltro.getText().toString());
-
+               comprobarNumeroPacientes(recyclerView);
            }
 
            @Override
@@ -157,7 +160,7 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
                adapter.filtrar(editTextFiltroNombre.getText().toString().toLowerCase(Locale.ROOT),editTextFechaFiltro.getText().toString());
 
                tv_filtro_texto.setText("Filtrando por Nombre: "+editTextFiltroNombre.getText().toString() + " y fecha: "+editTextFechaFiltro.getText().toString());
-
+               comprobarNumeroPacientes(recyclerView);
            }
        });
 
@@ -189,7 +192,7 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 adapter.filtrar(editTextFiltroNombre.getText().toString().toLowerCase(Locale.ROOT),editTextFechaFiltro.getText().toString());
                 tv_filtro_texto.setText("Filtrando por Nombre: "+editTextFiltroNombre.getText().toString() + " y fecha: "+editTextFechaFiltro.getText().toString());
-
+                comprobarNumeroPacientes(recyclerView);
             }
 
             @Override
@@ -197,7 +200,7 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
                 adapter.filtrar(editTextFiltroNombre.getText().toString().toLowerCase(Locale.ROOT),editTextFechaFiltro.getText().toString());
 
                 tv_filtro_texto.setText("Filtrando por Nombre: "+editTextFiltroNombre.getText().toString() + " y fecha: "+editTextFechaFiltro.getText().toString());
-
+                comprobarNumeroPacientes(recyclerView);
             }
 
             @Override
@@ -205,7 +208,7 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
                 adapter.filtrar(editTextFiltroNombre.getText().toString().toLowerCase(Locale.ROOT),editTextFechaFiltro.getText().toString());
 
                 tv_filtro_texto.setText("Filtrando por Nombre: "+editTextFiltroNombre.getText().toString() + " y fecha: "+editTextFechaFiltro.getText().toString());
-
+                comprobarNumeroPacientes(recyclerView);
             }
         });
 
@@ -214,7 +217,6 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
 
     @Override
     public void onItemClick(View view, int position) {
-        //Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
 
         File file = new File(adapter.getItem(position));
         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -234,6 +236,16 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
         animation.setRepeatCount(0);
         view.startAnimation(animation);
 
+    }
+
+    public void comprobarNumeroPacientes(RecyclerView recyclerView){
+        if(recyclerView.getAdapter()!=null){
+            if(recyclerView.getAdapter().getItemCount()==0){
+                tv_no_pacientes.setVisibility(View.VISIBLE);
+            }else{
+                tv_no_pacientes.setVisibility(View.GONE);
+            }
+        }
     }
 
 

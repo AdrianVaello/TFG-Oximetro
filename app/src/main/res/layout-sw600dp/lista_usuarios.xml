@@ -39,6 +39,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tituloHistPacientes" />
 
+    <TextView
+        android:id="@+id/tv_no_hay_pacientes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_hay_pacientes_guardados"
+        android:textColor="@color/colorTexto"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/reciclerViewPacientes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/reciclerViewPacientes" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reciclerViewPacientes"
         android:layout_width="0dp"

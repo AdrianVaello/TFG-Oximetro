@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //Toast.makeText(MainActivity.this, "Ayuda", Toast.LENGTH_SHORT).show();
+
                         Intent intent = new Intent(MainActivity.this,ActivityAyuda.class);
                         startActivity(intent);
                     }
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onClick(View view) {
                         Intent intent = new Intent(MainActivity.this, ListaUsuarios.class);
                         startActivity(intent);
-                        //Toast.makeText(MainActivity.this, "Pacientes", Toast.LENGTH_SHORT).show();
+
                     }
                 });
 
@@ -224,8 +224,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void goShowDataActivity(BleDevice bleDevice) {
         if (BleManager.getInstance().isConnected(bleDevice)) {
-            Intent intent = new Intent(MainActivity.this, //*OperationActivity.class);
-                    ShowDataActivity.class);
+            Intent intent = new Intent(MainActivity.this, ShowDataActivity.class);
             intent.putExtra(KEY_DATA, bleDevice);
             startActivity(intent);
         }
@@ -259,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onScanning(BleDevice bleDevice) {
-                if (bleDevice!=null && "HJ-Narigmed".equals(bleDevice.getName())) {  /////////////////////
+                if (bleDevice!=null && "HJ-Narigmed".equals(bleDevice.getName())) {
 
                     mDeviceAdapter.addDevice(bleDevice);
                     mDeviceAdapter.notifyDataSetChanged();

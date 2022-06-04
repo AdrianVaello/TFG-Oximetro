@@ -39,7 +39,7 @@ public class ShowDataActivity extends AppCompatActivity {
    private BluetoothGattService bluetoothGattService;
    private BluetoothGattCharacteristic characteristic;
 
-   private TextView tv_spo2, tv_pr, tv_rr, tv_pi, tv_Cargando_Pvi, tv_PmaxPmin;
+   private TextView tv_spo2, tv_pr, tv_rr, tv_pi, tv_Cargando_Pvi, tv_PmaxPmin, tv_Cisura;
    private LineChart chart;
 
    //DONE: Escribir datos en fichero CSV
@@ -48,7 +48,6 @@ public class ShowDataActivity extends AppCompatActivity {
    private FileOutputStream f1, f2;
 
    public ArrayList<Double> datosGrafica= new ArrayList<Double>();
-   public ArrayList<Double> datosMayorMenor= new ArrayList<Double>();
 
    TextView tvPVi;
 
@@ -62,6 +61,8 @@ public class ShowDataActivity extends AppCompatActivity {
    public boolean primeraVezCalculoPVi;
 
    YAxis yAxis;
+
+   Boolean cisuraEncontrada=false;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +143,8 @@ public class ShowDataActivity extends AppCompatActivity {
       tv_Cargando_Pvi=findViewById(R.id.tvCargandoPVi);
       tvPVi=findViewById(R.id.tvPVi);
       tv_PmaxPmin= findViewById(R.id.tv_PmaxPmin);
+
+      tv_Cisura=findViewById(R.id.textViewCisura);
       //GRÁFICA
       chart = (LineChart) findViewById(R.id.chart_heart);
       XAxis xAxis = chart.getXAxis();
@@ -233,7 +236,6 @@ public class ShowDataActivity extends AppCompatActivity {
             float numeroDecimal = (~data[3]) + 1;
             tiempoFinal=System.currentTimeMillis();
             if(!primeraVezCalculoPVi){
-               if(numeroDecimal !=0){
                   datosGrafica.add((double) numeroDecimal);
 
                   if(tiempoInicial+cicloMuestras<=tiempoFinal){
@@ -242,7 +244,6 @@ public class ShowDataActivity extends AppCompatActivity {
                      tv_Cargando_Pvi.setText("");
 
                   }
-               }
 
             }else{
                if(tiempoInicial+cicloMuestras<=tiempoFinal){
@@ -316,7 +317,7 @@ public class ShowDataActivity extends AppCompatActivity {
    }
 
    public void calcularPVi(ArrayList<Double> datos){
-      Log.d("Dato chart", "////An"+datos);
+      //Log.d("Dato chart", "////An"+datos);
 
       ArrayList<Double> arrayAmplitudes= new ArrayList<Double>();
 
@@ -334,6 +335,8 @@ public class ShowDataActivity extends AppCompatActivity {
 
       Double valorSumaAux=0.0;
 
+      Double cisuraMax = 0.0;
+
 
       // obtengo los datos leídos
       for (int i=0; i<datos.size();i++){
@@ -344,6 +347,7 @@ public class ShowDataActivity extends AppCompatActivity {
          // empiezo a rellenar la ventana y calcular valores cuando tengo (tamaño datos leidos)==(tamaño ventana)
          if(i>=tamanyoVentana-1){
             ArrayList<Double> ventana = new ArrayList(cola);
+            ArrayList<Double> ventanaCisura = new ArrayList<Double>(ventana);
             // ordeno la ventana
             Collections.sort(ventana);
             // obtengo max y min de la ventana
@@ -383,6 +387,8 @@ public class ShowDataActivity extends AppCompatActivity {
                   // comprobar si hay que introducir el valor absoluto de la resta -> Math.abs(), para que no haya amplitudes negativas
                   //Log.d("Dato chart", "//// maxAmp-minAmp: " + (maxAmp-minAmp) + " abs(maxAmp-minAmp): " + Math.abs(maxAmp-minAmp));
                   //*******************************************************************************************************************
+                  //Log.d("Dato chart", "Maximo tiempo: "+tiempoEncontrarMax+ " Minimo tiempo: "+tiempoEncontrarMin);
+                  calcularVasos(maxAmp,minAmp,cisuraMax);
 
                   arrayAmplitudes.add(Math.abs(maxAmp-minAmp));
                   anadirTextoPmaxPmin(String.valueOf(Math.abs(maxAmp-minAmp)));
@@ -390,9 +396,15 @@ public class ShowDataActivity extends AppCompatActivity {
                   minAmp=Double.POSITIVE_INFINITY;
 
                   subiendo=true;
+                  cisuraEncontrada=false;
                }
                if (valorSuma<valorSumaAux) {
+
                   subiendo=false;
+                  if(!cisuraEncontrada){
+                     cisuraMax=calcularValorCisura(ventanaCisura);
+                  }
+
                }
 
                // actualizo valorSumaAux con la suma actual
@@ -400,8 +412,8 @@ public class ShowDataActivity extends AppCompatActivity {
 
             }
 
-            Log.d("Dato chart", "//// " + " Max: "+maximoRelativo + " Min: "+minimoRelativo +
-                    " MaxAMp "+maxAmp+ " MinAmp "+minAmp+ " Amplitud "+arrayAmplitudes +" Subiendo: " +subiendo);
+            /*Log.d("Dato chart", "//// " + " Max: "+maximoRelativo + " Min: "+minimoRelativo +
+                    " MaxAMp "+maxAmp+ " MinAmp "+minAmp+ " Amplitud "+arrayAmplitudes +" Subiendo: " +subiendo);*/
 
             // elimino primer elemento de la cola
             cola.remove();
@@ -411,18 +423,21 @@ public class ShowDataActivity extends AppCompatActivity {
       // ordeno array de amplitudes obtenidas
       Collections.sort(arrayAmplitudes);
       // obtengo la amplitud máxima y mínima
-      Double amplitudMax=arrayAmplitudes.get(arrayAmplitudes.size()-1);
-      Double amplitudMin=arrayAmplitudes.get(0);
+      if(arrayAmplitudes.size()!=0){
+         Double amplitudMax=arrayAmplitudes.get(arrayAmplitudes.size()-1);
+         Double amplitudMin=arrayAmplitudes.get(0);
 
-      //                PImax - PImin
-      // obtengo PVI = --------------- x 100
-      //                    PImax
-      PVI= ((amplitudMax-amplitudMin)/amplitudMax)*100;
+         //                PImax - PImin
+         // obtengo PVI = --------------- x 100
+         //                    PImax
+
+         PVI= ((amplitudMax-amplitudMin)/amplitudMax)*100;
+      }
 
       // añado resultado a la app
       anadirTextoPVi(String.format("%.1f", PVI));
 
-      Log.d("Dato chart", "//// PVI= " +PVI + "ArrayA: "+ arrayAmplitudes+ " max: " +amplitudMax+ " min: "+ amplitudMin);
+      //Log.d("Dato chart", "//// PVI= " +PVI + "ArrayA: "+ arrayAmplitudes+ " max: " +amplitudMax+ " min: "+ amplitudMin);
 
 
       // limpio los datos de la gràfica
@@ -448,6 +463,37 @@ public class ShowDataActivity extends AppCompatActivity {
    public float Normalization(double v, double Min, double Max,
                                double newMin, double newMax) {
       return (float) ((v - Min) / (Max - Min) * (newMax - newMin) + newMin);
+   }
+
+   public Double calcularValorCisura(ArrayList<Double> ventana){
+      Double m1=ventana.get(0);
+      Double m2=Double.NEGATIVE_INFINITY;
+      for(int i=1; i<ventana.size();i++){
+         if(ventana.get(i)>ventana.get(i-1)){
+            m2=ventana.get(i);
+
+         }
+      }
+      if(m2!=Double.NEGATIVE_INFINITY){
+         Log.d("Dato chart", "Cisura encontrada :" +m2);
+         cisuraEncontrada=true;
+      }
+      return m2;
+
+   }
+
+   public void calcularVasos(double max,double min, double cisura){
+      Double difCisuraMax =Math.abs(max-cisura);
+      Double difCisuraMin =Math.abs(min-cisura);
+      if(difCisuraMax>difCisuraMin){
+         Log.d("Dato chart", "Vasodilatacion  Max: "+max + " MIn: "+min+ " "+ cisura);
+         tv_Cisura.setText("Vasodilatación");
+      }else{
+         Log.d("Dato chart", "Vasocontriccion  Max: "+max + " MIn: "+min+ " "+ cisura);
+         tv_Cisura.setText("Vasocontriccion");
+      }
+
+
    }
 
 }

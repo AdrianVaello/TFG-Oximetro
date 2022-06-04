@@ -68,5 +68,6 @@
     <string name="cargando_datos_pvi">Cargando datos de PVi...</string>
     <string name="descargar_datos">Descargar datos</string>
     <string name="consejos_title">CONSEJOS</string>
+    <string name="no_hay_pacientes_guardados">No hay pacientes guardados.</string>
 
 </resources>
