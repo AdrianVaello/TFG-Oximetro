@@ -61,6 +61,7 @@ public class ShowDataActivity extends AppCompatActivity {
    public boolean primeraVezCalculoPVi;
 
    YAxis yAxis;
+   String tipoVaso;
 
    //************************************
    Double maximoCisura = Double.NEGATIVE_INFINITY;
@@ -94,15 +95,18 @@ public class ShowDataActivity extends AppCompatActivity {
    }
 
    private void showChart() {
+
       LineDataSet rightDataSet = new LineDataSet(entriesRight, "");
       rightDataSet.setDrawCircles(false);
       rightDataSet.setDrawValues(false);
       rightDataSet.setLineWidth(2);
+      rightDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
       rightDataSet.setColor(R.color.colorTexto);
       LineDataSet leftDataSet = new LineDataSet(entriesLeft, "Spo2 (mmHg)");
       leftDataSet.setDrawCircles(false);
       leftDataSet.setDrawValues(false);
-      leftDataSet.setLineWidth(3.5f);
+      leftDataSet.setLineWidth(3f);
+      leftDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
       leftDataSet.setColor(R.color.colorTexto);
       LineData lineData = new LineData(leftDataSet, rightDataSet);
       chart.setData(lineData);
@@ -282,7 +286,13 @@ public class ShowDataActivity extends AppCompatActivity {
                hashDatos.put("Pi", (double) pi);
                hashDatos.put("PVi", PVI);
                hashDatos.put("Area", area);
-               hashDatos.put("Cisura", maximoCisura);
+               if (tipoVaso!=null){
+                  if (tipoVaso.equals("Vasodilatacion")){
+                     hashDatos.put("Cisura",0.0 );
+                  }else{
+                     hashDatos.put("Cisura",1.0 );
+                  }
+               }
 
                Utilities.datosPulsioximetro.add(hashDatos);
             }
@@ -421,7 +431,6 @@ public class ShowDataActivity extends AppCompatActivity {
                   minAmp = Double.POSITIVE_INFINITY;
 
                   subiendo = true;
-                  //cisuraEncontrada = false;
 
                   // empieza otra subgráfica
                   maximoCisura = Double.NEGATIVE_INFINITY;
@@ -478,8 +487,8 @@ public class ShowDataActivity extends AppCompatActivity {
       // limpio los datos de la gràfica
       datosGrafica.clear();
 
-      // como ha acabado el ciclo inicializo m2
-      maximoCisura = Double.NEGATIVE_INFINITY;
+
+      //maximoCisura = Double.NEGATIVE_INFINITY;
    }
 
    public void anadirTextoPVi(String texto) {
@@ -515,15 +524,17 @@ public class ShowDataActivity extends AppCompatActivity {
    }
 
    public void calcularVasos(double max,double min, double cisura) {
-      Double difCisuraMax = Math.abs(max - cisura);
-      Double difCisuraMin = Math.abs(min - cisura);
+      double difCisuraMax = Math.abs(max - cisura);
+      double difCisuraMin = Math.abs(min - cisura);
 
       if (difCisuraMax > difCisuraMin) {
          Log.d("Dato chart", "Vasodilatación  Max: " + max + " Min: " + min + " " + cisura);
-         tv_Cisura.setText("Vasodilatación");
+         tipoVaso="Vasodilatación";
+         tv_Cisura.setText(tipoVaso);
       } else {
          Log.d("Dato chart", "Vasocontricción  Max: " + max + " Min: " + min + " " + cisura);
-         tv_Cisura.setText("Vasocontricción");
+         tipoVaso="Vasocontricción";
+         tv_Cisura.setText(tipoVaso);
       }
    }
 

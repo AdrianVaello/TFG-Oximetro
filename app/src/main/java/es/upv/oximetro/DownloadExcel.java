@@ -132,7 +132,17 @@ public class DownloadExcel extends AppCompatActivity {
             cell.setCellValue(Utilities.datosPulsioximetro.get(i).get("Area"));
 
             cell = row.createCell(6);
-            cell.setCellValue(Utilities.datosPulsioximetro.get(i).get("Cisura"));
+            if(Utilities.datosPulsioximetro.get(i).get("Cisura")!=null){
+                if(Utilities.datosPulsioximetro.get(i).get("Cisura")==0.0){
+                    cell.setCellValue("Vasodilatación");
+                }else{
+                    cell.setCellValue("Vasocontricción");
+                }
+            }else{
+                cell.setCellValue("Sin valor exacto");
+            }
+
+
         }
 
         Calendar c = Calendar.getInstance();
