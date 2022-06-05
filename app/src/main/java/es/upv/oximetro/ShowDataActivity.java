@@ -1,5 +1,6 @@
 package es.upv.oximetro;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
@@ -39,43 +40,31 @@ public class ShowDataActivity extends AppCompatActivity {
    private BluetoothGattService bluetoothGattService;
    private BluetoothGattCharacteristic characteristic;
 
-   private TextView tv_spo2, tv_pr, tv_rr, tv_pi, tv_Cargando_Pvi, tv_PmaxPmin, tv_Cisura;
+   private TextView tv_spo2, tv_pr, tv_rr, tv_pi, tv_Cargando_Pvi, tv_PmaxPmin, tv_Cisura, tv_Area;
    private LineChart chart;
 
-   //DONE: Escribir datos en fichero CSV
    private long time;
    private String fileName;
    private FileOutputStream f1, f2;
 
-   public ArrayList<Double> datosGrafica= new ArrayList<Double>();
+   public ArrayList<Double> datosGrafica = new ArrayList<Double>();
 
    TextView tvPVi;
 
    Long tiempoInicial;
    Long tiempoFinal;
 
-   int cicloMuestras=4000;
+   int cicloMuestras = 4000;
 
-   public Double PVI=0.0;
+   public Double PVI = 0.0;
 
    public boolean primeraVezCalculoPVi;
 
    YAxis yAxis;
 
-   Boolean cisuraEncontrada=false;
-
-   @Override
-   protected void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      setContentView(R.layout.activity_show_data);
-      initView();
-      prepareDeviceServiceCharact();
-
-      tiempoInicial=System.currentTimeMillis();
-      primeraVezCalculoPVi=true;
-      tv_Cargando_Pvi.setText(R.string.cargando_datos_pvi);
-
-   }
+   //************************************
+   Double maximoCisura = Double.NEGATIVE_INFINITY;
+   Double area=0.0;
 
    //Variables globales para representar la gráfica
    //Se mostrarán los últimos 5 segundos (SHOW_TIME)
@@ -86,11 +75,23 @@ public class ShowDataActivity extends AppCompatActivity {
 
    public static final int SHOW_TIME = 5000;   // Tiempo a mostrar en la gráfica (mseg)
    public static final int SAMPLE_PERIOD = 22; // Cada cuantos mseg llega una muestra
-   public static final int SAMPLES_IN_GRAPH = SHOW_TIME / SAMPLE_PERIOD; // # de muestras en la gráfiva (227)
+   public static final int SAMPLES_IN_GRAPH = SHOW_TIME / SAMPLE_PERIOD; // # de muestras en la gráfica (227)
 
    List<Entry> entriesLeft = new ArrayList<>();
    List<Entry> entriesRight = new ArrayList<>();
    long startTime = System.currentTimeMillis();
+
+   @Override
+   protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      setContentView(R.layout.activity_show_data);
+      initView();
+      prepareDeviceServiceCharact();
+
+      tiempoInicial = System.currentTimeMillis();
+      primeraVezCalculoPVi = true;
+      tv_Cargando_Pvi.setText(R.string.cargando_datos_pvi);
+   }
 
    private void showChart() {
       LineDataSet rightDataSet = new LineDataSet(entriesRight, "");
@@ -140,18 +141,20 @@ public class ShowDataActivity extends AppCompatActivity {
       tv_pr = (TextView) findViewById(R.id.tv_pr);
       tv_rr = (TextView) findViewById(R.id.tv_rr);
       tv_pi = (TextView) findViewById(R.id.tv_pi);
-      tv_Cargando_Pvi=findViewById(R.id.tvCargandoPVi);
-      tvPVi=findViewById(R.id.tvPVi);
-      tv_PmaxPmin= findViewById(R.id.tv_PmaxPmin);
+      tv_Cargando_Pvi = (TextView) findViewById(R.id.tvCargandoPVi);
+      tvPVi = (TextView) findViewById(R.id.tvPVi);
+      tv_PmaxPmin = (TextView) findViewById(R.id.tv_PmaxPmin);
 
-      tv_Cisura=findViewById(R.id.textViewCisura);
+      tv_Cisura = (TextView) findViewById(R.id.textViewCisura);
+      tv_Area= findViewById(R.id.textViewArea);
+
       //GRÁFICA
       chart = (LineChart) findViewById(R.id.chart_heart);
       XAxis xAxis = chart.getXAxis();
       xAxis.setAxisMinimum(0);
       xAxis.setAxisMaximum(5000);
       xAxis.setDrawLabels(true);
-      yAxis= chart.getAxisLeft();
+      yAxis = chart.getAxisLeft();
       yAxis.setAxisMaximum(100);
       yAxis.setAxisMinimum(0);
       yAxis.setDrawLabels(true);
@@ -188,7 +191,7 @@ public class ShowDataActivity extends AppCompatActivity {
    }
 
    public void showData() {
-     // final int charaProp = CharacteristicOperationFragment.PROPERTY_NOTIFY;
+      // final int charaProp = CharacteristicOperationFragment.PROPERTY_NOTIFY;
       //tv_log.setMovementMethod(ScrollingMovementMethod.getInstance());
       BleManager.getInstance().notify(
               bleDevice,
@@ -228,32 +231,31 @@ public class ShowDataActivity extends AppCompatActivity {
          if ((data[1] == 6) && (data[2] == -128/*0x80*/)) {
             int unsignedbyte = data[5] & 0xff;
             s += ", " + data[3] + ", " + data[4] + ", " + unsignedbyte + "\n";
-            if (fileName!=null){
+            if (fileName != null){
                f1.write(s.getBytes());
             }
 
             //Se pasa de complemento a 2 a decimal
             float numeroDecimal = (~data[3]) + 1;
-            tiempoFinal=System.currentTimeMillis();
-            if(!primeraVezCalculoPVi){
-                  datosGrafica.add((double) numeroDecimal);
 
-                  if(tiempoInicial+cicloMuestras<=tiempoFinal){
-                     calcularPVi(datosGrafica);
-                     tiempoInicial=System.currentTimeMillis();
-                     tv_Cargando_Pvi.setText("");
+            tiempoFinal = System.currentTimeMillis();
+            if (!primeraVezCalculoPVi) {
+               datosGrafica.add((double) numeroDecimal);
 
-                  }
-
-            }else{
-               if(tiempoInicial+cicloMuestras<=tiempoFinal){
-                  tiempoInicial=System.currentTimeMillis();
-                  primeraVezCalculoPVi=false;
+               if (tiempoInicial + cicloMuestras <= tiempoFinal) {
+                  calcularPVi(datosGrafica);
+                  tiempoInicial = System.currentTimeMillis();
+                  tv_Cargando_Pvi.setText("");
 
                }
+
+            } else if (tiempoInicial + cicloMuestras <= tiempoFinal) {
+               tiempoInicial = System.currentTimeMillis();
+               primeraVezCalculoPVi = false;
+
             }
 
-            float datoChart= Normalization(numeroDecimal,-49,49,0,100);
+            float datoChart = Normalization(numeroDecimal, -49, 49, 0, 100);
             newRawData(datoChart, System.currentTimeMillis());
 
          } else if (data[1] == 11 && (data[2] == -127/*0x81*/)) {
@@ -271,7 +273,7 @@ public class ShowDataActivity extends AppCompatActivity {
 
             s += ", " + spO2 + ", " + pr + ", " + rr + ", " + pi + ", " + unk + "\n";
 
-            if(spO2!=0 || pr!=0 || rr!=0 || pi!=0) {
+            if (spO2!=0 || pr!=0 || rr!=0 || pi!=0) {
                HashMap<String, Double> hashDatos = new HashMap<String, Double>();
 
                hashDatos.put("Sp02", (double) spO2);
@@ -279,6 +281,8 @@ public class ShowDataActivity extends AppCompatActivity {
                hashDatos.put("Rr", (double) rr);
                hashDatos.put("Pi", (double) pi);
                hashDatos.put("PVi", PVI);
+               hashDatos.put("Area", area);
+               hashDatos.put("Cisura", maximoCisura);
 
                Utilities.datosPulsioximetro.add(hashDatos);
             }
@@ -316,100 +320,132 @@ public class ShowDataActivity extends AppCompatActivity {
       BleManager.getInstance().destroy();
    }
 
-   public void calcularPVi(ArrayList<Double> datos){
+   @SuppressLint("DefaultLocale")
+   public void calcularPVi(ArrayList<Double> datos) {
       //Log.d("Dato chart", "////An"+datos);
 
-      ArrayList<Double> arrayAmplitudes= new ArrayList<Double>();
+      ArrayList<Double> arrayAmplitudes = new ArrayList<Double>();
 
-      Double maxAmp=Double.NEGATIVE_INFINITY;
-      Double minAmp=Double.POSITIVE_INFINITY;
+      Double maxAmp = Double.NEGATIVE_INFINITY;
+      Double minAmp = Double.POSITIVE_INFINITY;
 
       Queue<Double> cola = new LinkedList<Double>();
 
-      int tamanyoVentana=15;
+      int tamanyoVentana = 15;
 
-      Boolean subiendo=false;
+      Boolean subiendo = false;
 
-      Boolean contadorPrimeraVez=true;
-      Boolean contadorInicializarTendencia=true;
+      Boolean contadorPrimeraVez = true;
+      Boolean contadorInicializarTendencia = true;
 
-      Double valorSumaAux=0.0;
+      Double valorSumaAux = 0.0;
 
       Double cisuraMax = 0.0;
 
+      //************************************************************************
+      // para calcular el área deberíamos guardar los datos que vamos a utilizar
+      // del primer punto hasta que encontremos un minAmp que pasará a ser
+      // el primer punto de la siguiente área
+      //************************************************************************
+      ArrayList<Double> arrayPuntosArea = new ArrayList<Double>();
 
+      double tamanyoBase =  ((double) cicloMuestras / datos.size()) / 1000.0;
+      Log.d("Area", "---------------------- "+tamanyoBase + " Size "+datos.size());
       // obtengo los datos leídos
-      for (int i=0; i<datos.size();i++){
+      for (int i = 0; i < datos.size(); i++) {
+
+         //************************************************
+         // vamos rellenando el array para calcular el área
+         arrayPuntosArea.add(datos.get(i));
 
          // voy añadiendo el dato a la cola (FIFO)
          cola.add(datos.get(i));
 
          // empiezo a rellenar la ventana y calcular valores cuando tengo (tamaño datos leidos)==(tamaño ventana)
-         if(i>=tamanyoVentana-1){
+         if (i >= tamanyoVentana - 1) {
             ArrayList<Double> ventana = new ArrayList(cola);
             ArrayList<Double> ventanaCisura = new ArrayList<Double>(ventana);
             // ordeno la ventana
             Collections.sort(ventana);
             // obtengo max y min de la ventana
-            Double maximoRelativo=ventana.get(ventana.size()-1);
-            Double minimoRelativo=ventana.get(0);
+            Double maximoRelativo = ventana.get(ventana.size() - 1);
+            Double minimoRelativo = ventana.get(0);
             // actualizo minAmp y maxAmp
-            if(minimoRelativo<minAmp){
-               minAmp=minimoRelativo;
+            if (minimoRelativo < minAmp) {
+               minAmp = minimoRelativo;
             }
-            if(maximoRelativo>maxAmp){
-               maxAmp=maximoRelativo;
+            if (maximoRelativo > maxAmp) {
+               maxAmp = maximoRelativo;
             }
             // calculo la suma de los datos de la ventana
-            Double valorSuma=sumaVentana(ventana);
+            Double valorSuma = sumaVentana(ventana);
 
             // si es la primera ventana que tengo inicializo valorSumaAux
-            if(contadorPrimeraVez){
-               valorSumaAux=valorSuma;
-               contadorPrimeraVez=false;
-            }else{
+            if (contadorPrimeraVez) {
+               valorSumaAux = valorSuma;
+               contadorPrimeraVez = false;
+            } else {
                //Log.d("Dato chart", "//// Ventana: " + ventana +" Suma: "+valorSuma +" Suma aux:" + valorSumaAux );
 
                // como ya tengo dos sumas de ventanas compruebo la dirección de la curva la primera vez
-               if(contadorInicializarTendencia){
-                  if (valorSuma>valorSumaAux) {
-                     subiendo=true;
+               if (contadorInicializarTendencia) {
+                  if (valorSuma > valorSumaAux) {
+                     subiendo = true;
                   } else {
-                     subiendo=false;
+                     subiendo = false;
                   }
-                  contadorInicializarTendencia=false;
+                  contadorInicializarTendencia = false;
                }
 
                // calculo la amplitud cuando cambia la tendencia
-               if (valorSuma>valorSumaAux && !subiendo) {
+               if (valorSuma > valorSumaAux && !subiendo) {
 
-                  //*******************************************************************************************************************
-                  // comprobar si hay que introducir el valor absoluto de la resta -> Math.abs(), para que no haya amplitudes negativas
                   //Log.d("Dato chart", "//// maxAmp-minAmp: " + (maxAmp-minAmp) + " abs(maxAmp-minAmp): " + Math.abs(maxAmp-minAmp));
                   //*******************************************************************************************************************
                   //Log.d("Dato chart", "Maximo tiempo: "+tiempoEncontrarMax+ " Minimo tiempo: "+tiempoEncontrarMin);
-                  calcularVasos(maxAmp,minAmp,cisuraMax);
 
-                  arrayAmplitudes.add(Math.abs(maxAmp-minAmp));
-                  anadirTextoPmaxPmin(String.valueOf(Math.abs(maxAmp-minAmp)));
-                  maxAmp=Double.NEGATIVE_INFINITY;
-                  minAmp=Double.POSITIVE_INFINITY;
+                  double area = calcularArea(arrayPuntosArea, tamanyoBase);
+                  Log.d("Area", "Area = "+area);
 
-                  subiendo=true;
-                  cisuraEncontrada=false;
+                  //
+                  // hacemos con area lo que tengamos que hacer
+                  Log.d("Area", "Area de " + arrayPuntosArea.get(0) + " a "
+                          + arrayPuntosArea.get(arrayPuntosArea.size() - 1)
+                          + " = " + area);
+
+                  arrayPuntosArea.clear();
+
+                  arrayAmplitudes.add(Math.abs(maxAmp - minAmp));
+                  anadirTextoPmaxPmin(String.valueOf(Math.abs(maxAmp - minAmp)));
+                  maxAmp = Double.NEGATIVE_INFINITY;
+                  minAmp = Double.POSITIVE_INFINITY;
+
+                  subiendo = true;
+                  //cisuraEncontrada = false;
+
+                  // empieza otra subgráfica
+                  maximoCisura = Double.NEGATIVE_INFINITY;
                }
-               if (valorSuma<valorSumaAux) {
 
-                  subiendo=false;
-                  if(!cisuraEncontrada){
-                     cisuraMax=calcularValorCisura(ventanaCisura);
+               if (valorSuma < valorSumaAux) {
+                  subiendo = false;
+
+               }
+
+               //*************************************************
+               // mientras está bajando calculo valor cisura
+               //*************************************************
+               if (!subiendo) {
+                  cisuraMax = calcularValorCisura(ventanaCisura);
+                  Log.d("Dato chart", "//// cisuraMax: " + cisuraMax + " MaxAmp: " + maxAmp + " MinAmp: " + minAmp);
+
+                  if (cisuraMax != Double.NEGATIVE_INFINITY) {
+                     calcularVasos(maxAmp, minAmp, cisuraMax);
                   }
-
                }
 
                // actualizo valorSumaAux con la suma actual
-               valorSumaAux=valorSuma;
-
+               valorSumaAux = valorSuma;
             }
 
             /*Log.d("Dato chart", "//// " + " Max: "+maximoRelativo + " Min: "+minimoRelativo +
@@ -423,15 +459,15 @@ public class ShowDataActivity extends AppCompatActivity {
       // ordeno array de amplitudes obtenidas
       Collections.sort(arrayAmplitudes);
       // obtengo la amplitud máxima y mínima
-      if(arrayAmplitudes.size()!=0){
-         Double amplitudMax=arrayAmplitudes.get(arrayAmplitudes.size()-1);
-         Double amplitudMin=arrayAmplitudes.get(0);
+      if (arrayAmplitudes.size() != 0) {
+         Double amplitudMax = arrayAmplitudes.get(arrayAmplitudes.size() - 1);
+         Double amplitudMin = arrayAmplitudes.get(0);
 
          //                PImax - PImin
          // obtengo PVI = --------------- x 100
          //                    PImax
 
-         PVI= ((amplitudMax-amplitudMin)/amplitudMax)*100;
+         PVI = ((amplitudMax - amplitudMin) / amplitudMax) * 100;
       }
 
       // añado resultado a la app
@@ -439,61 +475,78 @@ public class ShowDataActivity extends AppCompatActivity {
 
       //Log.d("Dato chart", "//// PVI= " +PVI + "ArrayA: "+ arrayAmplitudes+ " max: " +amplitudMax+ " min: "+ amplitudMin);
 
-
       // limpio los datos de la gràfica
       datosGrafica.clear();
+
+      // como ha acabado el ciclo inicializo m2
+      maximoCisura = Double.NEGATIVE_INFINITY;
    }
 
-   public void anadirTextoPVi(String texto){
+   public void anadirTextoPVi(String texto) {
       tvPVi.setText(texto);
    }
 
-   public void anadirTextoPmaxPmin(String texto){
-      tv_PmaxPmin.setText("Amplitud de PI= "+texto);
+   public void anadirTextoPmaxPmin(String texto) {
+      tv_PmaxPmin.setText("Amplitud de PI = " + texto);
    }
 
-   private Double sumaVentana(ArrayList<Double> ventana){
-      Double suma=0.0;
-      for (int i=0;i<ventana.size();i++){
-         suma+=ventana.get(i);
+   private Double sumaVentana(ArrayList<Double> ventana) {
+      Double suma = 0.0;
+      for (int i = 0; i < ventana.size(); i++){
+         suma += ventana.get(i);
       }
       return suma;
    }
 
    public float Normalization(double v, double Min, double Max,
-                               double newMin, double newMax) {
+                              double newMin, double newMax) {
       return (float) ((v - Min) / (Max - Min) * (newMax - newMin) + newMin);
    }
 
-   public Double calcularValorCisura(ArrayList<Double> ventana){
-      Double m1=ventana.get(0);
-      Double m2=Double.NEGATIVE_INFINITY;
-      for(int i=1; i<ventana.size();i++){
-         if(ventana.get(i)>ventana.get(i-1)){
-            m2=ventana.get(i);
+   public Double calcularValorCisura(ArrayList<Double> ventana) {
 
+      for (int i = 1; i < ventana.size(); i++) {
+         if (ventana.get(i) > ventana.get(i - 1)) {
+            maximoCisura = ventana.get(i);
          }
       }
-      if(m2!=Double.NEGATIVE_INFINITY){
-         Log.d("Dato chart", "Cisura encontrada :" +m2);
-         cisuraEncontrada=true;
-      }
-      return m2;
 
+      return maximoCisura;
    }
 
-   public void calcularVasos(double max,double min, double cisura){
-      Double difCisuraMax =Math.abs(max-cisura);
-      Double difCisuraMin =Math.abs(min-cisura);
-      if(difCisuraMax>difCisuraMin){
-         Log.d("Dato chart", "Vasodilatacion  Max: "+max + " MIn: "+min+ " "+ cisura);
+   public void calcularVasos(double max,double min, double cisura) {
+      Double difCisuraMax = Math.abs(max - cisura);
+      Double difCisuraMin = Math.abs(min - cisura);
+
+      if (difCisuraMax > difCisuraMin) {
+         Log.d("Dato chart", "Vasodilatación  Max: " + max + " Min: " + min + " " + cisura);
          tv_Cisura.setText("Vasodilatación");
-      }else{
-         Log.d("Dato chart", "Vasocontriccion  Max: "+max + " MIn: "+min+ " "+ cisura);
-         tv_Cisura.setText("Vasocontriccion");
+      } else {
+         Log.d("Dato chart", "Vasocontricción  Max: " + max + " Min: " + min + " " + cisura);
+         tv_Cisura.setText("Vasocontricción");
       }
+   }
 
+   public double calcularArea( ArrayList<Double> datos, double base) {
+      area = 0.0;
+      // habría que calcular el tamaño del rectángulo (Tiempo / N)
 
+      //double base = 0.001;
+
+      double primerPunto = datos.get(0);
+      double ultimoPunto = datos.get(datos.size() - 1);
+      double puntoBase = (primerPunto > ultimoPunto) ? ultimoPunto : primerPunto;
+      double difBase = Math.abs(primerPunto - ultimoPunto);
+
+      for (int i = 0; i < datos.size(); i++) {
+         if (datos.get(i) > puntoBase) {
+            area += base * (datos.get(i) + difBase);
+         } else {
+            area += base * datos.get(i);
+         }
+      }
+      tv_Area.setText(String.format("%.2f", area));
+      return area;
    }
 
 }

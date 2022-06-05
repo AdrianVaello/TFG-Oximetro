@@ -100,12 +100,21 @@ public class DownloadExcel extends AppCompatActivity {
         cell.setCellValue("PVi (%)");
         cell.setCellStyle(cellStyle);
 
+        sheet.createRow(5);
+        cell= row.createCell(5);
+        cell.setCellValue("Area bajo curva");
+        cell.setCellStyle(cellStyle);
+
+        sheet.createRow(6);
+        cell= row.createCell(6);
+        cell.setCellValue("Valor cisura dicrótica");
+        cell.setCellStyle(cellStyle);
+
         for (int i= 1; i<Utilities.datosPulsioximetro.size(); i++){
             //VALORES DE LAS CASILLAS
             row= sheet.createRow(i);
             cell= row.createCell(0);
             cell.setCellValue(Utilities.datosPulsioximetro.get(i).get("Sp02"));
-
 
             cell = row.createCell(1);
             cell.setCellValue(Utilities.datosPulsioximetro.get(i).get("Pr"));
@@ -118,6 +127,12 @@ public class DownloadExcel extends AppCompatActivity {
 
             cell = row.createCell(4);
             cell.setCellValue(Utilities.datosPulsioximetro.get(i).get("PVi"));
+
+            cell = row.createCell(5);
+            cell.setCellValue(Utilities.datosPulsioximetro.get(i).get("Area"));
+
+            cell = row.createCell(6);
+            cell.setCellValue(Utilities.datosPulsioximetro.get(i).get("Cisura"));
         }
 
         Calendar c = Calendar.getInstance();

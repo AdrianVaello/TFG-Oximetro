@@ -287,6 +287,7 @@
             tools:layout_conversion_absoluteWidth="115dp"
             tools:layout_editor_absoluteX="235dp"
             tools:layout_editor_absoluteY="288dp" />
+
         <TextView
             android:id="@+id/textViewCisura"
             android:layout_width="match_parent"
@@ -295,7 +296,7 @@
             android:text="00"
             android:textAlignment="center"
             android:textColor="@color/colorTextoBlanco"
-            android:textSize="34sp" />
+            android:textSize="24sp" />
 
     </androidx.cardview.widget.CardView>
 
