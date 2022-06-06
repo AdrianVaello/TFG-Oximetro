@@ -89,8 +89,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Comenzamos escaneando dispositivos
         checkPermissionsAndConnect();
 
-
-
         mAddFab = findViewById(R.id.add_fab);
 
         mPacientesFab = findViewById(R.id.pacientes_fab);
@@ -243,49 +241,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void startScan() {
-        BleManager.getInstance().scan(new BleScanCallback() {
-            @Override
-            public void onScanStarted(boolean success) {
-                mDeviceAdapter.clearScanDevice();
-                mDeviceAdapter.notifyDataSetChanged();
-                img_loading.startAnimation(operatingAnim);
-                img_loading.setVisibility(View.VISIBLE);
-                btn_scan.setText(getString(R.string.stop_scan));
-
-            }
-
-            @Override
-            public void onLeScan(BleDevice bleDevice) {
-                super.onLeScan(bleDevice);
-            }
-
-            @Override
-            public void onScanning(BleDevice bleDevice) {
-                if (bleDevice!=null && "HJ-Narigmed".equals(bleDevice.getName())) {
-
-                    mDeviceAdapter.addDevice(bleDevice);
+            BleManager.getInstance().scan(new BleScanCallback() {
+                @Override
+                public void onScanStarted(boolean success) {
+                    mDeviceAdapter.clearScanDevice();
                     mDeviceAdapter.notifyDataSetChanged();
+                    img_loading.startAnimation(operatingAnim);
+                    img_loading.setVisibility(View.VISIBLE);
+                    btn_scan.setText(getString(R.string.stop_scan));
+
                 }
-                if(listView_device.getAdapter() != null){
-                    //De esta manera sabes si tu RecyclerView está vacío
-                    if(listView_device.getCount() != 0) {
-                        //Aquí muestras el mensaje
-                        noHayDispositivosList.setVisibility(View.GONE);
-                    }else{
-                        noHayDispositivosList.setVisibility(View.VISIBLE);
+
+                @Override
+                public void onLeScan(BleDevice bleDevice) {
+                    super.onLeScan(bleDevice);
+                }
+
+                @Override
+                public void onScanning(BleDevice bleDevice) {
+                    if (bleDevice!=null && "HJ-Narigmed".equals(bleDevice.getName())) {
+
+                        mDeviceAdapter.addDevice(bleDevice);
+                        mDeviceAdapter.notifyDataSetChanged();
                     }
+                    if(listView_device.getAdapter() != null){
+                        //De esta manera sabes si tu RecyclerView está vacío
+                        if(listView_device.getCount() != 0) {
+                            //Aquí muestras el mensaje
+                            noHayDispositivosList.setVisibility(View.GONE);
+                        }else{
+                            noHayDispositivosList.setVisibility(View.VISIBLE);
+                        }
+
+                    }
+                }
+
+                @Override
+                public void onScanFinished(List<BleDevice> scanResultList) {
+                    img_loading.clearAnimation();
+                    img_loading.setVisibility(View.INVISIBLE);
+                    btn_scan.setText(getString(R.string.start_scan));
 
                 }
-            }
+            });
+        }
 
-            @Override
-            public void onScanFinished(List<BleDevice> scanResultList) {
-                img_loading.clearAnimation();
-                img_loading.setVisibility(View.INVISIBLE);
-                btn_scan.setText(getString(R.string.start_scan));
-            }
-        });
-    }
+
 
     private void connect(final BleDevice bleDevice) {
         BleManager.getInstance().connect(bleDevice, new BleGattCallback() {
@@ -301,6 +302,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btn_scan.setText(getString(R.string.start_scan));
                 progressDialog.dismiss();
                 Toast.makeText(MainActivity.this, getString(R.string.connect_fail), Toast.LENGTH_LONG).show();
+
             }
 
             @Override
@@ -324,8 +326,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     Toast.makeText(MainActivity.this, getString(R.string.disconnected), Toast.LENGTH_LONG).show();
                     //Log.d(TAG, "Antes de quidrar" + Utilities.datosPulsioximetro);
-                    Intent intent = new Intent(MainActivity.this, //*OperationActivity.class);
-                            DownloadExcel.class);
+                    Intent intent = new Intent(MainActivity.this, DownloadExcel.class);
                     startActivity(intent);
                     ObserverManager.getInstance().notifyObserver(bleDevice);
                 }
@@ -455,5 +456,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
 
 }

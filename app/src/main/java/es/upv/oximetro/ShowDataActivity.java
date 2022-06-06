@@ -189,15 +189,13 @@ public class ShowDataActivity extends AppCompatActivity {
       yAxis.setDrawLabels(true);
 
       chart.getAxisRight().setEnabled(false);
-      //chart.getLegend().setEnabled(true);
-      //chart.getLegend().setExtra(ColorTemplate.VORDIPLOM_COLORS, new String[] { "Set1", "Set2", "Set3", "Set4", "Set5" });
 
       chart.getDescription().setEnabled(false);
       chart.setDrawBorders(false);
    }
 
    private void prepareDeviceServiceCharact() {
-      Log.d("BLE","88888888 Dentro de Service");
+      //Log.d("BLE","88888888 Dentro de Service");
       //Se inicializan las variables: bleDevice, bluetoothGattService y characteristic
       //a las que nos hemos de conectar para que nos envie los datos
       bleDevice = getIntent().getParcelableExtra(KEY_DATA);
@@ -222,7 +220,7 @@ public class ShowDataActivity extends AppCompatActivity {
             }
          }
 
-      Log.d("BLE","88888888"+ characteristicString+ " UUID "+ characteristicUUIDString);
+      //Log.d("BLE","88888888"+ characteristicString+ " UUID "+ characteristicUUIDString);
 
    }
 
@@ -521,11 +519,8 @@ public class ShowDataActivity extends AppCompatActivity {
       // añado resultado a la app
       anadirTextoPVi(String.format("%.1f", PVI));
 
-      //Log.d("Dato chart", "//// PVI= " +PVI + "ArrayA: "+ arrayAmplitudes+ " max: " +amplitudMax+ " min: "+ amplitudMin);
-
       // limpio los datos de la gràfica
       datosGrafica.clear();
-
 
       //maximoCisura = Double.NEGATIVE_INFINITY;
    }
@@ -558,7 +553,6 @@ public class ShowDataActivity extends AppCompatActivity {
             maximoCisura = ventana.get(i);
          }
       }
-
       return maximoCisura;
    }
 
@@ -567,38 +561,30 @@ public class ShowDataActivity extends AppCompatActivity {
       double difCisuraMin = Math.abs(min - cisura);
 
       if (difCisuraMax > difCisuraMin) {
-         Log.d("Dato chart", "Vasodilatación  Max: " + max + " Min: " + min + " " + cisura);
+         //Log.d("Dato chart", "Vasodilatación  Max: " + max + " Min: " + min + " " + cisura);
          tipoVaso="Vasodilatación";
          tv_Cisura.setText(tipoVaso);
       } else {
-         Log.d("Dato chart", "Vasocontricción  Max: " + max + " Min: " + min + " " + cisura);
+         //Log.d("Dato chart", "Vasocontricción  Max: " + max + " Min: " + min + " " + cisura);
          tipoVaso="Vasocontricción";
          tv_Cisura.setText(tipoVaso);
       }
    }
 
    public double calcularArea( ArrayList<Double> datos, double base) {
-      area = 0.0;
-      // habría que calcular el tamaño del rectángulo (Tiempo / N)
-
-      //double base = 0.001;
+      double area = 0.0;
 
       double primerPunto = datos.get(0);
       double ultimoPunto = datos.get(datos.size() - 1);
       double puntoBase = (primerPunto > ultimoPunto) ? ultimoPunto : primerPunto;
-      double difBase = Math.abs(primerPunto - ultimoPunto);
 
       for (int i = 0; i < datos.size(); i++) {
-         if (datos.get(i) > puntoBase) {
-            area += base * (datos.get(i) + difBase);
-         } else {
-            area += base * datos.get(i);
-         }
+         double alturaPuntoABase = Math.abs(datos.get(i) - puntoBase);
+         area += base * alturaPuntoABase;
       }
       tv_Area.setText(String.format("%.2f", area));
       return area;
    }
-
 
    @Override
    public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -622,10 +608,9 @@ public class ShowDataActivity extends AppCompatActivity {
       bleDevice = savedInstanceState.getParcelable(BLEDEVICE_KEY);
       characteristicString = savedInstanceState.getString("characteristicString");
       characteristicUUIDString = savedInstanceState.getString("characteristicUUIDString");
-      Log.d("BLE","88888888 Restore "+ characteristicString +" "+characteristicUUIDString);
+      //Log.d("BLE","88888888 Restore "+ characteristicString +" "+characteristicUUIDString);
       cambioActivity = savedInstanceState.getBoolean("cambioActivity");
       primeraVezCalculoPVi=savedInstanceState.getBoolean("primeraVezPVI");
 
    }
-
 }

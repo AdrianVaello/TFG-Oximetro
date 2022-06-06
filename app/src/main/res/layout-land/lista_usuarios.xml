@@ -102,35 +102,6 @@
         app:layout_constraintTop_toBottomOf="@+id/relativeLayoutFiltro">
 
         <TextView
-            android:id="@+id/textView9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/por_filtrar"
-            android:textColor="@color/colorTexto"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/editTextNombrePersona"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/colorTextoBlanco"
-            android:ems="10"
-            android:hint="@string/nombre_paciente_hint_filtro"
-            android:inputType="textPersonName"
-            android:minHeight="48dp"
-            android:textColor="@color/colorTextoBlanco"
-            android:textColorHint="@color/colorHint"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView10"
-            app:layout_constraintTop_toBottomOf="@+id/textView9" />
-
-        <TextView
             android:id="@+id/textView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -155,19 +126,21 @@
             app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
         <EditText
-            android:id="@+id/editTextFechaFiltro"
+            android:id="@+id/editTextNombrePersona"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:backgroundTint="@color/colorTextoBlanco"
             android:ems="10"
-            android:hint="@string/fecha_hint_filtro"
+            android:hint="@string/nombre_paciente_hint_filtro"
+            android:inputType="textPersonName"
             android:minHeight="48dp"
             android:textColor="@color/colorTextoBlanco"
             android:textColorHint="@color/colorHint"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView10"
+            app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
         <ImageView
             android:id="@+id/imageViewFechaFiltro"
@@ -190,6 +163,33 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextFechaFiltro" />
+
+        <EditText
+            android:id="@+id/editTextFechaFiltro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/colorTextoBlanco"
+            android:ems="10"
+            android:hint="@string/fecha_hint_filtro"
+            android:minHeight="48dp"
+            android:textColor="@color/colorTextoBlanco"
+            android:textColorHint="@color/colorHint"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/por_filtrar"
+            android:textColor="@color/colorTexto"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
