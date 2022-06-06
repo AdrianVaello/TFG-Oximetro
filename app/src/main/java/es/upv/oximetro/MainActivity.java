@@ -85,8 +85,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setReConnectCount(1, 5000)
                 .setConnectOverTime(20000)
                 .setOperateTimeout(5000);
+
         //Comenzamos escaneando dispositivos
         checkPermissionsAndConnect();
+
+
 
         mAddFab = findViewById(R.id.add_fab);
 

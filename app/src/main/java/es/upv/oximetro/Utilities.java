@@ -8,4 +8,7 @@ import java.util.Map;
 public class Utilities {
 
     public static List<HashMap<String, Double>> datosPulsioximetro = new ArrayList<HashMap<String, Double>>();
+
+    public static boolean giroPantallaShowData=false;
+    public static boolean giroPantallaMain=false;
 }

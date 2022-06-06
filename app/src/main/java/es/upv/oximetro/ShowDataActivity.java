@@ -4,7 +4,10 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -36,10 +39,16 @@ public class ShowDataActivity extends AppCompatActivity {
 
    private static final String TAG = MainActivity.class.getSimpleName();
    public static final String KEY_DATA = "key_data";
+   public static final String BLEDEVICE_KEY = "Ble_Device_Key";
+   public static final String GATT_KEY = "Gatt_Key";
 
    private BleDevice bleDevice;
    private BluetoothGattService bluetoothGattService;
    private BluetoothGattCharacteristic characteristic;
+   private String characteristicString;
+   private String characteristicUUIDString;
+   public BluetoothGatt gatt;
+   public BleManager instanciaBluetooth;
 
    private TextView tv_spo2, tv_pr, tv_rr, tv_pi, tv_Cargando_Pvi, tv_PmaxPmin, tv_Cisura, tv_Area;
    private LineChart chart;
@@ -68,6 +77,10 @@ public class ShowDataActivity extends AppCompatActivity {
    Double maximoCisura = Double.NEGATIVE_INFINITY;
    Double area=0.0;
 
+   public static Boolean cambioActivity=false;
+
+
+
    //Variables globales para representar la gráfica
    //Se mostrarán los últimos 5 segundos (SHOW_TIME)
    //El refresco de la gráfica se realiza con un barrido de izq. a der.
@@ -81,20 +94,29 @@ public class ShowDataActivity extends AppCompatActivity {
 
    List<Entry> entriesLeft = new ArrayList<>();
    List<Entry> entriesRight = new ArrayList<>();
-   long startTime = System.currentTimeMillis();
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_show_data);
+      primeraVezCalculoPVi = true;
+
+      if (savedInstanceState != null) {
+         onRestoreInstanceState(savedInstanceState);
+      }
       getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
       initView();
-      prepareDeviceServiceCharact();
 
       tiempoInicial = System.currentTimeMillis();
-      primeraVezCalculoPVi = true;
+
       tv_Cargando_Pvi.setText(R.string.cargando_datos_pvi);
+      Log.d("BLE","88888888"+ characteristicString+ " UUID "+ characteristicUUIDString);
+      Log.d("BLE","88888888"+ cambioActivity);
+      if(characteristicUUIDString== null && characteristicString==null) {
+         prepareDeviceServiceCharact();
+      }
+
    }
 
    private void showChart() {
@@ -175,20 +197,33 @@ public class ShowDataActivity extends AppCompatActivity {
    }
 
    private void prepareDeviceServiceCharact() {
+      Log.d("BLE","88888888 Dentro de Service");
       //Se inicializan las variables: bleDevice, bluetoothGattService y characteristic
       //a las que nos hemos de conectar para que nos envie los datos
       bleDevice = getIntent().getParcelableExtra(KEY_DATA);
-      if (bleDevice == null)
+      //Log.d("BLE","88888888"+bleDevice);
+      if (bleDevice == null){
          finish();
-      BluetoothGatt gatt = BleManager.getInstance().getBluetoothGatt(bleDevice);
-      for (BluetoothGattService service : gatt.getServices()) {
-         if (service.getUuid().toString().equals("0000fff0-0000-1000-8000-00805f9b34fb")) {
-            bluetoothGattService = service;
-            for (BluetoothGattCharacteristic charact : service.getCharacteristics())
-               if (charact.getUuid().toString().equals("0000fff1-0000-1000-8000-00805f9b34fb"))
-                  characteristic = charact;
-         }
       }
+      instanciaBluetooth=BleManager.getInstance();
+      gatt = instanciaBluetooth.getBluetoothGatt(bleDevice);
+
+
+         //Log.d("BLE","88888888"+gatt + " Instancia "+ instanciaBluetooth);
+         for (BluetoothGattService service : gatt.getServices()) {
+            if (service.getUuid().toString().equals("0000fff0-0000-1000-8000-00805f9b34fb")) {
+               bluetoothGattService = service;
+               for (BluetoothGattCharacteristic charact : service.getCharacteristics())
+                  if (charact.getUuid().toString().equals("0000fff1-0000-1000-8000-00805f9b34fb")){
+                     characteristic = charact;
+                     characteristicString=characteristic.getService().getUuid().toString();
+                     characteristicUUIDString=characteristic.getUuid().toString();
+                  }
+            }
+         }
+
+      Log.d("BLE","88888888"+ characteristicString+ " UUID "+ characteristicUUIDString);
+
    }
 
    @Override
@@ -202,8 +237,8 @@ public class ShowDataActivity extends AppCompatActivity {
       //tv_log.setMovementMethod(ScrollingMovementMethod.getInstance());
       BleManager.getInstance().notify(
               bleDevice,
-              characteristic.getService().getUuid().toString(),
-              characteristic.getUuid().toString(),
+              characteristicString,
+              characteristicUUIDString,
               new BleNotifyCallback() {
                  @Override
                  public void onNotifySuccess() {
@@ -211,12 +246,12 @@ public class ShowDataActivity extends AppCompatActivity {
 
                  @Override
                  public void onNotifyFailure(final BleException exception) {
-                    Log.e(TAG, exception.toString());
+                    Log.e(TAG, "Desconectado");
                  }
 
                  @Override
                  public void onCharacteristicChanged(byte[] data) {
-                    Log.d(TAG, "Valores: "+ Arrays.toString(data));
+                    //Log.d(TAG, "Valores: "+ Arrays.toString(data));
                     //Log.d(TAG, "Valores :"+System.currentTimeMillis() + "; " + HexUtil.formatHexString(characteristic.getValue(), true));
                     writeFrames(data);
 
@@ -298,6 +333,7 @@ public class ShowDataActivity extends AppCompatActivity {
                }
 
                Utilities.datosPulsioximetro.add(hashDatos);
+               //Log.d(TAG, "Valores: "+ Utilities.datosPulsioximetro);
             }
 
             tv_spo2.setText(valueOf(spO2));
@@ -326,12 +362,12 @@ public class ShowDataActivity extends AppCompatActivity {
       super.onStop();
    }
 
-   @Override
+   /*@Override
    protected void onDestroy() {
       super.onDestroy();
       BleManager.getInstance().disconnectAllDevice();
       BleManager.getInstance().destroy();
-   }
+   }*/
 
    @SuppressLint("DefaultLocale")
    public void calcularPVi(ArrayList<Double> datos) {
@@ -561,6 +597,35 @@ public class ShowDataActivity extends AppCompatActivity {
       }
       tv_Area.setText(String.format("%.2f", area));
       return area;
+   }
+
+
+   @Override
+   public void onSaveInstanceState(Bundle savedInstanceState) {
+      // Save the user's current game state
+
+      savedInstanceState.putParcelable(BLEDEVICE_KEY, bleDevice);
+      savedInstanceState.putString("characteristicString", characteristicString);
+      savedInstanceState.putString("characteristicUUIDString", characteristicUUIDString);
+      savedInstanceState.putBoolean("cambioActivity",true);
+      savedInstanceState.putBoolean("primeraVezPVI",false);
+
+      // Always call the superclass so it can save the view hierarchy state
+      super.onSaveInstanceState(savedInstanceState);
+   }
+
+   public void onRestoreInstanceState(Bundle savedInstanceState) {
+      // Always call the superclass so it can restore the view hierarchy
+      super.onRestoreInstanceState(savedInstanceState);
+
+      // Restore state members from saved instance
+      bleDevice = savedInstanceState.getParcelable(BLEDEVICE_KEY);
+      characteristicString = savedInstanceState.getString("characteristicString");
+      characteristicUUIDString = savedInstanceState.getString("characteristicUUIDString");
+      Log.d("BLE","88888888 Restore "+ characteristicString +" "+characteristicUUIDString);
+      cambioActivity = savedInstanceState.getBoolean("cambioActivity");
+      primeraVezCalculoPVi=savedInstanceState.getBoolean("primeraVezPVI");
+
    }
 
 }

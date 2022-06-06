@@ -69,5 +69,7 @@
     <string name="descargar_datos">Descargar datos</string>
     <string name="consejos_title">CONSEJOS</string>
     <string name="no_hay_pacientes_guardados">No hay pacientes guardados.</string>
+    <string name="area_bajo_la_curva">Área bajo la curva:</string>
+    <string name="cisura_dicrotica_text">Cisura dicrótica:</string>
 
 </resources>
