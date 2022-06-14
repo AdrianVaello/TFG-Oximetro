@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ActivityAyuda extends AppCompatActivity {
 
+    // Variables de la interfaz
     ImageView bt_volver_atras;
 
     @Override
@@ -17,6 +18,7 @@ public class ActivityAyuda extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ayuda);
 
+        // Se añade la funcionalidad al boton de volver atrás
         bt_volver_atras= findViewById(R.id.bt_volver_atras2);
         bt_volver_atras.setOnClickListener(new View.OnClickListener() {
             @Override

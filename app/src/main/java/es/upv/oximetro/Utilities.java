@@ -3,12 +3,9 @@ package es.upv.oximetro;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Utilities {
-
+    // Variable para pasar los datos del pulsioximetro guardados entre Show data Activity y la actividad para descargar el excel
     public static List<HashMap<String, Double>> datosPulsioximetro = new ArrayList<HashMap<String, Double>>();
 
-    public static boolean giroPantallaShowData=false;
-    public static boolean giroPantallaMain=false;
 }

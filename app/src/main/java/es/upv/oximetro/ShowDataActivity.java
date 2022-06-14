@@ -1,16 +1,17 @@
 package es.upv.oximetro;
 
+import static java.lang.String.valueOf;
+import static java.util.Arrays.copyOfRange;
+
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -21,27 +22,25 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import androidx.appcompat.app.AppCompatActivity;
 import es.upv.fastble.BleManager;
 import es.upv.fastble.callback.BleNotifyCallback;
 import es.upv.fastble.data.BleDevice;
 import es.upv.fastble.exception.BleException;
-import static java.lang.String.valueOf;
-import static java.util.Arrays.copyOfRange;
 
 public class ShowDataActivity extends AppCompatActivity {
 
+   // Variables estaticas
    private static final String TAG = MainActivity.class.getSimpleName();
    public static final String KEY_DATA = "key_data";
    public static final String BLEDEVICE_KEY = "Ble_Device_Key";
    public static final String GATT_KEY = "Gatt_Key";
 
+   // Variables usadas para la conexión bluetooth
    private BleDevice bleDevice;
    private BluetoothGattService bluetoothGattService;
    private BluetoothGattCharacteristic characteristic;
@@ -50,36 +49,32 @@ public class ShowDataActivity extends AppCompatActivity {
    public BluetoothGatt gatt;
    public BleManager instanciaBluetooth;
 
-   private TextView tv_spo2, tv_pr, tv_rr, tv_pi, tv_Cargando_Pvi, tv_PmaxPmin, tv_Cisura, tv_Area;
+   // Variables para los textos y la graficas
+   private TextView tv_spo2, tv_pr, tv_rr, tv_pi, tv_Cargando_Pvi, tv_PmaxPmin, tv_Cisura, tv_Area, tvPVi;
    private LineChart chart;
 
+   // Variables usadas para el tiempo
    private long time;
+   Long tiempoInicial;
+   Long tiempoFinal;
+   int cicloMuestras = 4000;
+
+
+   // Variables usadas para los diferentes calculos
+   public Double PVI = 0.0;
+   String tipoVaso;
+   Double maximoCisura = Double.NEGATIVE_INFINITY;
+   Double area=0.0;
+
+   // Resto variables
    private String fileName;
    private FileOutputStream f1, f2;
 
    public ArrayList<Double> datosGrafica = new ArrayList<Double>();
-
-   TextView tvPVi;
-
-   Long tiempoInicial;
-   Long tiempoFinal;
-
-   int cicloMuestras = 4000;
-
-   public Double PVI = 0.0;
-
    public boolean primeraVezCalculoPVi;
-
-   YAxis yAxis;
-   String tipoVaso;
-
-   //************************************
-   Double maximoCisura = Double.NEGATIVE_INFINITY;
-   Double area=0.0;
-
    public static Boolean cambioActivity=false;
 
-
+   YAxis yAxis;
 
    //Variables globales para representar la gráfica
    //Se mostrarán los últimos 5 segundos (SHOW_TIME)
@@ -88,7 +83,7 @@ public class ShowDataActivity extends AppCompatActivity {
    //La gráfica se representa en dos partes, la izq. y la der.
    //(entriesLeft y entriesRight)
 
-   public static final int SHOW_TIME = 5000;   // Tiempo a mostrar en la gráfica (mseg)
+   public static final int SHOW_TIME = 4000;   // Tiempo a mostrar en la gráfica (mseg)
    public static final int SAMPLE_PERIOD = 22; // Cada cuantos mseg llega una muestra
    public static final int SAMPLES_IN_GRAPH = SHOW_TIME / SAMPLE_PERIOD; // # de muestras en la gráfica (227)
 
@@ -108,19 +103,19 @@ public class ShowDataActivity extends AppCompatActivity {
 
       initView();
 
+      // Tiempo inicial cuando se crea la pantalla
       tiempoInicial = System.currentTimeMillis();
 
       tv_Cargando_Pvi.setText(R.string.cargando_datos_pvi);
-      Log.d("BLE","88888888"+ characteristicString+ " UUID "+ characteristicUUIDString);
-      Log.d("BLE","88888888"+ cambioActivity);
       if(characteristicUUIDString== null && characteristicString==null) {
          prepareDeviceServiceCharact();
       }
-
    }
 
+   /* -------------------------------------
+   Se establece la configuración de los parámetros de la gráfica
+    ---------------------------------------*/
    private void showChart() {
-
       LineDataSet rightDataSet = new LineDataSet(entriesRight, "");
       rightDataSet.setDrawCircles(false);
       rightDataSet.setDrawValues(false);
@@ -139,6 +134,9 @@ public class ShowDataActivity extends AppCompatActivity {
       chart.setBorderColor(R.color.colorTextoBlanco);
    }
 
+   /* -------------------------------------
+   Función para añadir los datos a la gráfica
+    ---------------------------------------*/
    private void newRawData(float value, long time) {
       //Llega un nuevo dato a visualizar
       long relativeTime = time % SHOW_TIME; //Se representa el módulo 5000 del tiempo
@@ -165,6 +163,9 @@ public class ShowDataActivity extends AppCompatActivity {
       showChart();
    }
 
+   /* -------------------------------------
+   Función para inicializar todas las variables
+   ---------------------------------------*/
    private void initView() {
       tv_spo2 = (TextView) findViewById(R.id.tv_spo2);
       tv_pr = (TextView) findViewById(R.id.tv_pr);
@@ -173,7 +174,6 @@ public class ShowDataActivity extends AppCompatActivity {
       tv_Cargando_Pvi = (TextView) findViewById(R.id.tvCargandoPVi);
       tvPVi = (TextView) findViewById(R.id.tvPVi);
       tv_PmaxPmin = (TextView) findViewById(R.id.tv_PmaxPmin);
-
       tv_Cisura = (TextView) findViewById(R.id.textViewCisura);
       tv_Area= findViewById(R.id.textViewArea);
 
@@ -181,33 +181,30 @@ public class ShowDataActivity extends AppCompatActivity {
       chart = (LineChart) findViewById(R.id.chart_heart);
       XAxis xAxis = chart.getXAxis();
       xAxis.setAxisMinimum(0);
-      xAxis.setAxisMaximum(5000);
+      xAxis.setAxisMaximum(cicloMuestras);
       xAxis.setDrawLabels(true);
       yAxis = chart.getAxisLeft();
       yAxis.setAxisMaximum(100);
       yAxis.setAxisMinimum(0);
       yAxis.setDrawLabels(true);
-
       chart.getAxisRight().setEnabled(false);
-
       chart.getDescription().setEnabled(false);
       chart.setDrawBorders(false);
    }
 
+   /* -------------------------------------
+   Función para conectarnos al dispositivo
+   ---------------------------------------*/
    private void prepareDeviceServiceCharact() {
-      //Log.d("BLE","88888888 Dentro de Service");
       //Se inicializan las variables: bleDevice, bluetoothGattService y characteristic
       //a las que nos hemos de conectar para que nos envie los datos
       bleDevice = getIntent().getParcelableExtra(KEY_DATA);
-      //Log.d("BLE","88888888"+bleDevice);
       if (bleDevice == null){
          finish();
       }
       instanciaBluetooth=BleManager.getInstance();
       gatt = instanciaBluetooth.getBluetoothGatt(bleDevice);
 
-
-         //Log.d("BLE","88888888"+gatt + " Instancia "+ instanciaBluetooth);
          for (BluetoothGattService service : gatt.getServices()) {
             if (service.getUuid().toString().equals("0000fff0-0000-1000-8000-00805f9b34fb")) {
                bluetoothGattService = service;
@@ -219,9 +216,6 @@ public class ShowDataActivity extends AppCompatActivity {
                   }
             }
          }
-
-      //Log.d("BLE","88888888"+ characteristicString+ " UUID "+ characteristicUUIDString);
-
    }
 
    @Override
@@ -230,9 +224,10 @@ public class ShowDataActivity extends AppCompatActivity {
       showData();
    }
 
+   /* -------------------------------------
+   Función que recibe los datos del pulsioximetro
+   ---------------------------------------*/
    public void showData() {
-      // final int charaProp = CharacteristicOperationFragment.PROPERTY_NOTIFY;
-      //tv_log.setMovementMethod(ScrollingMovementMethod.getInstance());
       BleManager.getInstance().notify(
               bleDevice,
               characteristicString,
@@ -249,10 +244,7 @@ public class ShowDataActivity extends AppCompatActivity {
 
                  @Override
                  public void onCharacteristicChanged(byte[] data) {
-                    //Log.d(TAG, "Valores: "+ Arrays.toString(data));
-                    //Log.d(TAG, "Valores :"+System.currentTimeMillis() + "; " + HexUtil.formatHexString(characteristic.getValue(), true));
                     writeFrames(data);
-
                  }
               });
    }
@@ -265,6 +257,9 @@ public class ShowDataActivity extends AppCompatActivity {
       }
    }
 
+   /* -------------------------------------
+   Función donde se analiza cada frame de datos que se recibe del pulsioxímetro
+   ---------------------------------------*/
    void writeSingleFrame(byte[] data) {
       String s = "" + time;
       try {
@@ -278,33 +273,36 @@ public class ShowDataActivity extends AppCompatActivity {
             //Se pasa de complemento a 2 a decimal
             float numeroDecimal = (~data[3]) + 1;
 
+            //Se inicializa el tiempo final
             tiempoFinal = System.currentTimeMillis();
+
+            //La primera vez que se conecta no calcula el valor de PVi para evitar datos poco precisos
             if (!primeraVezCalculoPVi) {
                datosGrafica.add((double) numeroDecimal);
-
+               // Despues de 4 segundos calcula el valor de PVi
                if (tiempoInicial + cicloMuestras <= tiempoFinal) {
                   calcularPVi(datosGrafica);
                   tiempoInicial = System.currentTimeMillis();
                   tv_Cargando_Pvi.setText("");
 
                }
-
             } else if (tiempoInicial + cicloMuestras <= tiempoFinal) {
                tiempoInicial = System.currentTimeMillis();
                primeraVezCalculoPVi = false;
 
             }
 
+            // Se normalizan los datos de 0 a 100
             float datoChart = Normalization(numeroDecimal, -49, 49, 0, 100);
+            // Datos enviados para ser mostrados en la gráfica
             newRawData(datoChart, System.currentTimeMillis());
 
          } else if (data[1] == 11 && (data[2] == -127/*0x81*/)) {
-            //Log.d("Dato chart", ",,,,data2 "+data[8]);
+
+            // Se obtienen todas las variables dadas por el pulsioxímetro
             int spO2 = data[3] & 0xff;
 
             int pr = (data[4] & 0xff) + (data[5] & 0xff) * 256;
-
-            //int pr = data[4] & 0xff;
 
             int rr = data[6];
             int pi = (data[7] & 0xff) + (data[8] & 0xff) * 256;
@@ -314,6 +312,7 @@ public class ShowDataActivity extends AppCompatActivity {
             s += ", " + spO2 + ", " + pr + ", " + rr + ", " + pi + ", " + unk + "\n";
 
             if (spO2!=0 || pr!=0 || rr!=0 || pi!=0) {
+               // Se añaden los datos en la lista para ser enviados al excel
                HashMap<String, Double> hashDatos = new HashMap<String, Double>();
 
                hashDatos.put("Sp02", (double) spO2);
@@ -322,6 +321,7 @@ public class ShowDataActivity extends AppCompatActivity {
                hashDatos.put("Pi", (double) pi);
                hashDatos.put("PVi", PVI);
                hashDatos.put("Area", area);
+
                if (tipoVaso!=null){
                   if (tipoVaso.equals("Vasodilatacion")){
                      hashDatos.put("Cisura",0.0 );
@@ -329,15 +329,15 @@ public class ShowDataActivity extends AppCompatActivity {
                      hashDatos.put("Cisura",1.0 );
                   }
                }
-
                Utilities.datosPulsioximetro.add(hashDatos);
-               //Log.d(TAG, "Valores: "+ Utilities.datosPulsioximetro);
             }
 
+            // Se muestran los datos en el TextView
             tv_spo2.setText(valueOf(spO2));
             tv_pr.setText(valueOf(pr));
             tv_rr.setText(valueOf(rr));
             tv_pi.setText(String.format("%.2f", (0.0 + pi) / 1000));
+
             if (fileName!=null) f2.write(s.getBytes());
          } else {
             Log.e(TAG, "ERROR: Trama desconocida");
@@ -367,10 +367,12 @@ public class ShowDataActivity extends AppCompatActivity {
       BleManager.getInstance().destroy();
    }*/
 
+   /* -------------------------------------
+   Función para calcular el valor de PVi
+   Params: Array de los datos recogidos en 4 segundos
+   ---------------------------------------*/
    @SuppressLint("DefaultLocale")
    public void calcularPVi(ArrayList<Double> datos) {
-      //Log.d("Dato chart", "////An"+datos);
-
       ArrayList<Double> arrayAmplitudes = new ArrayList<Double>();
 
       Double maxAmp = Double.NEGATIVE_INFINITY;
@@ -389,19 +391,16 @@ public class ShowDataActivity extends AppCompatActivity {
 
       Double cisuraMax = 0.0;
 
-      //************************************************************************
       // para calcular el área deberíamos guardar los datos que vamos a utilizar
       // del primer punto hasta que encontremos un minAmp que pasará a ser
       // el primer punto de la siguiente área
-      //************************************************************************
+
       ArrayList<Double> arrayPuntosArea = new ArrayList<Double>();
 
       double tamanyoBase =  ((double) cicloMuestras / datos.size()) / 1000.0;
-      Log.d("Area", "---------------------- "+tamanyoBase + " Size "+datos.size());
+
       // obtengo los datos leídos
       for (int i = 0; i < datos.size(); i++) {
-
-         //************************************************
          // vamos rellenando el array para calcular el área
          arrayPuntosArea.add(datos.get(i));
 
@@ -432,7 +431,6 @@ public class ShowDataActivity extends AppCompatActivity {
                valorSumaAux = valorSuma;
                contadorPrimeraVez = false;
             } else {
-               //Log.d("Dato chart", "//// Ventana: " + ventana +" Suma: "+valorSuma +" Suma aux:" + valorSumaAux );
 
                // como ya tengo dos sumas de ventanas compruebo la dirección de la curva la primera vez
                if (contadorInicializarTendencia) {
@@ -447,18 +445,7 @@ public class ShowDataActivity extends AppCompatActivity {
                // calculo la amplitud cuando cambia la tendencia
                if (valorSuma > valorSumaAux && !subiendo) {
 
-                  //Log.d("Dato chart", "//// maxAmp-minAmp: " + (maxAmp-minAmp) + " abs(maxAmp-minAmp): " + Math.abs(maxAmp-minAmp));
-                  //*******************************************************************************************************************
-                  //Log.d("Dato chart", "Maximo tiempo: "+tiempoEncontrarMax+ " Minimo tiempo: "+tiempoEncontrarMin);
-
-                  double area = calcularArea(arrayPuntosArea, tamanyoBase);
-                  Log.d("Area", "Area = "+area);
-
-                  //
-                  // hacemos con area lo que tengamos que hacer
-                  Log.d("Area", "Area de " + arrayPuntosArea.get(0) + " a "
-                          + arrayPuntosArea.get(arrayPuntosArea.size() - 1)
-                          + " = " + area);
+                  area = calcularArea(arrayPuntosArea, tamanyoBase);
 
                   arrayPuntosArea.clear();
 
@@ -475,15 +462,11 @@ public class ShowDataActivity extends AppCompatActivity {
 
                if (valorSuma < valorSumaAux) {
                   subiendo = false;
-
                }
 
-               //*************************************************
                // mientras está bajando calculo valor cisura
-               //*************************************************
                if (!subiendo) {
                   cisuraMax = calcularValorCisura(ventanaCisura);
-                  Log.d("Dato chart", "//// cisuraMax: " + cisuraMax + " MaxAmp: " + maxAmp + " MinAmp: " + minAmp);
 
                   if (cisuraMax != Double.NEGATIVE_INFINITY) {
                      calcularVasos(maxAmp, minAmp, cisuraMax);
@@ -493,9 +476,6 @@ public class ShowDataActivity extends AppCompatActivity {
                // actualizo valorSumaAux con la suma actual
                valorSumaAux = valorSuma;
             }
-
-            /*Log.d("Dato chart", "//// " + " Max: "+maximoRelativo + " Min: "+minimoRelativo +
-                    " MaxAMp "+maxAmp+ " MinAmp "+minAmp+ " Amplitud "+arrayAmplitudes +" Subiendo: " +subiendo);*/
 
             // elimino primer elemento de la cola
             cola.remove();
@@ -525,13 +505,26 @@ public class ShowDataActivity extends AppCompatActivity {
       //maximoCisura = Double.NEGATIVE_INFINITY;
    }
 
+   /* -------------------------------------
+   Muestra el texto en el text View
+   Params: Texto a mostrar
+   ---------------------------------------*/
    public void anadirTextoPVi(String texto) {
       tvPVi.setText(texto);
    }
 
+   /* -------------------------------------
+   Muestra el texto en el text View
+   Params: Texto a mostrar
+   ---------------------------------------*/
    public void anadirTextoPmaxPmin(String texto) {
       tv_PmaxPmin.setText("Amplitud de PI = " + texto);
    }
+
+   /* -------------------------------------
+   Calcula el valor de la suma de la ventana
+   Params: Array con los valores de la ventana
+   ---------------------------------------*/
 
    private Double sumaVentana(ArrayList<Double> ventana) {
       Double suma = 0.0;
@@ -541,10 +534,19 @@ public class ShowDataActivity extends AppCompatActivity {
       return suma;
    }
 
+   /* -------------------------------------
+   Función para normalizar los valores de la gráfica
+   Params: valor a normalizar, antiguo mínimo, antiguo máximo, nuevo mínimo, nuevo máximo
+   ---------------------------------------*/
    public float Normalization(double v, double Min, double Max,
                               double newMin, double newMax) {
       return (float) ((v - Min) / (Max - Min) * (newMax - newMin) + newMin);
    }
+
+   /* -------------------------------------
+   Calcula el valor de la cisura
+   Params: Array con los valores de la ventana
+   ---------------------------------------*/
 
    public Double calcularValorCisura(ArrayList<Double> ventana) {
 
@@ -556,23 +558,29 @@ public class ShowDataActivity extends AppCompatActivity {
       return maximoCisura;
    }
 
+   /* -------------------------------------
+    Calcula si es vasoconstricción o vasodilatación
+    Params: máximo, mínimo, máximo relativo de la cisura
+   ---------------------------------------*/
    public void calcularVasos(double max,double min, double cisura) {
       double difCisuraMax = Math.abs(max - cisura);
       double difCisuraMin = Math.abs(min - cisura);
 
       if (difCisuraMax > difCisuraMin) {
-         //Log.d("Dato chart", "Vasodilatación  Max: " + max + " Min: " + min + " " + cisura);
          tipoVaso="Vasodilatación";
          tv_Cisura.setText(tipoVaso);
       } else {
-         //Log.d("Dato chart", "Vasocontricción  Max: " + max + " Min: " + min + " " + cisura);
          tipoVaso="Vasocontricción";
          tv_Cisura.setText(tipoVaso);
       }
    }
 
+   /* -------------------------------------
+   Calcula el valor del área bajo la curva
+   Params: Array con los datos de la curva, valor de la base
+   ---------------------------------------*/
    public double calcularArea( ArrayList<Double> datos, double base) {
-      double area = 0.0;
+      area = 0.0;
 
       double primerPunto = datos.get(0);
       double ultimoPunto = datos.get(datos.size() - 1);
@@ -586,31 +594,37 @@ public class ShowDataActivity extends AppCompatActivity {
       return area;
    }
 
+   /* -------------------------------------
+   Función para guardar el estado de la pantalla en caso de cambiar de horizontal a vertical
+   Params: Instacia del estado actual
+   ---------------------------------------*/
    @Override
    public void onSaveInstanceState(Bundle savedInstanceState) {
-      // Save the user's current game state
 
+      //Dispositivo bluetooth conectado
       savedInstanceState.putParcelable(BLEDEVICE_KEY, bleDevice);
+      //Características del dispositivo bluetooth conectado
       savedInstanceState.putString("characteristicString", characteristicString);
       savedInstanceState.putString("characteristicUUIDString", characteristicUUIDString);
+
       savedInstanceState.putBoolean("cambioActivity",true);
       savedInstanceState.putBoolean("primeraVezPVI",false);
 
-      // Always call the superclass so it can save the view hierarchy state
       super.onSaveInstanceState(savedInstanceState);
    }
 
+   /* -------------------------------------
+   Función para recuperar el estado de la pantalla en caso de cambiar de horizontal a vertical
+   Params: Instacia del estado actual
+   ---------------------------------------*/
    public void onRestoreInstanceState(Bundle savedInstanceState) {
-      // Always call the superclass so it can restore the view hierarchy
+
       super.onRestoreInstanceState(savedInstanceState);
 
-      // Restore state members from saved instance
       bleDevice = savedInstanceState.getParcelable(BLEDEVICE_KEY);
       characteristicString = savedInstanceState.getString("characteristicString");
       characteristicUUIDString = savedInstanceState.getString("characteristicUUIDString");
-      //Log.d("BLE","88888888 Restore "+ characteristicString +" "+characteristicUUIDString);
       cambioActivity = savedInstanceState.getBoolean("cambioActivity");
       primeraVezCalculoPVi=savedInstanceState.getBoolean("primeraVezPVI");
-
    }
 }

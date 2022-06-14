@@ -13,8 +13,6 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
-
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -22,54 +20,42 @@ import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import es.upv.oximetro.adapter.DeviceAdapter;
-import es.upv.oximetro.comm.ObserverManager;
+import java.util.ArrayList;
+import java.util.List;
 import es.upv.fastble.BleManager;
 import es.upv.fastble.callback.BleGattCallback;
-import es.upv.fastble.callback.BleMtuChangedCallback;
-import es.upv.fastble.callback.BleRssiCallback;
 import es.upv.fastble.callback.BleScanCallback;
 import es.upv.fastble.data.BleDevice;
 import es.upv.fastble.exception.BleException;
-
-import java.util.ArrayList;
-import java.util.List;
+import es.upv.oximetro.adapter.DeviceAdapter;
+import es.upv.oximetro.comm.ObserverManager;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    // Variables estaticas
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_CODE_OPEN_GPS = 1;
     private static final int REQUEST_CODE_PERMISSION_LOCATION = 2;
     private static final int REQUEST_ENABLE_BT = 3;
+    public static final String KEY_DATA = "key_data";
 
+    // Variables para la interfaz
     private Button btn_scan;
-    //private EditText et_name, et_mac, et_uuid;
-    private Switch sw_auto;
     private ImageView img_loading;
-
     private Animation operatingAnim;
     private DeviceAdapter mDeviceAdapter;
     private ProgressDialog progressDialog;
-
     TextView textoVacio;
     ListView listView_device;
-
-    public static final String KEY_DATA = "key_data";
-
     FloatingActionButton mAddFab, mPacientesFab, mAyudaFab;
-
     TextView pacientesText, ayudaText, noHayDispositivosList;
 
     Boolean isAllFabsVisible;
@@ -79,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+
         BleManager.getInstance().init(getApplication());
         BleManager.getInstance()
                 .enableLog(true)
@@ -89,27 +76,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Comenzamos escaneando dispositivos
         checkPermissionsAndConnect();
 
-        mAddFab = findViewById(R.id.add_fab);
-
-        mPacientesFab = findViewById(R.id.pacientes_fab);
-        mAyudaFab = findViewById(R.id.ayuda_fab);
-
-        pacientesText = findViewById(R.id.pacientes_action_text);
-        ayudaText = findViewById(R.id.ayuda_action_text);
-
+        // Se ocultan todos los floating action buttons
         mPacientesFab.setVisibility(View.GONE);
         mAyudaFab.setVisibility(View.GONE);
         pacientesText.setVisibility(View.GONE);
         ayudaText.setVisibility(View.GONE);
 
         isAllFabsVisible = false;
-
+        // Se añade el evento para hacer click en el fab principal
         mAddFab.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (!isAllFabsVisible) {
-
+                            // Se muestran todos los fabs
                             mPacientesFab.show();
                             mAyudaFab.show();
                             pacientesText.setVisibility(View.VISIBLE);
@@ -117,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             isAllFabsVisible = true;
                         } else {
-
+                            // Se ocultan todos los fabs
                             mPacientesFab.hide();
                             mAyudaFab.hide();
                             pacientesText.setVisibility(View.GONE);
@@ -128,26 +108,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
 
+        // Se añade el click al boton de ayuda
         mAyudaFab.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
                         Intent intent = new Intent(MainActivity.this,ActivityAyuda.class);
                         startActivity(intent);
                     }
                 });
 
+        // Se añade el click al boton de pacientes
         mPacientesFab.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(MainActivity.this, ListaUsuarios.class);
                         startActivity(intent);
-
                     }
                 });
-
     }
 
     @Override
@@ -163,6 +142,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         BleManager.getInstance().destroy();
     }
 
+    /* -------------------------------------
+    Función para el click del boton de escaneo
+    Params: vista de la pantalla
+    ---------------------------------------*/
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -176,6 +159,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /* -------------------------------------
+    Función para inicializar las variables de la interfaz a los objetos
+    ---------------------------------------*/
     private void initView() {
 
         textoVacio= findViewById(R.id.tvNoDispositivosEncontrados);
@@ -188,6 +174,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         operatingAnim = AnimationUtils.loadAnimation(this, R.anim.rotate);
         operatingAnim.setInterpolator(new LinearInterpolator());
         progressDialog = new ProgressDialog(this);
+
+        mAddFab = findViewById(R.id.add_fab);
+        mPacientesFab = findViewById(R.id.pacientes_fab);
+        mAyudaFab = findViewById(R.id.ayuda_fab);
+        pacientesText = findViewById(R.id.pacientes_action_text);
+        ayudaText = findViewById(R.id.ayuda_action_text);
 
         mDeviceAdapter = new DeviceAdapter(this);
         mDeviceAdapter.setOnDeviceClickListener(new DeviceAdapter.OnDeviceClickListener() {
@@ -217,12 +209,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Añadimos texto si esta vacia la lista de dispositivos
         textoVacio.setText(R.string.no_se_han_encontrado_dispositivos);
         listView_device.setEmptyView(textoVacio);
-        noHayDispositivosList=findViewById(R.id.noHayDispositivosList);
-
-
-
+        noHayDispositivosList = findViewById(R.id.noHayDispositivosList);
       }
 
+    /* -------------------------------------
+    Función para ir a la pagina de mostrar datos
+    Params: dispositivo BLE
+    ---------------------------------------*/
     private void goShowDataActivity(BleDevice bleDevice) {
         if (BleManager.getInstance().isConnected(bleDevice)) {
             Intent intent = new Intent(MainActivity.this, ShowDataActivity.class);
@@ -231,6 +224,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /* -------------------------------------
+    Función para mostrar los dispositivos conectados
+    ---------------------------------------*/
     private void showConnectedDevice() {
         List<BleDevice> deviceList = BleManager.getInstance().getAllConnectedDevice();
         mDeviceAdapter.clearConnectedDevice();
@@ -240,6 +236,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDeviceAdapter.notifyDataSetChanged();
     }
 
+    /* -------------------------------------
+    Función que controla que hacer cuando se inicia el escaneo
+    ---------------------------------------*/
     private void startScan() {
             BleManager.getInstance().scan(new BleScanCallback() {
                 @Override
@@ -249,7 +248,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     img_loading.startAnimation(operatingAnim);
                     img_loading.setVisibility(View.VISIBLE);
                     btn_scan.setText(getString(R.string.stop_scan));
-
                 }
 
                 @Override
@@ -281,13 +279,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     img_loading.clearAnimation();
                     img_loading.setVisibility(View.INVISIBLE);
                     btn_scan.setText(getString(R.string.start_scan));
-
                 }
             });
         }
 
-
-
+    /* -------------------------------------
+    Función para conectar conel dispositivo
+    Params: Dispositivo BLE
+    ---------------------------------------*/
     private void connect(final BleDevice bleDevice) {
         BleManager.getInstance().connect(bleDevice, new BleGattCallback() {
             @Override
@@ -295,6 +294,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 progressDialog.show();
             }
 
+            // Si la conexion falla
             @Override
             public void onConnectFail(BleDevice bleDevice, BleException exception) {
                 img_loading.clearAnimation();
@@ -305,6 +305,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
 
+            // Si la conexion es correcta
             @Override
             public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
                 progressDialog.dismiss();
@@ -314,6 +315,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
 
+            // Cuando se desconecta del dispositivo
             @Override
             public void onDisConnected(boolean isActiveDisConnected, BleDevice bleDevice, BluetoothGatt gatt, int status) {
                 progressDialog.dismiss();
@@ -330,12 +332,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     startActivity(intent);
                     ObserverManager.getInstance().notifyObserver(bleDevice);
                 }
-
             }
         });
     }
 
-    private void readRssi(BleDevice bleDevice) {
+    /*private void readRssi(BleDevice bleDevice) {
         BleManager.getInstance().readRssi(bleDevice, new BleRssiCallback() {
             @Override
             public void onRssiFailure(BleException exception) {
@@ -361,8 +362,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.i(TAG, "onMtuChanged: " + mtu);
             }
         });
-    }
+    }*/
 
+    /* -------------------------------------
+    Función para pedir los permisos necesarios
+    ---------------------------------------*/
     @Override
     public final void onRequestPermissionsResult(int requestCode,
                                                  @NonNull String[] permissions,
@@ -381,6 +385,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /* -------------------------------------
+    Función que comprueba si los permisos estan correctos
+    ---------------------------------------*/
     private void checkPermissionsAndConnect() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (!bluetoothAdapter.isEnabled()) {
@@ -406,6 +413,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /* -------------------------------------
+    Función para pedir el permiso de ubicacion (si no se ha aceptado antes) y iniciar el primer escaneo
+    ---------------------------------------*/
     private void onPermissionGranted(String permission) {
         switch (permission) {
             case Manifest.permission.ACCESS_FINE_LOCATION:
@@ -432,13 +442,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setCancelable(false)
                             .show();
                 } else {
-                    //setScanRule();
                     startScan();
                 }
                 break;
         }
     }
 
+    /* -------------------------------------
+    Función para comprobar si la ubicacion esta activado
+    ---------------------------------------*/
     private boolean checkGPSIsOpen() {
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         if (locationManager == null)
@@ -446,6 +458,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER);
     }
 
+    /* -------------------------------------
+    Función que empieza a escanear  si la el permiso de ubicacion esta activado
+    ---------------------------------------*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -456,6 +471,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
-
 }

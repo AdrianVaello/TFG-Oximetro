@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Color;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -24,6 +23,8 @@ import java.util.Calendar;
 public class DownloadExcel extends AppCompatActivity {
 
     private static final String TAG = "1";
+
+    // Variables de la interfaz
     ImageView bt_descargar_excel;
     ImageView bt_volver_atras;
     TextView nombrePaciente;
@@ -37,13 +38,12 @@ public class DownloadExcel extends AppCompatActivity {
         System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
         System.setProperty("org.apache.poi.javax.xml.stream.XMLOutputFactory", "com.fasterxml.aalto.stax.OutputFactoryImpl");
         System.setProperty("org.apache.poi.javax.xml.stream.XMLEventFactory", "com.fasterxml.aalto.stax.EventFactoryImpl");
-        //Log.d(TAG, "++++dentro for" +getExternalFilesDir(null));
-
+        nombrePaciente= findViewById(R.id.nombrePaciente);
+        // Se añade el click al boton de descargar datos
         bt_descargar_excel= findViewById(R.id.bt_descargar_excel);
         bt_descargar_excel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                nombrePaciente= findViewById(R.id.nombrePaciente);
                 if(nombrePaciente.getText().toString().equals(" ") || nombrePaciente.getText().toString().isEmpty()){
                     Toast.makeText(DownloadExcel.this, "Rellena el nombre del paciente primero.", Toast.LENGTH_SHORT).show();
                 }else{
@@ -51,28 +51,30 @@ public class DownloadExcel extends AppCompatActivity {
                 }
             }
         });
+
+        // Se añade el click al boton para volver atras
         bt_volver_atras= findViewById(R.id.bt_volver_atras);
         bt_volver_atras.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DownloadExcel.this, //*OperationActivity.class);
-                        MainActivity.class);
+                Intent intent = new Intent(DownloadExcel.this,MainActivity.class);
                 startActivity(intent);
             }
         });
 
     }
-
+    /* -------------------------------------
+    Función para guardar los datos en Excel
+    Params: Nombre del paciente
+    ---------------------------------------*/
     public void guardarDatosExcel(String nombrePaciente){
         XSSFWorkbook workbook = new XSSFWorkbook();
-
         XSSFSheet sheet= workbook.createSheet(nombrePaciente);
-
 
         CellStyle cellStyle= workbook.createCellStyle();
         cellStyle.setFillForegroundColor((short) R.color.colorTextoBlanco);
 
-        //TITULOS DEL EXCEL
+        //Titulos de las casillas del excel
         Cell cell= null;
         Row row= null;
         row= sheet.createRow(0);
@@ -111,7 +113,7 @@ public class DownloadExcel extends AppCompatActivity {
         cell.setCellStyle(cellStyle);
 
         for (int i= 1; i<Utilities.datosPulsioximetro.size(); i++){
-            //VALORES DE LAS CASILLAS
+            // Valores de las casillas
             row= sheet.createRow(i);
             cell= row.createCell(0);
             cell.setCellValue(Utilities.datosPulsioximetro.get(i).get("Sp02"));
@@ -141,19 +143,19 @@ public class DownloadExcel extends AppCompatActivity {
             }else{
                 cell.setCellValue("Sin valor exacto");
             }
-
-
         }
 
+        // Se coge la fecha actual
         Calendar c = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         String strDate = sdf.format(c.getTime());
 
+        // Se crea el archivo excel
         File file= new File(getExternalFilesDir(null), nombrePaciente+"_"+strDate+".xlsx");
         FileOutputStream outputStream= null;
 
-
         try {
+            // Se guarda el archivo
             outputStream =  new FileOutputStream(file.getAbsolutePath());
             workbook.write(outputStream);
             outputStream.flush();
@@ -161,12 +163,13 @@ public class DownloadExcel extends AppCompatActivity {
             Toast.makeText(this, "Los datos se han guardado correctamente", Toast.LENGTH_SHORT).show();
 
         }catch(IOException e) {
+            // Se recoge cualquier error que se pueda dar guardando el archivo
             e.printStackTrace();
-            Toast.makeText(this, "Error111", Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(this, "Error guardando el archivo.", Toast.LENGTH_SHORT).show();
         }
     }
 
+    // función para controlar el boton de volver atrás de los móviles Android
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(DownloadExcel.this, MainActivity.class);
