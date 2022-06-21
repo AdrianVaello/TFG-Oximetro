@@ -29,11 +29,14 @@ public class DownloadExcel extends AppCompatActivity {
     ImageView bt_volver_atras;
     TextView nombrePaciente;
 
+    boolean datosDescargados= false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.download_excel);
 
+        datosDescargados=false;
         // cambio unas propiedades del sistema para utilizar la librería poi más pequeña
         System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
         System.setProperty("org.apache.poi.javax.xml.stream.XMLOutputFactory", "com.fasterxml.aalto.stax.OutputFactoryImpl");
@@ -155,12 +158,18 @@ public class DownloadExcel extends AppCompatActivity {
         FileOutputStream outputStream= null;
 
         try {
-            // Se guarda el archivo
-            outputStream =  new FileOutputStream(file.getAbsolutePath());
-            workbook.write(outputStream);
-            outputStream.flush();
-            outputStream.close();
-            Toast.makeText(this, "Los datos se han guardado correctamente", Toast.LENGTH_SHORT).show();
+            if(!datosDescargados){
+                // Se guarda el archivo
+                outputStream =  new FileOutputStream(file.getAbsolutePath());
+                workbook.write(outputStream);
+                outputStream.flush();
+                outputStream.close();
+                Toast.makeText(this, "Los datos se han guardado correctamente", Toast.LENGTH_SHORT).show();
+                datosDescargados=true;
+            }else{
+                Toast.makeText(this, "Ya has descargados los datos!", Toast.LENGTH_SHORT).show();
+            }
+
 
         }catch(IOException e) {
             // Se recoge cualquier error que se pueda dar guardando el archivo
@@ -169,10 +178,11 @@ public class DownloadExcel extends AppCompatActivity {
         }
     }
 
-    // función para controlar el boton de volver atrás de los móviles Android
+    // Función para controlar el boton de volver atrás de los móviles Android
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(DownloadExcel.this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 }

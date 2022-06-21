@@ -7,12 +7,16 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -179,16 +183,22 @@ public class ShowDataActivity extends AppCompatActivity {
 
       //GRÁFICA
       chart = (LineChart) findViewById(R.id.chart_heart);
+      Description description = new Description();
+      description.setText("Eje X: ms");
+      description.setTextSize(10f);
+
+      chart.setDescription(description);
       XAxis xAxis = chart.getXAxis();
       xAxis.setAxisMinimum(0);
       xAxis.setAxisMaximum(cicloMuestras);
       xAxis.setDrawLabels(true);
+
       yAxis = chart.getAxisLeft();
       yAxis.setAxisMaximum(100);
       yAxis.setAxisMinimum(0);
       yAxis.setDrawLabels(true);
       chart.getAxisRight().setEnabled(false);
-      chart.getDescription().setEnabled(false);
+      //chart.getDescription().setEnabled(false);
       chart.setDrawBorders(false);
    }
 
@@ -626,5 +636,13 @@ public class ShowDataActivity extends AppCompatActivity {
       characteristicUUIDString = savedInstanceState.getString("characteristicUUIDString");
       cambioActivity = savedInstanceState.getBoolean("cambioActivity");
       primeraVezCalculoPVi=savedInstanceState.getBoolean("primeraVezPVI");
+   }
+
+   // Función para controlar el boton de volver atrás de los móviles Android
+   @Override
+   public void onBackPressed() {
+      Intent intent = new Intent(ShowDataActivity.this, MainActivity.class);
+      startActivity(intent);
+      finish();
    }
 }

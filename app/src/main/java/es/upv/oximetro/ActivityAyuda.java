@@ -18,7 +18,7 @@ public class ActivityAyuda extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ayuda);
 
-        // Se añade la funcionalidad al boton de volver atrás
+        // Se añade la funcionalidad al botón de volver atrás
         bt_volver_atras= findViewById(R.id.bt_volver_atras2);
         bt_volver_atras.setOnClickListener(new View.OnClickListener() {
             @Override

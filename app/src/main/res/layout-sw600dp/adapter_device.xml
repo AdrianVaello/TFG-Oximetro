@@ -68,23 +68,27 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorTexto"
                 android:textColorLink="@color/colorTexto"
-                android:textSize="14sp" />
+                android:textSize="20sp" />
 
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_marginStart="10dp"
                 android:src="@drawable/wify_symbol"
                 app:srcCompat="@drawable/wify_symbol" />
 
             <Button
                 android:id="@+id/btn_connect"
-                android:layout_width="120dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:background="@drawable/bordes_redondos_botones"
+                android:paddingStart="5dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="5dp"
+                android:paddingBottom="10dp"
                 android:text="@string/connect"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

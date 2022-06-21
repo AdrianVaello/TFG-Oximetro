@@ -68,7 +68,8 @@
     <string name="descargar_datos">Descargar datos</string>
     <string name="consejos_title">CONSEJOS</string>
     <string name="no_hay_pacientes_guardados">No hay pacientes guardados.</string>
-    <string name="area_bajo_la_curva">Área bajo la curva:</string>
-    <string name="cisura_dicrotica_text">Cisura dicrótica:</string>
+    <string name="area_bajo_la_curva">Área bajo la curva mm2</string>
+    <string name="cisura_dicrotica_text">Cisura dicrótica</string>
+    <string name="los_datos_se_guardar_n_en_android_data_es_upv_oximetro_files">Los datos se guardarán en: Android/data/es.upv.oximetro/files</string>
 
 </resources>
