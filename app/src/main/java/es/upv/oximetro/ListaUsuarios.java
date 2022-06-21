@@ -1,6 +1,8 @@
 package es.upv.oximetro;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +15,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -39,6 +43,7 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
     TextView tv_filtro_texto, tv_no_pacientes;
     ImageView bt_volver_atras;
 
+
     Boolean filtroAbierto;
 
     @Override
@@ -53,6 +58,7 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
             public void onClick(View v) {
                 Intent intent = new Intent(ListaUsuarios.this, MainActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
         // Se inicializan las variables de la interfaz al objeto
@@ -219,6 +225,31 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
 
     }
 
+    @Override
+    public void borrarPacientes(View view, int position) {
+        File file = new File(adapter.getItem(position));
+        String nombrePaciente=file.getName().split("_")[0];
+        AlertDialog.Builder builder = new AlertDialog.Builder(ListaUsuarios.this);
+        builder.setMessage("Si aceptas borrarás toda la información de este paciente.")
+                .setTitle("¿Estás seguro que quieres borrar a "+ nombrePaciente+ "?");
+        builder.setPositiveButton("Borrar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                file.delete();
+                Toast.makeText(ListaUsuarios.this, "El paciente "+nombrePaciente + " ha sido borrado correctamente", Toast.LENGTH_SHORT).show();
+                recreate();
+            }
+        });
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+        builder.setIcon(R.drawable.basura_color);
+        builder.create();
+        builder.show();
+
+    }
+
     /* -------------------------------------
     Función para rotar la imagen de la flecha hacia abajo
     Params: vista de la pagina
@@ -262,5 +293,13 @@ public class ListaUsuarios extends AppCompatActivity implements RecyclerViewAdap
                 tv_no_pacientes.setVisibility(View.GONE);
             }
         }
+    }
+
+    // Función para controlar el boton de volver atrás de los móviles Android
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ListaUsuarios.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

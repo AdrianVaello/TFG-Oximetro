@@ -616,7 +616,6 @@ public class ShowDataActivity extends AppCompatActivity {
       //Características del dispositivo bluetooth conectado
       savedInstanceState.putString("characteristicString", characteristicString);
       savedInstanceState.putString("characteristicUUIDString", characteristicUUIDString);
-
       savedInstanceState.putBoolean("cambioActivity",true);
       savedInstanceState.putBoolean("primeraVezPVI",false);
 

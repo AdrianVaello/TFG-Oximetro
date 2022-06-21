@@ -4,8 +4,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.recyclerview.widget.RecyclerView;
 import java.io.File;
 import java.util.ArrayList;
@@ -42,6 +45,12 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
 
         holder.tx_nombre_pacientes.setText( nombreFichero[0]);
         holder.tx_fecha_pacientes.setText( fechaFichero[0]);
+        holder.ivBorrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.borrar(v);
+            }
+        });
 
     }
 
@@ -57,12 +66,14 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
         TextView tx_nombre_pacientes;
         TextView tx_fecha_pacientes;
         RelativeLayout paciente;
+        ImageView ivBorrar;
 
         ViewHolder(View itemView) {
             super(itemView);
             paciente= itemView.findViewById(R.id.Paciente);
             tx_fecha_pacientes= itemView.findViewById(R.id.txt_fecha_paciente);
             tx_nombre_pacientes= itemView.findViewById(R.id.txt_nombre_paciente);
+            ivBorrar=itemView.findViewById(R.id.ivBorrarPacientes);
 
             itemView.setOnClickListener(this);
         }
@@ -70,8 +81,16 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
         // Funcion para cuando se hace click en un paciente
         @Override
         public void onClick(View view) {
-            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
+            if (mClickListener != null){
+                mClickListener.onItemClick(view, getAdapterPosition());
+            }
         }
+        public void borrar(View v){
+            mClickListener.borrarPacientes(v, getAdapterPosition());
+        }
+
+
+
     }
 
     // Se obtiene los datos del paciente en la posicion en la que se ha clickado
@@ -85,6 +104,7 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
 
     public interface ItemClickListener {
         void onItemClick(View view, int position);
+        void borrarPacientes(View view, int position);
     }
 
     /* Filtra los datos del adaptador */

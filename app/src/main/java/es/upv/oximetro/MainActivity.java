@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onClick(View view) {
                         Intent intent = new Intent(MainActivity.this,ActivityAyuda.class);
                         startActivity(intent);
+                        finish();
                     }
                 });
 
@@ -125,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onClick(View view) {
                         Intent intent = new Intent(MainActivity.this, ListaUsuarios.class);
                         startActivity(intent);
+                        finish();
                     }
                 });
     }
@@ -221,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(MainActivity.this, ShowDataActivity.class);
             intent.putExtra(KEY_DATA, bleDevice);
             startActivity(intent);
+            finish();
         }
     }
 
@@ -470,5 +473,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startScan();
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("¿Quieres salir de la aplicación?");
+        builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                finishAndRemoveTask();
+
+            }
+        });
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+        builder.create();
+        builder.show();
     }
 }

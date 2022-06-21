@@ -25,7 +25,15 @@ public class ActivityAyuda extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ActivityAyuda.this, MainActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
+    }
+    // Función para controlar el boton de volver atrás de los móviles Android
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ActivityAyuda.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
