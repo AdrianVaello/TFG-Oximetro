@@ -305,6 +305,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/mmhg"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chart_heart"
             android:layout_width="match_parent"

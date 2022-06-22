@@ -180,6 +180,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:backgroundTint="@color/colorTextoBlanco"
+            android:editable="false"
             android:ems="10"
             android:hint="@string/fecha_hint_filtro"
             android:minHeight="48dp"

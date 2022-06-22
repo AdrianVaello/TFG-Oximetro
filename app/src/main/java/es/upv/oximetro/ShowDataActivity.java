@@ -146,7 +146,7 @@ public class ShowDataActivity extends AppCompatActivity {
       rightDataSet.setLineWidth(2);
       rightDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
       rightDataSet.setColor(R.color.colorTexto);
-      LineDataSet leftDataSet = new LineDataSet(entriesLeft, "Spo2 (mmHg)");
+      LineDataSet leftDataSet = new LineDataSet(entriesLeft, "Spo2");
       leftDataSet.setDrawCircles(false);
       leftDataSet.setDrawValues(false);
       leftDataSet.setLineWidth(3f);
