@@ -18,12 +18,16 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+
+import org.apache.poi.ss.usermodel.charts.LegendPosition;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -199,15 +203,16 @@ public class ShowDataActivity extends AppCompatActivity {
 
       //GRÁFICA
       chart = (LineChart) findViewById(R.id.chart_heart);
-      Description description = new Description();
-      description.setText("Eje X: ms");
-      description.setTextSize(10f);
+      Description descriptionX = new Description();
+      descriptionX.setText("Eje X: ms");
+      descriptionX.setTextSize(10f);
 
-      chart.setDescription(description);
+      chart.setDescription(descriptionX);
       XAxis xAxis = chart.getXAxis();
       xAxis.setAxisMinimum(0);
       xAxis.setAxisMaximum(cicloMuestras);
       xAxis.setDrawLabels(true);
+      xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
       yAxis = chart.getAxisLeft();
       yAxis.setAxisMaximum(100);
