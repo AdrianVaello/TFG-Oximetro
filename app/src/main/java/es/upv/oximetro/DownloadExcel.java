@@ -141,7 +141,7 @@ public class DownloadExcel extends AppCompatActivity {
                 if(Utilities.datosPulsioximetro.get(i).get("Cisura")==0.0){
                     cell.setCellValue("Vasodilatación");
                 }else{
-                    cell.setCellValue("Vasocontricción");
+                    cell.setCellValue("Vasoconstricción");
                 }
             }else{
                 cell.setCellValue("Sin valor exacto");

@@ -13,7 +13,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
@@ -94,7 +93,7 @@
                 android:text="00"
                 android:textAlignment="center"
                 android:textColor="@color/colorTextoBlanco"
-                android:textSize="96sp" />
+                android:textSize="70sp" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -312,6 +311,21 @@
             android:layout_height="match_parent" />
     </androidx.cardview.widget.CardView>
 
+    <Button
+        android:id="@+id/btPararGrabacion"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bordes_redondos_botones"
+        android:text="@string/parar_grabaci_n_de_datos"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout2" />
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"

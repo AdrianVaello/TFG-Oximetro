@@ -11,7 +11,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.github.mikephil.charting.charts.LineChart;
@@ -32,9 +34,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import es.upv.fastble.BleManager;
+import es.upv.fastble.callback.BleGattCallback;
 import es.upv.fastble.callback.BleNotifyCallback;
 import es.upv.fastble.data.BleDevice;
 import es.upv.fastble.exception.BleException;
+import es.upv.oximetro.comm.ObserverManager;
 
 public class ShowDataActivity extends AppCompatActivity {
 
@@ -56,6 +60,7 @@ public class ShowDataActivity extends AppCompatActivity {
    // Variables para los textos y la graficas
    private TextView tv_spo2, tv_pr, tv_rr, tv_pi, tv_Cargando_Pvi, tv_PmaxPmin, tv_Cisura, tv_Area, tvPVi;
    private LineChart chart;
+   Button bt_Parar_Grabacion;
 
    // Variables usadas para el tiempo
    private long time;
@@ -77,6 +82,8 @@ public class ShowDataActivity extends AppCompatActivity {
    public ArrayList<Double> datosGrafica = new ArrayList<Double>();
    public boolean primeraVezCalculoPVi;
    public static Boolean cambioActivity=false;
+
+   private BleGattCallback bleGattCallback;
 
    YAxis yAxis;
 
@@ -107,6 +114,15 @@ public class ShowDataActivity extends AppCompatActivity {
 
       initView();
 
+      bt_Parar_Grabacion= findViewById(R.id.btPararGrabacion);
+      bt_Parar_Grabacion.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            BleManager.getInstance().disconnect(bleDevice);
+            Intent intent = new Intent(ShowDataActivity.this, DownloadExcel.class);
+            startActivity(intent);
+         }
+      });
       // Tiempo inicial cuando se crea la pantalla
       tiempoInicial = System.currentTimeMillis();
 
@@ -198,7 +214,6 @@ public class ShowDataActivity extends AppCompatActivity {
       yAxis.setAxisMinimum(0);
       yAxis.setDrawLabels(true);
       chart.getAxisRight().setEnabled(false);
-      //chart.getDescription().setEnabled(false);
       chart.setDrawBorders(false);
    }
 
@@ -557,7 +572,6 @@ public class ShowDataActivity extends AppCompatActivity {
    Calcula el valor de la cisura
    Params: Array con los valores de la ventana
    ---------------------------------------*/
-
    public Double calcularValorCisura(ArrayList<Double> ventana) {
 
       for (int i = 1; i < ventana.size(); i++) {
@@ -580,7 +594,7 @@ public class ShowDataActivity extends AppCompatActivity {
          tipoVaso="Vasodilatación";
          tv_Cisura.setText(tipoVaso);
       } else {
-         tipoVaso="Vasocontricción";
+         tipoVaso="Vasoconstricción";
          tv_Cisura.setText(tipoVaso);
       }
    }
@@ -616,6 +630,7 @@ public class ShowDataActivity extends AppCompatActivity {
       //Características del dispositivo bluetooth conectado
       savedInstanceState.putString("characteristicString", characteristicString);
       savedInstanceState.putString("characteristicUUIDString", characteristicUUIDString);
+
       savedInstanceState.putBoolean("cambioActivity",true);
       savedInstanceState.putBoolean("primeraVezPVI",false);
 
@@ -627,7 +642,6 @@ public class ShowDataActivity extends AppCompatActivity {
    Params: Instacia del estado actual
    ---------------------------------------*/
    public void onRestoreInstanceState(Bundle savedInstanceState) {
-
       super.onRestoreInstanceState(savedInstanceState);
 
       bleDevice = savedInstanceState.getParcelable(BLEDEVICE_KEY);

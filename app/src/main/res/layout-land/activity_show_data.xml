@@ -18,7 +18,7 @@
         app:cardBackgroundColor="@color/colorCardChart"
         app:cardCornerRadius="8dp"
         app:cardElevation="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btPararGrabacion"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/cardViewPI"
         app:layout_constraintTop_toBottomOf="@+id/cardViewPR">
@@ -28,6 +28,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/btPararGrabacion"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/bordes_redondos_botones"
+        android:text="@string/parar_grabaci_n_de_datos"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewPVi" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewRR"
@@ -167,11 +181,10 @@
         android:layout_width="160dp"
         android:layout_height="100dp"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
         app:cardBackgroundColor="@color/colorCard5"
         app:cardCornerRadius="8dp"
         app:cardElevation="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardViewPI">
 

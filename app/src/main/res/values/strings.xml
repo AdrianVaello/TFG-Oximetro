@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Oximeter App</string>
 
-    <string name="notifyTitle">Prompt</string>
-    <string name="gpsNotifyMsg">La aplicación necesita la ubicación para poder usar el bluetooth</string>
+    <string name="notifyTitle">Ubicación GPS</string>
+    <string name="gpsNotifyMsg">La aplicación necesita la ubicación para poder usar el bluetooth.</string>
     <string name="setting">Ajustes</string>
     <string name="cancel">Cancelar</string>
 
@@ -41,13 +41,13 @@
     <string name="nombre_del_paciente">Nombre del paciente</string>
     <string name="no_podr_s_volver_a_descargar_los_datos_si_vuelves_hacia_atras">No podrás volver a descargar los datos si vuelves hacia atrás.</string>
     <string name="mostrar_pacientes">Mostrar pacientes</string>
-    <string name="spo2">SpO2 %</string>
+    <string name="spo2">SpO2 (%)</string>
     <string name="rr_bpm">RR / Min</string>
     <string name="pr_bpm">PR (bpm)</string>
-    <string name="pi">PI %</string>
+    <string name="pi">PI (%)</string>
     <string name="oximeter_app">Oximeter App</string>
     <string name="con_menos_se_puede_hacer_m_s">Con menos se puede hacer más.</string>
-    <string name="pvi">PVi %</string>
+    <string name="pvi">PVi (%)</string>
     <string name="no_se_han_encontrado_dispositivos">Inicie el escaneo para encontrar dispositivos.</string>
     <string name="abrir_datos_con">Abrir datos con...</string>
     <string name="introduzca_en_nombre_del_paciente">Introduzca el nombre del paciente</string>
@@ -68,8 +68,10 @@
     <string name="descargar_datos">Descargar datos</string>
     <string name="consejos_title">CONSEJOS</string>
     <string name="no_hay_pacientes_guardados">No hay pacientes guardados.</string>
-    <string name="area_bajo_la_curva">Área bajo la curva mm2</string>
+    <string name="area_bajo_la_curva">Área bajo curva (mm2)</string>
     <string name="cisura_dicrotica_text">Cisura dicrótica</string>
     <string name="los_datos_se_guardar_n_en_android_data_es_upv_oximetro_files">Los datos se guardarán en: Android/data/es.upv.oximetro/files</string>
+    <string name="parar_grabaci_n_de_datos">Guardar datos</string>
+    <string name="cargando">Cargando</string>
 
 </resources>

@@ -30,8 +30,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewRR"
-        android:layout_width="wrap_content"
-        android:layout_height="120dp"
+        android:layout_width="160dp"
+        android:layout_height="110dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         app:cardBackgroundColor="@color/colorCard4"
@@ -42,7 +42,7 @@
 
         <TextView
             android:id="@+id/tv_rr"
-            android:layout_width="160dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoSizeTextType="uniform"
             android:text="00"
@@ -63,8 +63,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewPI"
-        android:layout_width="wrap_content"
-        android:layout_height="120dp"
+        android:layout_width="160dp"
+        android:layout_height="110dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         app:cardBackgroundColor="@color/colorCard3"
@@ -75,7 +75,7 @@
 
         <TextView
             android:id="@+id/tv_pi"
-            android:layout_width="160dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoSizeTextType="uniform"
             android:text="00"
@@ -96,8 +96,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewPR"
-        android:layout_width="wrap_content"
-        android:layout_height="120dp"
+        android:layout_width="160dp"
+        android:layout_height="110dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         app:cardBackgroundColor="@color/colorCard2"
@@ -108,7 +108,7 @@
 
         <TextView
             android:id="@+id/tv_pr"
-            android:layout_width="160dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoSizeTextType="uniform"
             android:gravity="center"
@@ -129,8 +129,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewSpo2"
-        android:layout_width="wrap_content"
-        android:layout_height="120dp"
+        android:layout_width="160dp"
+        android:layout_height="110dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:foregroundGravity="center_horizontal"
@@ -142,7 +142,7 @@
 
         <TextView
             android:id="@+id/tv_spo2"
-            android:layout_width="160dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:autoSizeTextType="uniform"
             android:gravity="center"
@@ -166,17 +166,34 @@
         android:layout_width="match_parent"
         android:layout_height="6dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="8dp"
         android:background="@color/colorTexto"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/cardViewChart"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btPararGrabacion" />
+
+    <Button
+        android:id="@+id/btPararGrabacion"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/bordes_redondos_botones"
+        android:text="@string/parar_grabaci_n_de_datos"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewPVi" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewPVi"
         android:layout_width="160dp"
-        android:layout_height="120dp"
+        android:layout_height="110dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         app:cardBackgroundColor="@color/colorCard5"
@@ -214,15 +231,16 @@
             android:text="00"
             android:textAlignment="center"
             android:textColor="@color/colorTextoBlanco"
-            android:textSize="48sp" />
+            android:textSize="46sp" />
 
         <TextView
             android:id="@+id/tvCargandoPVi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
+            android:autoSizeTextType="uniform"
             android:gravity="center"
-            android:text="Cargando"
+            android:text="@string/cargando"
             android:textAlignment="center"
             android:textColor="@color/colorPrimary" />
     </androidx.cardview.widget.CardView>
@@ -230,7 +248,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewArea"
         android:layout_width="160dp"
-        android:layout_height="55dp"
+        android:layout_height="50dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         app:cardBackgroundColor="@color/colorCard6"
@@ -245,6 +263,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start|top"
             android:layout_marginLeft="5dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/area_bajo_la_curva"
             android:textColor="@color/colorPrimary"
             android:textStyle="bold"
@@ -260,13 +279,13 @@
             android:text="00"
             android:textAlignment="center"
             android:textColor="@color/colorTextoBlanco"
-            android:textSize="34sp" />
+            android:textSize="30sp" />
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewCisura"
         android:layout_width="160dp"
-        android:layout_height="55dp"
+        android:layout_height="50dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
         app:cardBackgroundColor="@color/colorCard7"

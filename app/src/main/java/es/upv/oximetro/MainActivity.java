@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setOperateTimeout(5000);
 
         //Comenzamos escaneando dispositivos
-        checkPermissionsAndConnect();
+        //checkPermissionsAndConnect();
 
         // Se ocultan todos los floating action buttons
         mPacientesFab.setVisibility(View.GONE);
@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(MainActivity.this, ShowDataActivity.class);
             intent.putExtra(KEY_DATA, bleDevice);
             startActivity(intent);
-            finish();
+            //finish();
         }
     }
 
@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
     /* -------------------------------------
-    Función para conectar conel dispositivo
+    Función para conectar con el dispositivo
     Params: Dispositivo BLE
     ---------------------------------------*/
     private void connect(final BleDevice bleDevice) {
@@ -334,6 +334,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Intent intent = new Intent(MainActivity.this, DownloadExcel.class);
                     startActivity(intent);
                     ObserverManager.getInstance().notifyObserver(bleDevice);
+                    finish();
                 }
             }
         });
@@ -474,20 +475,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
+    // Función para controlar el boton de volver atrás de los móviles Android
+    // En este caso se usa para cerrar la aplicación o no
     @Override
     public void onBackPressed() {
+        //
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("¿Quieres salir de la aplicación?");
-        builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Salir", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                finishAndRemoveTask();
-
+                Intent intent= new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             }
         });
         builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User cancelled the dialog
+                dialog.dismiss();
             }
         });
         builder.create();
