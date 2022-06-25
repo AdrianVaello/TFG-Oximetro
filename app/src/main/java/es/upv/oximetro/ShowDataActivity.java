@@ -87,12 +87,10 @@ public class ShowDataActivity extends AppCompatActivity {
    public boolean primeraVezCalculoPVi;
    public static Boolean cambioActivity=false;
 
-   private BleGattCallback bleGattCallback;
-
    YAxis yAxis;
 
    //Variables globales para representar la gráfica
-   //Se mostrarán los últimos 5 segundos (SHOW_TIME)
+   //Se mostrarán los últimos 4 segundos (SHOW_TIME)
    //El refresco de la gráfica se realiza con un barrido de izq. a der.
    //similar a los electrocardiogramas antiguos
    //La gráfica se representa en dos partes, la izq. y la der.
