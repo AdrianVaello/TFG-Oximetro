@@ -72,7 +72,6 @@ public class ShowDataActivity extends AppCompatActivity {
    Long tiempoFinal;
    int cicloMuestras = 4000;
 
-
    // Variables usadas para los diferentes calculos
    public Double PVI = 0.0;
    String tipoVaso;

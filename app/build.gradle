@@ -5,8 +5,8 @@ plugins {
 
 
 android {
-    compileSdkVersion 30//27
-    buildToolsVersion "30.0.2"//'27.0.3'
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "es.upv.oximetro"
@@ -30,7 +30,6 @@ android {
 }
 
 dependencies {
-
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
