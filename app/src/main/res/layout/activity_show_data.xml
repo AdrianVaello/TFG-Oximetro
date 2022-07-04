@@ -8,6 +8,94 @@
     android:keepScreenOn="true">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/pendienteDere"
+        android:layout_width="90dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:cardBackgroundColor="@color/colorCard8"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewCisura">
+
+        <TextView
+            android:id="@+id/textView20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:text="(mmHg/ms)"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_pendienteDere"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:text="00"
+            android:textColor="@color/colorTextoBlanco"
+            android:textSize="34sp" />
+
+        <TextView
+            android:id="@+id/tvPendienteD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Pend. Dcha"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/pendienteIzq"
+        android:layout_width="90dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:cardBackgroundColor="@color/colorCard8"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewPVi">
+
+        <TextView
+            android:id="@+id/textView19"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:text="(mmHg/ms)"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_pendienteIzq"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:text="00"
+            android:textColor="@color/colorTextoBlanco"
+            android:textSize="34sp" />
+
+        <TextView
+            android:id="@+id/tvPendiente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Pend. Izq"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
         android:id="@+id/cardViewChart"
         android:layout_width="match_parent"
         android:layout_height="260dp"
@@ -83,6 +171,27 @@
         app:cardElevation="2dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardViewSpo2">
+
+        <TextView
+            android:id="@+id/tvCargandoPVi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:text="@string/cargando"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/tv_PmaxPmin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/tv_pi"
@@ -190,16 +299,16 @@
     <Button
         android:id="@+id/btPararGrabacion"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/bordes_redondos_botones"
         android:text="@string/parar_grabaci_n_de_datos"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardViewPVi" />
+        app:layout_constraintEnd_toStartOf="@+id/pendienteDere"
+        app:layout_constraintStart_toEndOf="@+id/pendienteIzq"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewCisura" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewPVi"
@@ -212,16 +321,6 @@
         app:cardElevation="2dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardViewPI">
-
-        <TextView
-            android:id="@+id/tv_PmaxPmin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:layout_marginBottom="5dp"
-            android:gravity="center"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/textViewTextoPVi"
@@ -244,16 +343,6 @@
             android:textColor="@color/colorTextoBlanco"
             android:textSize="46sp" />
 
-        <TextView
-            android:id="@+id/tvCargandoPVi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:autoSizeTextType="uniform"
-            android:gravity="center"
-            android:text="@string/cargando"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimary" />
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView

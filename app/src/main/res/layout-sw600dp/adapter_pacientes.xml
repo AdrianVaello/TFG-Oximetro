@@ -78,6 +78,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/basura_color" />
 
+        <ImageView
+            android:id="@+id/img_tipo_dato"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_fecha_paciente"
+            app:layout_constraintStart_toEndOf="@+id/txt_fecha_paciente"
+            app:layout_constraintTop_toTopOf="@+id/txt_fecha_paciente"
+            app:srcCompat="@drawable/ayuda" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

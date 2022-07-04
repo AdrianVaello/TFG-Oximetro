@@ -14,6 +14,8 @@
     <color name="colorCard5">#FF8A80</color>
     <color name="colorCard6">#AFB42B</color>
     <color name="colorCard7">#FFA000</color>
+    <color name="colorCard8">#00E5FF</color>
+
     <color name="colorCardChart">#C2FFF1</color>
     <color name="colorHint">#5D696E</color>
 </resources>

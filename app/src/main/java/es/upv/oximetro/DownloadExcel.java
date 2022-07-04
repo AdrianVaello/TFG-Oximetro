@@ -2,6 +2,7 @@ package es.upv.oximetro;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ public class DownloadExcel extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.download_excel);
 
+        Log.d(TAG, "datoschart Datos"+Utilities.datosPulsioximetroGrafica);
         datosDescargados=false;
         // cambio unas propiedades del sistema para utilizar la librería poi más pequeña
         System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
@@ -139,14 +141,15 @@ public class DownloadExcel extends AppCompatActivity {
             cell = row.createCell(6);
             if(Utilities.datosPulsioximetro.get(i).get("Cisura")!=null){
                 if(Utilities.datosPulsioximetro.get(i).get("Cisura")==0.0){
-                    cell.setCellValue("Vasodilatación");
+                    cell.setCellValue("Anemia");
                 }else{
-                    cell.setCellValue("Vasoconstricción");
+                    cell.setCellValue("No anemia");
                 }
             }else{
                 cell.setCellValue("Sin valor exacto");
             }
         }
+
 
         // Se coge la fecha actual
         Calendar c = Calendar.getInstance();
@@ -154,9 +157,28 @@ public class DownloadExcel extends AppCompatActivity {
         String strDate = sdf.format(c.getTime());
 
         // Se crea el archivo excel
-        File file= new File(getExternalFilesDir(null), nombrePaciente+"_"+strDate+".xlsx");
+        File file= new File(getExternalFilesDir(null), nombrePaciente+"_"+strDate+"_datos.xlsx");
         FileOutputStream outputStream= null;
 
+        XSSFWorkbook workbookGrafica = new XSSFWorkbook();
+        XSSFSheet sheetGrafica= workbookGrafica.createSheet(nombrePaciente+"_grafica");
+
+        CellStyle cellStyleGrafica= workbookGrafica.createCellStyle();
+        cellStyleGrafica.setFillForegroundColor((short) R.color.colorTextoBlanco);
+        //Titulos de las casillas del excel
+        Cell cellG= null;
+        Row rowG= null;
+        rowG= sheetGrafica.createRow(0);
+        cellG= rowG.createCell(0);
+        cellG.setCellValue("Grafica");
+        cellG.setCellStyle(cellStyleGrafica);
+        for (int i=0; i<Utilities.datosPulsioximetroGrafica.size();i++){
+            rowG= sheetGrafica.createRow(i);
+            cellG= rowG.createCell(0);
+            cellG.setCellValue(Utilities.datosPulsioximetroGrafica.get(i).get("grafica"));
+        }
+        File fileGrafica= new File(getExternalFilesDir(null), nombrePaciente+"_"+strDate+"_grafica.xlsx");
+        FileOutputStream outputStreamGraficas= null;
         try {
             if(!datosDescargados){
                 // Se guarda el archivo
@@ -164,7 +186,13 @@ public class DownloadExcel extends AppCompatActivity {
                 workbook.write(outputStream);
                 outputStream.flush();
                 outputStream.close();
+
+                outputStreamGraficas =  new FileOutputStream(fileGrafica.getAbsolutePath());
+                workbookGrafica.write(outputStreamGraficas);
+                outputStreamGraficas.flush();
+                outputStreamGraficas.close();
                 Toast.makeText(this, "Los datos se han guardado correctamente", Toast.LENGTH_SHORT).show();
+
                 datosDescargados=true;
             }else{
                 Toast.makeText(this, "Ya has descargados los datos!", Toast.LENGTH_SHORT).show();

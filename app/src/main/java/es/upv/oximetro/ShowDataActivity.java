@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothGattService;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -62,7 +63,7 @@ public class ShowDataActivity extends AppCompatActivity {
    public BleManager instanciaBluetooth;
 
    // Variables para los textos y la graficas
-   private TextView tv_spo2, tv_pr, tv_rr, tv_pi, tv_Cargando_Pvi, tv_PmaxPmin, tv_Cisura, tv_Area, tvPVi;
+   private TextView tv_spo2, tv_pr, tv_rr, tv_pi, tv_Cargando_Pvi, tv_PmaxPmin, tv_Cisura, tv_Area, tvPVi, tv_pendIzq, tv_pendDcha;
    private LineChart chart;
    Button bt_Parar_Grabacion;
 
@@ -71,6 +72,7 @@ public class ShowDataActivity extends AppCompatActivity {
    Long tiempoInicial;
    Long tiempoFinal;
    int cicloMuestras = 4000;
+   Boolean tiempoEsperaGuardarDatos;
 
    // Variables usadas para los diferentes calculos
    public Double PVI = 0.0;
@@ -81,6 +83,15 @@ public class ShowDataActivity extends AppCompatActivity {
    // Resto variables
    private String fileName;
    private FileOutputStream f1, f2;
+
+   // Variables Calculo pendientes
+   float max = Float.MIN_EXPONENT;
+   float min = Float.MAX_EXPONENT;
+   float diferenciaX=0;
+   float diferenciaY=0;
+   boolean pendienteIzq = false;
+   boolean pendienteDcha = false;
+   int contadorDatos=0;
 
    public ArrayList<Double> datosGrafica = new ArrayList<Double>();
    public boolean primeraVezCalculoPVi;
@@ -107,6 +118,7 @@ public class ShowDataActivity extends AppCompatActivity {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_show_data);
       primeraVezCalculoPVi = true;
+      tiempoEsperaGuardarDatos=false;
 
       if (savedInstanceState != null) {
          onRestoreInstanceState(savedInstanceState);
@@ -131,6 +143,18 @@ public class ShowDataActivity extends AppCompatActivity {
       if(characteristicUUIDString== null && characteristicString==null) {
          prepareDeviceServiceCharact();
       }
+
+      new CountDownTimer(11000, 1000) {
+
+         public void onTick(long millisUntilFinished) {
+            Log.d(TAG, "tiempo"+millisUntilFinished);
+         }
+
+         public void onFinish() {
+            tiempoEsperaGuardarDatos = true;
+         }
+
+      }.start();
    }
 
    /* -------------------------------------
@@ -196,7 +220,9 @@ public class ShowDataActivity extends AppCompatActivity {
       tvPVi = (TextView) findViewById(R.id.tvPVi);
       tv_PmaxPmin = (TextView) findViewById(R.id.tv_PmaxPmin);
       tv_Cisura = (TextView) findViewById(R.id.textViewCisura);
-      tv_Area= findViewById(R.id.textViewArea);
+      tv_Area = findViewById(R.id.textViewArea);
+      tv_pendIzq = findViewById(R.id.tv_pendienteIzq);
+      tv_pendDcha = findViewById(R.id.tv_pendienteDere);
 
       //GRÁFICA
       chart = (LineChart) findViewById(R.id.chart_heart);
@@ -212,8 +238,8 @@ public class ShowDataActivity extends AppCompatActivity {
       xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
       yAxis = chart.getAxisLeft();
-      yAxis.setAxisMaximum(100);
-      yAxis.setAxisMinimum(0);
+      yAxis.setAxisMaximum(50);
+      yAxis.setAxisMinimum(-50);
       yAxis.setDrawLabels(true);
       chart.getAxisRight().setEnabled(false);
       chart.setDrawBorders(false);
@@ -290,13 +316,14 @@ public class ShowDataActivity extends AppCompatActivity {
    void writeSingleFrame(byte[] data) {
       String s = "" + time;
       try {
-         if ((data[1] == 6) && (data[2] == -128/*0x80*/)) {
+         if ((data[1] == 6) && (data[2] == -128)) {
             int unsignedbyte = data[5] & 0xff;
             s += ", " + data[3] + ", " + data[4] + ", " + unsignedbyte + "\n";
             if (fileName != null){
                f1.write(s.getBytes());
             }
 
+            calcularPendientes( (float) data[3]);
             //Se pasa de complemento a 2 a decimal
             float numeroDecimal = (~data[3]) + 1;
 
@@ -316,13 +343,16 @@ public class ShowDataActivity extends AppCompatActivity {
             } else if (tiempoInicial + cicloMuestras <= tiempoFinal) {
                tiempoInicial = System.currentTimeMillis();
                primeraVezCalculoPVi = false;
-
             }
 
-            // Se normalizan los datos de 0 a 100
-            float datoChart = Normalization(numeroDecimal, -49, 49, 0, 100);
             // Datos enviados para ser mostrados en la gráfica
-            newRawData(datoChart, System.currentTimeMillis());
+            //newRawData(datoChart, System.currentTimeMillis());
+            newRawData(data[3], System.currentTimeMillis());
+
+            // Se añaden los datos en la lista para ser enviados al excel
+            HashMap<String, Float> hashDatosGrafica = new HashMap<String, Float>();
+            hashDatosGrafica.put("grafica", (float) data[3]);
+            Utilities.datosPulsioximetroGrafica.add(hashDatosGrafica);
 
          } else if (data[1] == 11 && (data[2] == -127/*0x81*/)) {
 
@@ -339,24 +369,27 @@ public class ShowDataActivity extends AppCompatActivity {
             s += ", " + spO2 + ", " + pr + ", " + rr + ", " + pi + ", " + unk + "\n";
 
             if (spO2!=0 || pr!=0 || rr!=0 || pi!=0) {
-               // Se añaden los datos en la lista para ser enviados al excel
-               HashMap<String, Double> hashDatos = new HashMap<String, Double>();
 
-               hashDatos.put("Sp02", (double) spO2);
-               hashDatos.put("Pr", (double) pr);
-               hashDatos.put("Rr", (double) rr);
-               hashDatos.put("Pi", (double) pi);
-               hashDatos.put("PVi", PVI);
-               hashDatos.put("Area", area);
+               if(tiempoEsperaGuardarDatos){
+                  // Se añaden los datos en la lista para ser enviados al excel
+                  HashMap<String, Double> hashDatos = new HashMap<String, Double>();
+                  hashDatos.put("Sp02", (double) spO2);
+                  hashDatos.put("Pr", (double) pr);
+                  hashDatos.put("Rr", (double) rr);
+                  hashDatos.put("Pi", (double) pi);
+                  hashDatos.put("PVi", PVI);
+                  hashDatos.put("Area", area);
 
-               if (tipoVaso!=null){
-                  if (tipoVaso.equals("Vasodilatacion")){
-                     hashDatos.put("Cisura",0.0 );
-                  }else{
-                     hashDatos.put("Cisura",1.0 );
+                  if (tipoVaso!=null){
+                     if (tipoVaso.equals("Anemia")){
+                        hashDatos.put("Cisura",0.0 );
+                     }else{
+                        hashDatos.put("Cisura",1.0 );
+                     }
                   }
+                  //Log.d(TAG, "datoschart "+hashDatos);
+                  Utilities.datosPulsioximetro.add(hashDatos);
                }
-               Utilities.datosPulsioximetro.add(hashDatos);
             }
 
             // Se muestran los datos en el TextView
@@ -593,10 +626,10 @@ public class ShowDataActivity extends AppCompatActivity {
       double difCisuraMin = Math.abs(min - cisura);
 
       if (difCisuraMax > difCisuraMin) {
-         tipoVaso="Vasodilatación";
+         tipoVaso="No anemia";
          tv_Cisura.setText(tipoVaso);
       } else {
-         tipoVaso="Vasoconstricción";
+         tipoVaso="Anemia";
          tv_Cisura.setText(tipoVaso);
       }
    }
@@ -618,6 +651,41 @@ public class ShowDataActivity extends AppCompatActivity {
       }
       tv_Area.setText(String.format("%.2f", area));
       return area;
+   }
+
+   public void calcularPendientes(float dato){
+      contadorDatos++;
+      float pendiente = 0;
+      if( max <=dato){
+         max = dato;
+         pendienteIzq = true;
+         pendienteDcha = false;
+      }else if(min >= dato){
+         min = dato;
+         pendienteIzq = false;
+         pendienteDcha = true;
+
+      }else{
+         diferenciaX = max-min;
+         diferenciaY = contadorDatos * 22f;
+
+         if( diferenciaX >= 15){
+            if(pendienteIzq){
+               pendiente= diferenciaX / diferenciaY;
+               tv_pendIzq.setText(String.format("%.1f", pendiente));
+               //Log.d(TAG, "Pendiente Izq difx: "+diferenciaX + " difY "+ diferenciaY + " Max " + max + " Min " + min + " cont " + contadorDatos + " pendiente " + pendiente);
+               min = Float.MAX_EXPONENT;
+            }else if(pendienteDcha){
+               pendiente= diferenciaX / diferenciaY;
+               tv_pendDcha.setText(String.format("%.1f", pendiente));
+               //Log.d(TAG, "Pendiente Dcha difx: "+diferenciaX + " difY "+ diferenciaY + " Max " + max + " Min " + min + " cont " + contadorDatos + " pendiente " + pendiente);
+               max = Float.MIN_EXPONENT;
+            }
+            pendienteIzq=false;
+            pendienteDcha=false;
+            contadorDatos=0;
+         }
+      }
    }
 
    /* -------------------------------------

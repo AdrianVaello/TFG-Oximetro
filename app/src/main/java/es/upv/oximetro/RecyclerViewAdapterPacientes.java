@@ -1,6 +1,7 @@
 package es.upv.oximetro;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +42,9 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         String[] nombreFichero=mfilesAdapter.get(position).getName().split("_");
+
         String[] fechaFichero=nombreFichero[1].split("\\.");
+        String[] tipo_fichero= nombreFichero[2].split("\\.");
 
         holder.tx_nombre_pacientes.setText( nombreFichero[0]);
         holder.tx_fecha_pacientes.setText( fechaFichero[0]);
@@ -51,6 +54,11 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
                 holder.borrar(v);
             }
         });
+        if(tipo_fichero[0].equals("datos")){
+            holder.ivTipoDato.setImageResource(R.drawable.datos_paciente_color);
+        }else{
+            holder.ivTipoDato.setImageResource(R.drawable.grafica);
+        }
 
     }
 
@@ -66,7 +74,7 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
         TextView tx_nombre_pacientes;
         TextView tx_fecha_pacientes;
         RelativeLayout paciente;
-        ImageView ivBorrar;
+        ImageView ivBorrar, ivTipoDato;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -74,6 +82,7 @@ public class RecyclerViewAdapterPacientes extends RecyclerView.Adapter<RecyclerV
             tx_fecha_pacientes= itemView.findViewById(R.id.txt_fecha_paciente);
             tx_nombre_pacientes= itemView.findViewById(R.id.txt_nombre_paciente);
             ivBorrar=itemView.findViewById(R.id.ivBorrarPacientes);
+            ivTipoDato =  itemView.findViewById(R.id.img_tipo_dato);
 
             itemView.setOnClickListener(this);
         }
