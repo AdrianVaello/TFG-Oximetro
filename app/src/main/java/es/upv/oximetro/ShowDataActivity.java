@@ -85,13 +85,15 @@ public class ShowDataActivity extends AppCompatActivity {
    private FileOutputStream f1, f2;
 
    // Variables Calculo pendientes
-   float max = Float.MIN_EXPONENT;
-   float min = Float.MAX_EXPONENT;
+   float max = Float.NEGATIVE_INFINITY;
+   float min = Float.POSITIVE_INFINITY;
    float diferenciaX=0;
    float diferenciaY=0;
    boolean pendienteIzq = false;
    boolean pendienteDcha = false;
    int contadorDatos=0;
+   float pendienteI;
+   float pendienteD;
 
    public ArrayList<Double> datosGrafica = new ArrayList<Double>();
    public boolean primeraVezCalculoPVi;
@@ -323,7 +325,7 @@ public class ShowDataActivity extends AppCompatActivity {
                f1.write(s.getBytes());
             }
 
-            calcularPendientes( (float) data[3]);
+            calcularPendientes((float) data[3]);
             //Se pasa de complemento a 2 a decimal
             float numeroDecimal = (~data[3]) + 1;
 
@@ -387,6 +389,8 @@ public class ShowDataActivity extends AppCompatActivity {
                         hashDatos.put("Cisura",1.0 );
                      }
                   }
+                  hashDatos.put("PendIzq", (double) pendienteI);
+                  hashDatos.put("PendDer", (double) pendienteD);
                   //Log.d(TAG, "datoschart "+hashDatos);
                   Utilities.datosPulsioximetro.add(hashDatos);
                }
@@ -654,9 +658,12 @@ public class ShowDataActivity extends AppCompatActivity {
    }
 
    public void calcularPendientes(float dato){
+      float tiempo_muestreo= 22f;
+      int diferencia= 15;
       contadorDatos++;
-      float pendiente = 0;
-      if( max <=dato){
+      //pendienteI = 0;
+      //pendienteD = 0;
+      if(max <= dato){
          max = dato;
          pendienteIzq = true;
          pendienteDcha = false;
@@ -666,20 +673,20 @@ public class ShowDataActivity extends AppCompatActivity {
          pendienteDcha = true;
 
       }else{
-         diferenciaX = max-min;
-         diferenciaY = contadorDatos * 22f;
+         diferenciaY = max-min;
+         diferenciaX = contadorDatos * tiempo_muestreo;
 
-         if( diferenciaX >= 15){
+         if(diferenciaY >= diferencia){
             if(pendienteIzq){
-               pendiente= diferenciaX / diferenciaY;
-               tv_pendIzq.setText(String.format("%.1f", pendiente));
+               pendienteI= diferenciaX / diferenciaY;
+               tv_pendIzq.setText(String.format("%.1f", pendienteI));
                //Log.d(TAG, "Pendiente Izq difx: "+diferenciaX + " difY "+ diferenciaY + " Max " + max + " Min " + min + " cont " + contadorDatos + " pendiente " + pendiente);
-               min = Float.MAX_EXPONENT;
+               min = Float.POSITIVE_INFINITY;
             }else if(pendienteDcha){
-               pendiente= diferenciaX / diferenciaY;
-               tv_pendDcha.setText(String.format("%.1f", pendiente));
+               pendienteD= diferenciaX / diferenciaY;
+               tv_pendDcha.setText(String.format("%.1f", pendienteD));
                //Log.d(TAG, "Pendiente Dcha difx: "+diferenciaX + " difY "+ diferenciaY + " Max " + max + " Min " + min + " cont " + contadorDatos + " pendiente " + pendiente);
-               max = Float.MIN_EXPONENT;
+               max = Float.NEGATIVE_INFINITY;
             }
             pendienteIzq=false;
             pendienteDcha=false;

@@ -37,8 +37,8 @@ public class DownloadExcel extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.download_excel);
 
-        Log.d(TAG, "datoschart Datos"+Utilities.datosPulsioximetroGrafica);
         datosDescargados=false;
+
         // cambio unas propiedades del sistema para utilizar la librería poi más pequeña
         System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
         System.setProperty("org.apache.poi.javax.xml.stream.XMLOutputFactory", "com.fasterxml.aalto.stax.OutputFactoryImpl");
@@ -75,6 +75,7 @@ public class DownloadExcel extends AppCompatActivity {
     public void guardarDatosExcel(String nombrePaciente){
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet= workbook.createSheet(nombrePaciente);
+        sheet.setDefaultColumnWidth(17);
 
         CellStyle cellStyle= workbook.createCellStyle();
         cellStyle.setFillForegroundColor((short) R.color.colorTextoBlanco);
@@ -109,12 +110,22 @@ public class DownloadExcel extends AppCompatActivity {
 
         sheet.createRow(5);
         cell= row.createCell(5);
-        cell.setCellValue("Area bajo curva");
+        cell.setCellValue("Area bajo curva (mm^2)");
         cell.setCellStyle(cellStyle);
 
         sheet.createRow(6);
         cell= row.createCell(6);
         cell.setCellValue("Valor cisura dicrótica");
+        cell.setCellStyle(cellStyle);
+
+        sheet.createRow(7);
+        cell= row.createCell(7);
+        cell.setCellValue("Pendiente Izquierda");
+        cell.setCellStyle(cellStyle);
+
+        sheet.createRow(8);
+        cell= row.createCell(8);
+        cell.setCellValue("Pendiente Derecha");
         cell.setCellStyle(cellStyle);
 
         for (int i= 1; i<Utilities.datosPulsioximetro.size(); i++){
@@ -148,8 +159,13 @@ public class DownloadExcel extends AppCompatActivity {
             }else{
                 cell.setCellValue("Sin valor exacto");
             }
-        }
 
+            cell = row.createCell(7);
+            cell.setCellValue(Utilities.datosPulsioximetro.get(i).get("PendIzq"));
+
+            cell = row.createCell(8);
+            cell.setCellValue(Utilities.datosPulsioximetro.get(i).get("PendDer"));
+        }
 
         // Se coge la fecha actual
         Calendar c = Calendar.getInstance();
@@ -160,6 +176,7 @@ public class DownloadExcel extends AppCompatActivity {
         File file= new File(getExternalFilesDir(null), nombrePaciente+"_"+strDate+"_datos.xlsx");
         FileOutputStream outputStream= null;
 
+        // EXCEL DE LOS DATOS DE LA GRÁFICA
         XSSFWorkbook workbookGrafica = new XSSFWorkbook();
         XSSFSheet sheetGrafica= workbookGrafica.createSheet(nombrePaciente+"_grafica");
 
@@ -172,7 +189,9 @@ public class DownloadExcel extends AppCompatActivity {
         cellG= rowG.createCell(0);
         cellG.setCellValue("Grafica");
         cellG.setCellStyle(cellStyleGrafica);
-        for (int i=0; i<Utilities.datosPulsioximetroGrafica.size();i++){
+
+
+        for (int i=1; i<Utilities.datosPulsioximetroGrafica.size();i++){
             rowG= sheetGrafica.createRow(i);
             cellG= rowG.createCell(0);
             cellG.setCellValue(Utilities.datosPulsioximetroGrafica.get(i).get("grafica"));
