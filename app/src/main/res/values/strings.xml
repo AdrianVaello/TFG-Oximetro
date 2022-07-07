@@ -73,6 +73,9 @@
     <string name="los_datos_se_guardar_n_en_android_data_es_upv_oximetro_files">Los datos se guardarán en: Android/data/es.upv.oximetro/files</string>
     <string name="parar_grabaci_n_de_datos">Guardar datos</string>
     <string name="cargando">Cargando</string>
-    <string name="mmhg">mmHg</string>
+    <string name="mmhg">mV</string>
+    <string name="mv_ms">(mV/ms)</string>
+    <string name="pend_dcha">Pend. Dcha</string>
+    <string name="pend_izq">Pend. Izq</string>
 
 </resources>

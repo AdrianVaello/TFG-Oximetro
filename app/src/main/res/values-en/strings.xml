@@ -75,5 +75,8 @@
     <string name="parar_grabaci_n_de_datos">Parar grabación de datos</string>
     <string name="cargando">Cargando</string>
     <string name="mmhg">mmHg</string>
+    <string name="mv_ms">(mV/ms)</string>
+    <string name="pend_dcha">Pend. Dcha</string>
+    <string name="pend_izq">Pend. Izq</string>
 
 </resources>

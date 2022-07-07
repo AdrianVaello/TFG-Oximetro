@@ -8,6 +8,95 @@
     android:keepScreenOn="true">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/pendienteDere"
+        android:layout_width="90dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:cardBackgroundColor="@color/colorCard8"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/pendienteIzq"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewPVi">
+
+        <TextView
+            android:id="@+id/textView20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:text="@string/mv_ms"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_pendienteDere"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:text="00"
+            android:textColor="@color/colorTextoBlanco"
+            android:textSize="34sp" />
+
+        <TextView
+            android:id="@+id/tvPendienteD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/pend_dcha"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/pendienteIzq"
+        android:layout_width="90dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:cardBackgroundColor="@color/colorCard8"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewPVi">
+
+        <TextView
+            android:id="@+id/textView19"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:text="@string/mv_ms"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_pendienteIzq"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:text="00"
+            android:textColor="@color/colorTextoBlanco"
+            android:textSize="34sp" />
+
+        <TextView
+            android:id="@+id/tvPendiente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/pend_izq"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
         android:id="@+id/cardViewChart"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -42,20 +131,20 @@
         android:id="@+id/btPararGrabacion"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/bordes_redondos_botones"
         android:text="@string/parar_grabaci_n_de_datos"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/pendienteDere"
         app:layout_constraintTop_toBottomOf="@+id/cardViewPVi" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewRR"
         android:layout_width="160dp"
-        android:layout_height="100dp"
+        android:layout_height="95dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         app:cardBackgroundColor="@color/colorCard4"
@@ -88,9 +177,9 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewPI"
         android:layout_width="wrap_content"
-        android:layout_height="100dp"
+        android:layout_height="95dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         app:cardBackgroundColor="@color/colorCard3"
         app:cardCornerRadius="8dp"
         app:cardElevation="2dp"
@@ -121,7 +210,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewPR"
         android:layout_width="wrap_content"
-        android:layout_height="100dp"
+        android:layout_height="95dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         app:cardBackgroundColor="@color/colorCard2"
@@ -154,7 +243,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewSpo2"
         android:layout_width="wrap_content"
-        android:layout_height="100dp"
+        android:layout_height="95dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:foregroundGravity="center_horizontal"
@@ -188,9 +277,9 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewPVi"
         android:layout_width="160dp"
-        android:layout_height="100dp"
+        android:layout_height="95dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         app:cardBackgroundColor="@color/colorCard5"
         app:cardCornerRadius="8dp"
         app:cardElevation="2dp"
@@ -280,7 +369,7 @@
         android:layout_width="160dp"
         android:layout_height="45dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         app:cardBackgroundColor="@color/colorCard7"
         app:cardCornerRadius="8dp"
         app:cardElevation="2dp"

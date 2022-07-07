@@ -678,14 +678,13 @@ public class ShowDataActivity extends AppCompatActivity {
 
          if(diferenciaY >= diferencia){
             if(pendienteIzq){
-               pendienteI= diferenciaX / diferenciaY;
-               tv_pendIzq.setText(String.format("%.1f", pendienteI));
+               pendienteI= diferenciaY / diferenciaX;
+               tv_pendIzq.setText(String.format("%.2f", pendienteI));
                //Log.d(TAG, "Pendiente Izq difx: "+diferenciaX + " difY "+ diferenciaY + " Max " + max + " Min " + min + " cont " + contadorDatos + " pendiente " + pendiente);
                min = Float.POSITIVE_INFINITY;
             }else if(pendienteDcha){
-               pendienteD= diferenciaX / diferenciaY;
-               tv_pendDcha.setText(String.format("%.1f", pendienteD));
-               //Log.d(TAG, "Pendiente Dcha difx: "+diferenciaX + " difY "+ diferenciaY + " Max " + max + " Min " + min + " cont " + contadorDatos + " pendiente " + pendiente);
+               pendienteD= diferenciaY / diferenciaX;
+               tv_pendDcha.setText(String.format("%.2f", pendienteD));
                max = Float.NEGATIVE_INFINITY;
             }
             pendienteIzq=false;
